@@ -39,6 +39,14 @@ modules = pkgutil.iter_modules(path=[path])
 
 class CustomClient(discord.Client):
 	global obj_list
+	global members_list
+
+	members_list = []
+
+	def __init__(self, discord_intents: discord.Intents):
+		super().__init__(intents=discord_intents)
+		print('Init done')
+
 
 	# Bot connects to discord server
 	async def on_ready(self):
@@ -53,12 +61,17 @@ class CustomClient(discord.Client):
 			f'{guild.name}(id: {guild.id})\n'
 		)
 
-		members = '\n - '.join([member.name for member in guild.members])
-		print (f'Guild Members:\n - {members}\n')
+		print('Member count: ' + str(guild.member_count))
+
+		for member in guild.members:
+			members_list.append(member.name)
+
+		print('len(members_list): ' + str(len(members_list)))
 
 		print ('Guild Roles:')
 		for role in guild.roles:
 			print('\t' + role.name)
+
 
 		print ()
 
@@ -183,6 +196,7 @@ for loader, mod_name, ispkg in modules:
 		instance = loaded_class()
 		obj_list.append(instance)
 
-client = CustomClient()
+intents = discord.Intents.all()
+client = CustomClient(intents)
 client.run(TOKEN)
 client.main.start()
