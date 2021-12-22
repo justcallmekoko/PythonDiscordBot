@@ -79,10 +79,9 @@ class CustomClient(discord.Client):
 
 	# Member joins the discord server
 	async def on_member_join(self, member):
+		print(f'{member.name}, welcome to the WillStunForFood server. Be sure to check out the "rules" channel so you can pick your roles. If you would like to support me, consider following me on Twitch at https://twitch.tv/willstunforfood')
 		await member.create_dm()
-		await member.dm_channel.send(
-			f'Hi {member.name}, welcome to the server.'
-		)
+		await member.dm_channel.send(f'{member.name}, welcome to the WillStunForFood server. Be sure to check out the "rules" channel so you can pick your roles. If you would like to support me, consider following me on Twitch at https://twitch.tv/willstunforfood')
 
 	# Bot received a message on discord server
 	async def on_message(self, message):
@@ -171,9 +170,11 @@ class CustomClient(discord.Client):
 				await obj.run(message)
 				break
 
-		if list(str(cmd))[0] == '!' and not found:
-			await message.channel.send(message.author.mention + ' ' + str(cmd) + ' is not a recognized command')
-
+		try:
+			if list(str(cmd))[0] == '!' and not found:
+				await message.channel.send(message.author.mention + ' ' + str(cmd) + ' is not a recognized command')
+		except Exception as e:
+			print('Hit exception parsing message: ' + str(e))
 
 
 def get_class_name(mod_name):
