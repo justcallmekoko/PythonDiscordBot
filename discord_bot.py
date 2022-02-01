@@ -32,7 +32,9 @@ RCONIP = os.getenv('RCON_IP')
 PASSW = os.getenv('RCON_PASSWORD')
 
 global obj_list
+global channels_list
 obj_list = []
+channels_list = []
 
 path = os.path.join(os.path.dirname(__file__), "plugins")
 modules = pkgutil.iter_modules(path=[path])
@@ -40,6 +42,7 @@ modules = pkgutil.iter_modules(path=[path])
 class CustomClient(discord.Client):
 	global obj_list
 	global members_list
+	global channels_list
 
 	members_list = []
 
@@ -72,6 +75,14 @@ class CustomClient(discord.Client):
 		for role in guild.roles:
 			print('\t' + role.name)
 
+
+		print ()
+
+		print('Guild text channels:')
+		for channel in guild.channels:
+			if str(channel.type) == 'text':
+				channels_list.append(channel)
+				print('\t' + str(channel.name))
 
 		print ()
 
