@@ -90,8 +90,8 @@ Get the number of guess you have left by typing `!searchanddestroy`'''
 
 			if announcements_channel != None:
 				await announcements_channel.send('@everyone, ' + message.author.mention + ' has planted the bomb')
-			else:
-				await message.channel.send('@everyone, ' + message.author.mention + ' has planted the bomb')
+
+			await message.channel.send(message.author.mention + ' has planted the bomb')
 
 			self.planted = True
 
@@ -117,8 +117,8 @@ Get the number of guess you have left by typing `!searchanddestroy`'''
 			if str(code_guess) == str(self.defuse_code):
 				if announcements_channel != None:
 					await announcements_channel.send('@everyone, ' + message.author.mention + ' has defused the bomb!')
-				else:
-					await message.channel.send('@everyone, ' + message.author.mention + ' has defused the bomb!')
+
+				await message.channel.send(message.author.mention + ' has defused the bomb!')
 				self.planted = False
 				self.defuse_code = ''
 				self.remaining_guesses = 10
@@ -158,6 +158,9 @@ Get the number of guess you have left by typing `!searchanddestroy`'''
 			self.remaining_guesses = self.remaining_guesses - 1
 
 			if self.remaining_guesses <= 0:
+				if announcements_channel != None:
+					await announcements_channel.send('@everyone, ' + message.author.mention + ' You are out of guesses. The bomb has detonated!')
+
 				await message.channel.send(message.author.mention + ' You are out of guesses. The bomb has detonated!')
 				self.planted = False
 				return
