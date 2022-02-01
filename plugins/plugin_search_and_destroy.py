@@ -10,7 +10,18 @@ class SearchAndDestroy():
 
 	desc = 'Plant the bomb. The server will have to defuse it.'
 
-	synt = '!searchanddestroy [bombplant|bombsearch|bombdefuse <code>]'
+	synt = '''`!searchanddestroy [bombplant|bombdefuse <code>]`
+
+The bomb defusal code is randomly generated once it's planted.
+The code is only 4 digits long, the digits can repeat themselves,
+and it will only contain integers.
+If you guess the correct number in the correct index, you will receive an 'X'.
+If you guess the correct number in the incorrect index, you will receive an 'O'.
+For example, the code is 1234 but you guess 1235.
+You would receive an 'XXX'.
+If you guess 1243, you would receive an 'XXOO'.
+
+Get the number of guess you have left by typing `!searchanddestroy`'''
 
 	loop = False
 
@@ -21,6 +32,8 @@ class SearchAndDestroy():
 	cheer = -1
 	
 	cat = 'admin'
+
+	announcements = 'bot-announcements'
 
 	planted = False
 
@@ -41,22 +54,32 @@ class SearchAndDestroy():
 		return
 
 	async def run(self, message):
+		announcements_channel = None
+
+		# Find where the bot will be posting its announcements
+		for channel in message.guild.channels:
+			if str(channel.name) == self.announcements:
+				announcements_channel = channel
+
 		cmd = str(message.content)
 		seg = cmd.split(' ')
 
+		# Check input syntax
 		if len(seg) < 1:
 			await message.channel.send(message.author.mention + '`' + str(message.content) + '` is not the proper syntax')
 			return
 
+		# Show status of the bomb
 		if message.content == self.name:
 			if self.planted:
-				await message.channel.send(message.author.mention + ' A bomb has been planted. Locate and defuse it.')
+				await message.channel.send(message.author.mention + ' A bomb has been planted. Locate and defuse it. Remaining guesses: ' + str(self.remaining_guesses))
 			else:
 				await message.channel.send(message.author.mention + ' There are no bombs planted.')
 			return
 
 		command = seg[1]
 
+		# Plant the bomb
 		if command == 'bombplant':
 			if self.planted:
 				await message.channel.send(message.author.mention + ' A bomb has *already* been planted')
@@ -65,13 +88,20 @@ class SearchAndDestroy():
 			self.remaining_guesses = 10
 			self.defuse_code = str(random.randint(0, 9)) + str(random.randint(0, 9)) + str(random.randint(0, 9)) + str(random.randint(0, 9))
 
-			await message.channel.send(message.author.mention + ' The bomb has been planted')
+			if announcements_channel != None:
+				await announcements_channel.send('@everyone, ' + message.author.mention + ' has planted the bomb')
+			else:
+				await message.channel.send('@everyone, ' + message.author.mention + ' has planted the bomb')
 
 			self.planted = True
 
 			print(self.defuse_code)
 
+		# Defuse the bomb
 		if command == 'bombdefuse':
+			if not self.planted:
+				return
+
 			xs = 0
 			oss = 0
 			code_guess = seg[2]
@@ -85,7 +115,10 @@ class SearchAndDestroy():
 
 			# Bomb has been defused
 			if str(code_guess) == str(self.defuse_code):
-				await message.channel.send(message.author.mention + ' has defused the bomb!')
+				if announcements_channel != None:
+					await announcements_channel.send('@everyone, ' + message.author.mention + ' has defused the bomb!')
+				else:
+					await message.channel.send('@everyone, ' + message.author.mention + ' has defused the bomb!')
 				self.planted = False
 				self.defuse_code = ''
 				self.remaining_guesses = 10
@@ -122,7 +155,14 @@ class SearchAndDestroy():
 				except:
 					fuck = True
 
-			response_string = ('X' * xs) + ('O' * oss)
+			self.remaining_guesses = self.remaining_guesses - 1
+
+			if self.remaining_guesses <= 0:
+				await message.channel.send(message.author.mention + ' You are out of guesses. The bomb has detonated!')
+				self.planted = False
+				return
+
+			response_string = ('X' * xs) + ('O' * oss) + ' remaining attempts: ' + str(self.remaining_guesses)
 
 			await message.channel.send(message.author.mention + ' ' + str(response_string))
 
