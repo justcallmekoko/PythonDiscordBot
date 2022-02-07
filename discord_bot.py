@@ -135,8 +135,8 @@ class CustomClient(discord.Client):
 		print (output)
 
 		# Work response
-		if client.user.mentioned_in(message):
-			await message.channel.send(message.author.mention + ' Don\'t talk to me')
+#		if client.user.mentioned_in(message):
+#			await message.channel.send(message.author.mention + ' Don\'t talk to me')
 
 		if message.content == '!muster':
                         await message.channel.send(message.author.mention + ' Here')
@@ -181,11 +181,11 @@ class CustomClient(discord.Client):
 				await obj.run(message)
 				break
 
-		try:
-			if list(str(cmd))[0] == '!' and not found:
-				await message.channel.send(message.author.mention + ' ' + str(cmd) + ' is not a recognized command')
-		except Exception as e:
-			print('Hit exception parsing message: ' + str(e))
+#		try:
+#			if list(str(cmd))[0] == '!' and not found:
+#				await message.channel.send(message.author.mention + ' ' + str(cmd) + ' is not a recognized command')
+#		except Exception as e:
+#			print('Hit exception parsing message: ' + str(e))
 
 
 def get_class_name(mod_name):
