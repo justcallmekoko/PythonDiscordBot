@@ -26,7 +26,8 @@ class AutoRole():
 	global_message = None
 
 	days_to_role = [[365, 'One Year'],
-			[180, '6 Months']]
+			[180, '6 Months'],
+			[90, '3 Months']]
 
 	@loop(seconds = 3600)
 	async def loop_func(self):

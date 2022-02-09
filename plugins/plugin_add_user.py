@@ -14,15 +14,26 @@ class AddUser():
 
 	synt = '!add <minecraft username>'
 
-	loop = False
+	looping = False
 
-	group = 'Twitch Subscriber'
+	group = 'members'
 
 	admin = False
 	
 	cheer = -1
 	
 	cat = 'admin'
+
+#	groups = ['People who pooped their pants']
+	groups = [
+		'Twitch Subscriber',
+		'3 Months',
+		'6 Months',
+		'One Year',
+		'Server Booster',
+		'Moderator']
+
+	blacklisted = ['Restricted']
 	
 	def checkCat(self, check_cat):
 		if self.cat == check_cat:
@@ -37,6 +48,22 @@ class AddUser():
 		return
 
 	async def run(self, message):
+		# Check if user can run this command
+		for role in message.author.roles:
+			if str(role.name) in self.blacklisted:
+				await message.channel.send(message.author.mention + ', Users with the role, `' + str(role.name) + '` are not permitted to run this command')
+				return
+
+		role_found = False
+		for role in message.author.roles:
+			if str(role.name) in self.groups:
+				role_found = True
+				break
+
+		if not role_found:
+			await message.channel.send(message.author.mention + ', Users require one of these roles to run this command.\n`' + str(self.groups) + '`')
+			return
+
 		discord_user = str(message.author)
 		if not os.path.isfile('users.txt'):
 			with open('users.txt', 'w') as f:
