@@ -10,6 +10,7 @@ from string import printable
 from dotenv import load_dotenv
 from mcrcon import MCRcon
 from discord.ext.tasks import loop
+from datetime import datetime
 import random
 import pkgutil
 
@@ -100,7 +101,7 @@ class CustomClient(discord.Client):
 
 		user_groups = []
 
-		output = ''
+		output = '[' + str(datetime.now()) + '][' + str(message.channel.name) + ']'
 
 		# Get all guilds
 		for guild in client.guilds:
@@ -114,19 +115,19 @@ class CustomClient(discord.Client):
 		# Check if this is admin
 		try:
 			for role in message.author.roles:
-				output = output + '['
+#				output = output + '['
 
 				user_groups.append(str(role.name))
 
 				if (role.permissions.administrator) and (role.guild.id == guild.id):
 					admin = True
-					output = output + T
-				elif str(role.name) == 'Twitch Subscriber':
-					output = output + C
-				else:
-					output = output + W
+#					output = output + T
+#				elif str(role.name) == 'Twitch Subscriber':
+#					output = output + C
+#				else:
+#					output = output + W
 
-				output = output + role.name + W + ']'
+#				output = output + role.name + W + ']'
 		except Exception as e:
 			output = output + '[' + str(e) + ']'
 
