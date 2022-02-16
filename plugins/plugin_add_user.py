@@ -24,6 +24,8 @@ class AddUser():
 	
 	cat = 'admin'
 
+	service = False
+
 #	groups = ['People who pooped their pants']
 	groups = [
 		'Twitch Subscriber',
