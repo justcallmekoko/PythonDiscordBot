@@ -12,7 +12,7 @@ class Joined():
 
 	synt = '!joined <user>'
 
-	loop = False
+	looping = False
 
 	group = 'Moderator'
 
@@ -22,6 +22,8 @@ class Joined():
 	
 	cat = 'admin'
 	
+	is_service = False
+
 	def checkCat(self, check_cat):
 		if self.cat == check_cat:
 			return True
@@ -34,7 +36,7 @@ class Joined():
 	async def runCheer(self, user, amount):
 		return
 
-	async def run(self, message):
+	async def run(self, message, obj_list):
 		target_user = str(message.content).split(' ')[1]
 
 		# Search for the user
@@ -60,4 +62,4 @@ class Joined():
 		return
 
 	async def stop(self, message):
-		self.loop = False
+		self.looping = False

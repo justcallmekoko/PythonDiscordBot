@@ -11,7 +11,7 @@ class Template():
 
 	synt = '!template'
 
-	loop = False
+	looping = False
 
 	group = 'Owner'
 
@@ -21,6 +21,8 @@ class Template():
 	
 	cat = 'admin'
 	
+	is_service = False
+
 	def checkCat(self, check_cat):
 		if self.cat == check_cat:
 			return True
@@ -33,8 +35,8 @@ class Template():
 	async def runCheer(self, user, amount):
 		return
 
-	async def run(self, message):
+	async def run(self, message, obj_list):
 		return
 
 	async def stop(self, message):
-		self.loop = False
+		self.looping = False

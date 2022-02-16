@@ -4,16 +4,16 @@ from dotenv import load_dotenv
 from discord.ext.tasks import loop
 from requests import get
 
-class Butts():
-	name = '!butts'
+class Services():
+	name = '!services'
 
-	desc = 'Use this only if you like butts'
+	desc = 'Displays a list of services and their status'
 
-	synt = '!butts'
+	synt = '!services'
 
 	looping = False
 
-	group = 'members'
+	group = 'Moderator'
 
 	admin = False
 	
@@ -36,7 +36,18 @@ class Butts():
 		return
 
 	async def run(self, message, obj_list):
-		await message.channel.send(message.author.mention + ' likes butts.')
+		response = message.author.mention + '\n'
+
+		for obj in obj_list:
+			if obj.is_service:
+				response = response + str(obj.name)
+				if obj.looping:
+					response = response + ': `running`\n'
+				else:
+					response = response + ': `not running`\n'
+
+		await message.channel.send(response)
+
 		return
 
 	async def stop(self, message):

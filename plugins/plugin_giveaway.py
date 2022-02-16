@@ -12,7 +12,7 @@ class Giveaway():
 
 	synt = '!giveaway [start <name>|stop|pick|join]'
 
-	loop = False
+	looping = False
 
 	group = 'members'
 
@@ -21,6 +21,8 @@ class Giveaway():
 	cheer = -1
 	
 	cat = 'admin'
+
+	is_service = False
 
 	giveaway_name = None
 
@@ -44,7 +46,7 @@ class Giveaway():
 	async def runCheer(self, user, amount):
 		return
 
-	async def run(self, message):
+	async def run(self, message, obj_list):
 		cmd = str(message.content)
 		seg = str(message.content).split(' ')
 		if len(seg) < 1:
@@ -135,4 +137,4 @@ class Giveaway():
 		return
 
 	async def stop(self, message):
-		self.loop = False
+		self.looping = False

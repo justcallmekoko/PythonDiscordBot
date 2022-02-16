@@ -14,7 +14,7 @@ class RemoveUser():
 
 	synt = '!clear'
 
-	loop = False
+	looping = False
 
 	group = 'Twitch Subscriber'
 
@@ -24,6 +24,8 @@ class RemoveUser():
 	
 	cat = 'admin'
 	
+	is_service = False
+
 	def checkCat(self, check_cat):
 		if self.cat == check_cat:
 			return True
@@ -36,7 +38,7 @@ class RemoveUser():
 	async def runCheer(self, user, amount):
 		return
 
-	async def run(self, message):
+	async def run(self, message, obj_list):
 		discord_user = str(message.author)
 		if not os.path.isfile('users.txt'):
 			with open('users.txt', 'w') as f:
@@ -74,4 +76,4 @@ class RemoveUser():
 			await message.channel.send(message.author.mention + ' Removed user from whitelist: ' + str(minecraft_user))
 
 	async def stop(self, message):
-		self.loop = False
+		self.looping = False

@@ -24,6 +24,8 @@ class PruneMinecraft():
 	
 	cat = 'admin'
 
+	is_service = True
+
 	groups = ['Twitch Subscriber',
                 '3 Months',
                 '6 Months',
@@ -113,7 +115,7 @@ class PruneMinecraft():
 
 				print('Removed user from whitelist: ' + str(the_line))
 
-	async def run(self, message):
+	async def run(self, message, obj_list):
 		self.global_message = message
 		cmd = message.content
 		if len(cmd.split(' ')) > 1:

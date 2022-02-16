@@ -24,7 +24,7 @@ class AddUser():
 	
 	cat = 'admin'
 
-	service = False
+	is_service = False
 
 #	groups = ['People who pooped their pants']
 	groups = [
@@ -49,7 +49,7 @@ class AddUser():
 	async def runCheer(self, user, amount):
 		return
 
-	async def run(self, message):
+	async def run(self, message, obj_list):
 		# Check if user can run this command
 		for role in message.author.roles:
 			if str(role.name) in self.blacklisted:

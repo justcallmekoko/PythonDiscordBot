@@ -11,7 +11,7 @@ class OzzyStats():
 
 	synt = '!ozzystats'
 
-	loop = False
+	looping = False
 
 	group = 'members'
 
@@ -21,6 +21,8 @@ class OzzyStats():
 	
 	cat = 'admin'
 	
+	is_service = False
+
 	def checkCat(self, check_cat):
 		if self.cat == check_cat:
 			return True
@@ -33,7 +35,7 @@ class OzzyStats():
 	async def runCheer(self, user, amount):
 		return
 
-	async def run(self, message):
+	async def run(self, message, obj_list):
 		# Create fresh stat file
 		if not os.path.isfile('ozzystats.json'):
 			# Create fresh json template
@@ -54,4 +56,4 @@ class OzzyStats():
 		await message.channel.send(message.author.mention + ', Ozzy has been pet ' + str(json_data['pets']) + ' time(s)')
 
 	async def stop(self, message):
-		self.loop = False
+		self.looping = False
