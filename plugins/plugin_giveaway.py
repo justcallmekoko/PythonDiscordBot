@@ -1,6 +1,8 @@
 import os
 import json
 import random
+import discord
+from datetime import datetime
 from dotenv import load_dotenv
 from discord.ext.tasks import loop
 from requests import get
@@ -34,6 +36,8 @@ class Giveaway():
 
 	admin_group = 'Moderator'
 	
+	start_date = datetime.now()
+
 	def checkCat(self, check_cat):
 		if self.cat == check_cat:
 			return True
@@ -47,6 +51,9 @@ class Giveaway():
 		return
 
 	async def run(self, message, obj_list):
+		embed = discord.Embed(title="Giveaway",
+				color=discord.Color.green())
+
 		cmd = str(message.content)
 		seg = str(message.content).split(' ')
 		if len(seg) < 1:
@@ -55,7 +62,16 @@ class Giveaway():
 
 		if message.content == '!giveaway':
 			if self.running:
-				await message.channel.send(message.author.mention + ' `' + self.giveaway_name + '` is currently running with ' + str(len(self.users)) + ' participant(s)')
+				embed.add_field(name='Title', value='```' + str(self.giveaway_name) + '```', inline=True)
+				embed.add_field(name='Participants', value='```' + str(len(self.users)) + '```', inline=True)
+
+				embed.add_field(name = chr(173), value = chr(173))
+
+				embed.add_field(name='Started at', value='```' + str(self.start_time) + '```', inline=False)
+
+				embed.add_field(name='Required Roles', value='```' + str(self.group) + '```', inline=False)
+#				await message.channel.send(message.author.mention + ' `' + self.giveaway_name + '` is currently running with ' + str(len(self.users)) + ' participant(s)')
+				await message.channel.send(embed=embed)
 			else:
 				await message.channel.send(message.author.mention + ' There are no giveaways running')
 			return
@@ -81,7 +97,17 @@ class Giveaway():
 			self.users.clear()
 			self.winner = None
 			self.running = True
-			await message.channel.send(message.author.mention + '`' + str(self.giveaway_name) + '` giveaway started')
+			self.start_time = datetime.now()
+#			await message.channel.send(message.author.mention + '`' + str(self.giveaway_name) + '` giveaway started')
+			embed.add_field(name='Title', value='```' + str(self.giveaway_name) + '```', inline=True)
+			embed.add_field(name='Participants', value='```' + str(len(self.users)) + '```', inline=True)
+
+			embed.add_field(name = chr(173), value = chr(173))
+
+			embed.add_field(name='Started at', value='```' + str(self.start_time) + '```', inline=False)
+
+			embed.add_field(name='Required Roles', value='```' + str(self.group) + '```', inline=False)
+			await message.channel.send(embed=embed)
 
 		# Stoping giveaway
 		if command == 'stop':
@@ -99,6 +125,7 @@ class Giveaway():
 			self.running = False
 			await message.channel.send(message.author.mention + '`' + str(self.giveaway_name) + '` giveaway stopped')
 			self.giveaway_name = None
+#			await message.channel.send(embed=embed)
 
 		# Pick winner
 		if command == 'pick':
@@ -117,6 +144,7 @@ class Giveaway():
 			self.winner = random.choice(self.users)
 			self.users.remove(self.winner)
 			await message.channel.send('The winner of `' + self.giveaway_name + '` is ' + str(self.winner.mention))
+#			await message.channel.send(embed=embed)
 
 		# Join giveaway
 		if command == 'join':
@@ -134,6 +162,7 @@ class Giveaway():
 				self.users.append(discord_user)
 				await message.channel.send(message.author.mention + 'Welcome to the giveaway: `' + self.giveaway_name + '`')
 
+#			await message.channel.send(embed=embed)
 		return
 
 	async def stop(self, message):

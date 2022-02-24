@@ -1,4 +1,5 @@
 import os
+import discord
 from dotenv import load_dotenv
 from mcrcon import MCRcon
 from discord.ext.tasks import loop
@@ -93,7 +94,14 @@ class AddUser():
 
 			with open('users.txt', 'a') as f:
 				f.write(combo + '\n')
-			await message.channel.send(message.author.mention + ' Added user to whitelist: ' + str(minecraft_user))
+#			await message.channel.send(message.author.mention + ' Added user to whitelist: ' + str(minecraft_user))
+			embed=discord.Embed(title="Minecraft Whitelist",
+					color=discord.Color.green())
+
+			embed.add_field(name="Discord Username", value='`' + str(discord_user) + '`', inline=True)
+			embed.add_field(name="Minecraft Username", value='`' + str(minecraft_user) + '`', inline=True)
+
+			await message.channel.send(embed=embed)
 
 	async def stop(self, message):
 		self.loop = False

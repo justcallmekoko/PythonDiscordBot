@@ -1,5 +1,6 @@
 import os
 import json
+import discord
 from dotenv import load_dotenv
 from discord.ext.tasks import loop
 from requests import get
@@ -36,7 +37,9 @@ class Services():
 		return
 
 	async def run(self, message, obj_list):
-		response = message.author.mention + '\n'
+		embed=discord.Embed(title="Services",
+				color=discord.Color.blue())
+		response = ''
 
 		for obj in obj_list:
 			if obj.is_service:
@@ -46,7 +49,8 @@ class Services():
 				else:
 					response = response + ': `not running`\n'
 
-		await message.channel.send(response)
+		embed.add_field(name='Status', value='```' + str(response) + '```', inline=True)
+		await message.channel.send(embed=embed)
 
 		return
 
