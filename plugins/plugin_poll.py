@@ -37,7 +37,7 @@ class Poll():
 
 	time_zone = 'US/Eastern'
 
-	message_history_limit = 200
+	message_history_limit = 100
 
 	post_channel = 'polls-and-suggestions'
 #	post_channel = 'bot-commands'
@@ -134,7 +134,12 @@ class Poll():
 				now = datetime.now()
 				now = usest.localize(now)
 
-				message_hist_sec = (now - msg_time).seconds
+				message_hist_sec = (now - msg_time).total_seconds()
+
+#				print('Message time: ' + str(msg_time))
+#				print('Current time: ' + str(now))
+#				print('Elapsed time: ' + str(message_hist_sec))
+#				print('Seconds left: ' + str(self.poll_time_limit - message_hist_sec))
 
 				await self.update_poll_embed(msg, embed, self.poll_time_limit - message_hist_sec)
 
@@ -143,7 +148,7 @@ class Poll():
 					print('Found open Poll that needs to be closed: ' + str(message_hist_sec))
 					await self.close_poll_embed(msg, embed)
 
-	@loop(seconds = 5)
+	@loop(seconds = 30)
 	async def loop_func(self):
 		if self.looping:
 			post_channel = None
