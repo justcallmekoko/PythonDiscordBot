@@ -26,6 +26,8 @@ class Giveaway():
 
 	is_service = True
 
+	client = None
+
 	giveaway_name = None
 
 	users = []
@@ -47,6 +49,9 @@ class Giveaway():
 
 	post_channel = 'giveaways'
 #	post_channel = 'bot-commands'
+
+	def __init__(self, client = None):
+		self.client = client
 
 	def checkCat(self, check_cat):
 		if self.cat == check_cat:

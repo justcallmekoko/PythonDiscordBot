@@ -26,6 +26,8 @@ class PruneMinecraft():
 
 	is_service = True
 
+	client = None
+
 	groups = ['Twitch Subscriber',
                 '3 Months',
                 '6 Months',
@@ -37,6 +39,9 @@ class PruneMinecraft():
 
 	global_message = None
 	
+	def __init__(self, client = None):
+		self.client = client
+
 	def checkCat(self, check_cat):
 		if self.cat == check_cat:
 			return True

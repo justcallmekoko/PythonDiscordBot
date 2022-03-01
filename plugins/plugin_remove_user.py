@@ -26,6 +26,11 @@ class RemoveUser():
 	
 	is_service = False
 
+	client = None
+
+	def __init__(self, client = None):
+		self.client = client
+
 	def checkCat(self, check_cat):
 		if self.cat == check_cat:
 			return True

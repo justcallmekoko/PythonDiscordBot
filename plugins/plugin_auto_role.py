@@ -27,9 +27,15 @@ class AutoRole():
 
 	global_message = None
 
+	client = None
+
 	days_to_role = [[365, 'One Year'],
 			[180, '6 Months'],
 			[90, '3 Months']]
+
+	def __init__(self, client = None):
+		self.client = client
+
 
 	@loop(seconds = 3600)
 	async def loop_func(self):

@@ -185,6 +185,9 @@ def get_class_name(mod_name):
 		output += word.title()
 	return output
 
+intents = discord.Intents.all()
+client = CustomClient(intents)
+
 for loader, mod_name, ispkg in modules:
 	if mod_name not in sys.modules:
 
@@ -193,10 +196,8 @@ for loader, mod_name, ispkg in modules:
 		class_name = get_class_name(mod_name)
 		loaded_class = getattr(loaded_mod, class_name)
 
-		instance = loaded_class()
+		instance = loaded_class(client)
 		obj_list.append(instance)
 
-intents = discord.Intents.all()
-client = CustomClient(intents)
 client.run(TOKEN)
 client.main.start()

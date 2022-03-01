@@ -10,7 +10,6 @@ from discord.ext.tasks import loop
 from requests import get
 
 class Poll():
-	global client
 	name = '!poll'
 
 	desc = 'Start a poll and start the poll service'
@@ -28,6 +27,8 @@ class Poll():
 	cat = 'admin'
 	
 	is_service = True
+
+	client = None
 
 	poll_desc = None
 
@@ -55,6 +56,9 @@ class Poll():
 
 	yes_vote = '<:plusone:912765835184074785>'
 	no_vote = '<:minusone:912765865789898793>'
+
+	def __init__(self, client = None):
+		self.client = client
 
 	def checkCat(self, check_cat):
 		if self.cat == check_cat:

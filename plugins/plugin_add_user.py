@@ -27,6 +27,8 @@ class AddUser():
 
 	is_service = False
 
+	client = None
+
 #	groups = ['People who pooped their pants']
 	groups = [
 		'Twitch Subscriber',
@@ -38,6 +40,9 @@ class AddUser():
 
 	blacklisted = ['Restricted']
 	
+	def __init__(self, client = None):
+		self.client = client
+
 	def checkCat(self, check_cat):
 		if self.cat == check_cat:
 			return True
