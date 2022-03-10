@@ -32,7 +32,11 @@ class Poll():
 
 	poll_desc = None
 
-	poll_time_limit = 604800 #seconds
+	poll_win_percent = 0.01
+
+#	poll_time_limit = 604800 #one week seconds
+	poll_time_limit = 345600
+#	poll_time_limit = 20
 
 	global_message = None
 
@@ -98,6 +102,17 @@ class Poll():
 
 		if not field_found:
 			embed.add_field(name='Time Left', value='```' + str(time_left) + '```', inline=False)
+		
+		total_members = msg.guild.member_count
+		required_limit = round(total_members * self.poll_win_percent)
+
+		field_found = False
+		for i in range(0, len(embed.fields)):
+			if embed.fields[i].name=='Minimum required "yes" votes':
+				embed.set_field_at(i, name=embed.fields[i].name, value='```' + str(required_limit) + '```', inline=False)
+				field_found = True
+		if not field_found:
+			embed.add_field(name='Minimum required "yes" votes', value='```' + str(required_limit) + '```', inline=False)
 
 		await msg.edit(embed=embed)
 
@@ -118,10 +133,18 @@ class Poll():
 
 				print(str(yes_count) + ' | ' + str(no_count))
 
-				if yes_count > no_count:
+				total_members = msg.guild.member_count
+				required_limit = round(total_members * self.poll_win_percent)
+
+				if (yes_count > no_count) and (yes_count > int(required_limit)):
 					embed.add_field(name='Result', value='```APPROVED```', inline=False)
+					embed.add_field(name='Reason', value='```"Yes" greater than "no" and server minimum```', inline=False)
 				elif yes_count < no_count:
 					embed.add_field(name='Result', value='```DENIED```', inline=False)
+					embed.add_field(name='Reason', value='```"no" greater than "yes"```', inline=False)
+				elif (yes_count > no_count) and (yes_count < int(required_limit)):
+					embed.add_field(name='Result', value='```DENIED```', inline=False)
+					embed.add_field(name='Reason', value='```"Yes" votes did not surpass server minimum```', inline=False)
 				else:
 					embed.add_field(name='Result', value='```TIE```', inline=False)
 
@@ -152,7 +175,7 @@ class Poll():
 					print('Found open Poll that needs to be closed: ' + str(message_hist_sec))
 					await self.close_poll_embed(msg, embed)
 
-	@loop(seconds = 30)
+	@loop(seconds = 3)
 	async def loop_func(self):
 		if self.looping:
 			post_channel = None
