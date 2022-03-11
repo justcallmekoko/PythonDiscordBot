@@ -1,4 +1,5 @@
 import os
+import discord
 from dotenv import load_dotenv
 from mcrcon import MCRcon
 from discord.ext.tasks import loop
@@ -24,6 +25,10 @@ class AddUser():
 	
 	cat = 'admin'
 
+	is_service = False
+
+	client = None
+
 #	groups = ['People who pooped their pants']
 	groups = [
 		'Twitch Subscriber',
@@ -35,6 +40,9 @@ class AddUser():
 
 	blacklisted = ['Restricted']
 	
+	def __init__(self, client = None):
+		self.client = client
+
 	def checkCat(self, check_cat):
 		if self.cat == check_cat:
 			return True
@@ -47,7 +55,7 @@ class AddUser():
 	async def runCheer(self, user, amount):
 		return
 
-	async def run(self, message):
+	async def run(self, message, obj_list):
 		# Check if user can run this command
 		for role in message.author.roles:
 			if str(role.name) in self.blacklisted:
@@ -91,7 +99,14 @@ class AddUser():
 
 			with open('users.txt', 'a') as f:
 				f.write(combo + '\n')
-			await message.channel.send(message.author.mention + ' Added user to whitelist: ' + str(minecraft_user))
+#			await message.channel.send(message.author.mention + ' Added user to whitelist: ' + str(minecraft_user))
+			embed=discord.Embed(title="Minecraft Whitelist",
+					color=discord.Color.green())
+
+			embed.add_field(name="Discord Username", value='`' + str(discord_user) + '`', inline=True)
+			embed.add_field(name="Minecraft Username", value='`' + str(minecraft_user) + '`', inline=True)
+
+			await message.channel.send(embed=embed)
 
 	async def stop(self, message):
 		self.loop = False

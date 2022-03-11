@@ -11,7 +11,7 @@ class MontyStats():
 
 	synt = '!montystats'
 
-	loop = False
+	looping = False
 
 	group = 'members'
 
@@ -21,6 +21,13 @@ class MontyStats():
 	
 	cat = 'admin'
 	
+	is_service = False
+
+	client = None
+
+	def __init__(self, client = None):
+		self.client = client
+
 	def checkCat(self, check_cat):
 		if self.cat == check_cat:
 			return True
@@ -33,7 +40,7 @@ class MontyStats():
 	async def runCheer(self, user, amount):
 		return
 
-	async def run(self, message):
+	async def run(self, message, obj_list):
 		# Create fresh stat file
 		if not os.path.isfile('montystats.json'):
 			# Create fresh json template
@@ -54,4 +61,4 @@ class MontyStats():
 		await message.channel.send(message.author.mention + ', Monty has been pet ' + str(json_data['pets']) + ' time(s)')
 
 	async def stop(self, message):
-		self.loop = False
+		self.looping = False

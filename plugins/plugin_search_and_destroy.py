@@ -23,7 +23,7 @@ If you guess 1243, you would receive an 'XXOO'.
 
 Get the number of guess you have left by typing `!searchanddestroy`'''
 
-	loop = False
+	looping = False
 
 	group = 'members'
 
@@ -41,6 +41,13 @@ Get the number of guess you have left by typing `!searchanddestroy`'''
 	
 	remaining_guesses = 10
 
+	is_service = False
+
+	client = None
+
+	def __init__(self, client = None):
+		self.client = client
+
 	def checkCat(self, check_cat):
 		if self.cat == check_cat:
 			return True
@@ -53,7 +60,7 @@ Get the number of guess you have left by typing `!searchanddestroy`'''
 	async def runCheer(self, user, amount):
 		return
 
-	async def run(self, message):
+	async def run(self, message, obj_list):
 		announcements_channel = None
 
 		# Find where the bot will be posting its announcements
@@ -172,4 +179,4 @@ Get the number of guess you have left by typing `!searchanddestroy`'''
 		return
 
 	async def stop(self, message):
-		self.loop = False
+		self.looping = False

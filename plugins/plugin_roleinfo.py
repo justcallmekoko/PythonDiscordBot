@@ -11,7 +11,7 @@ class Roleinfo():
 
 	synt = '!roleinfo'
 
-	loop = False
+	looping = False
 
 	group = 'members'
 
@@ -21,6 +21,13 @@ class Roleinfo():
 	
 	cat = 'admin'
 	
+	is_service = False
+
+	client = None
+
+	def __init__(self, client = None):
+		self.client = client
+
 	def checkCat(self, check_cat):
 		if self.cat == check_cat:
 			return True
@@ -33,7 +40,7 @@ class Roleinfo():
 	async def runCheer(self, user, amount):
 		return
 
-	async def run(self, message):
+	async def run(self, message, obj_list):
 		roles = message.guild.roles
 		output = ''
 		for role in roles:
@@ -44,4 +51,4 @@ class Roleinfo():
 		await message.channel.send(message.author.mention + '\n' + output)
 
 	async def stop(self, message):
-		self.loop = False
+		self.looping = False

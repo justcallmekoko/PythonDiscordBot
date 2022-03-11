@@ -11,7 +11,7 @@ class Poop():
 
 	synt = '!poop'
 
-	loop = False
+	looping = False
 
 	group = 'members'
 
@@ -21,6 +21,13 @@ class Poop():
 	
 	cat = 'admin'
 	
+	is_service = False
+
+	client = None
+
+	def __init__(self, client = None):
+		self.client = client
+
 	def checkCat(self, check_cat):
 		if self.cat == check_cat:
 			return True
@@ -33,9 +40,9 @@ class Poop():
 	async def runCheer(self, user, amount):
 		return
 
-	async def run(self, message):
+	async def run(self, message, obj_list):
 		await message.channel.send(message.author.mention + ' just pooped')
 		return
 
 	async def stop(self, message):
-		self.loop = False
+		self.looping = False

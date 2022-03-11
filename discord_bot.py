@@ -87,7 +87,9 @@ class CustomClient(discord.Client):
 
 		print ()
 
-
+		print('Plugins loaded:')
+		for obj in obj_list:
+			print('\t' + str(obj.name))
 
 	# Member joins the discord server
 	async def on_member_join(self, member):
@@ -101,7 +103,10 @@ class CustomClient(discord.Client):
 
 		user_groups = []
 
-		output = '[' + str(datetime.now()) + '][' + str(message.channel.name) + ']'
+		try:
+			output = '[' + str(datetime.now()) + '][' + str(message.channel.name) + ']'
+		except:
+			output = '[' + str(datetime.now()) + ']'
 
 		# Get all guilds
 		for guild in client.guilds:
@@ -115,19 +120,11 @@ class CustomClient(discord.Client):
 		# Check if this is admin
 		try:
 			for role in message.author.roles:
-#				output = output + '['
 
 				user_groups.append(str(role.name))
 
 				if (role.permissions.administrator) and (role.guild.id == guild.id):
 					admin = True
-#					output = output + T
-#				elif str(role.name) == 'Twitch Subscriber':
-#					output = output + C
-#				else:
-#					output = output + W
-
-#				output = output + role.name + W + ']'
 		except Exception as e:
 			output = output + '[' + str(e) + ']'
 
@@ -136,9 +133,6 @@ class CustomClient(discord.Client):
 		print (output)
 
 		# Work response
-#		if client.user.mentioned_in(message):
-#			await message.channel.send(message.author.mention + ' Don\'t talk to me')
-
 		if message.content == '!muster':
                         await message.channel.send(message.author.mention + ' Here')
 
@@ -155,18 +149,18 @@ class CustomClient(discord.Client):
 		response = message.author.mention + '\n'
 
 		# Check if general help
-		if str(message.content) == '!help':
-			found = True
-			for obj in obj_list:
-				response = response + str(obj.name) + '\t- ' + str(obj.desc) + '\n'
+#		if str(message.content) == '!help':
+#			found = True
+#			for obj in obj_list:
+#				response = response + str(obj.name) + '\t- ' + str(obj.desc) + '\n'
 
-			await message.channel.send(response)
-		elif '!help ' in str(message.content):
-			found = True
-			for obj in obj_list:
-				if str(message.content).split(' ')[1] == str(obj.name):
-					response = response + str(obj.synt)
-			await message.channel.send(response)
+#			await message.channel.send(response)
+#		elif '!help ' in str(message.content):
+#			found = True
+#			for obj in obj_list:
+#				if str(message.content).split(' ')[1] == str(obj.name):
+#					response = response + str(obj.synt)
+#			await message.channel.send(response)
 
 		for obj in obj_list:
 			if cmd == obj.name:
@@ -179,15 +173,8 @@ class CustomClient(discord.Client):
 					await message.channel.send(message.author.mention + ' ' + str(cmd) + ' You must be a member of ' + obj.group + ' to run this command')
 					break
 
-				await obj.run(message)
+				await obj.run(message, obj_list)
 				break
-
-#		try:
-#			if list(str(cmd))[0] == '!' and not found:
-#				await message.channel.send(message.author.mention + ' ' + str(cmd) + ' is not a recognized command')
-#		except Exception as e:
-#			print('Hit exception parsing message: ' + str(e))
-
 
 def get_class_name(mod_name):
 	output = ""
@@ -198,6 +185,9 @@ def get_class_name(mod_name):
 		output += word.title()
 	return output
 
+intents = discord.Intents.all()
+client = CustomClient(intents)
+
 for loader, mod_name, ispkg in modules:
 	if mod_name not in sys.modules:
 
@@ -206,10 +196,8 @@ for loader, mod_name, ispkg in modules:
 		class_name = get_class_name(mod_name)
 		loaded_class = getattr(loaded_mod, class_name)
 
-		instance = loaded_class()
+		instance = loaded_class(client)
 		obj_list.append(instance)
 
-intents = discord.Intents.all()
-client = CustomClient(intents)
 client.run(TOKEN)
 client.main.start()
