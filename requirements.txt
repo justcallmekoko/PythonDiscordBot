@@ -1,0 +1,8 @@
+asyncio
+discord
+mcrcon
+pkgutil
+python-dotenv
+requests
+json
+pytz
