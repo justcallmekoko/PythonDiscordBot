@@ -188,8 +188,8 @@ class Giveaway():
 				await message.channel.send(message.author.mention + ' There are no giveaways running')
 				return
 			if self.admin_group not in user_groups:
-                                await message.channel.send(message.author.mention + ' ' + str(cmd) + ' You must be a member of ' + self.admin_group + ' to run this command')
-                                return
+								await message.channel.send(message.author.mention + ' ' + str(cmd) + ' You must be a member of ' + self.admin_group + ' to run this command')
+								return
 			if len(seg) != 2:
 				await message.channel.send(message.author.mention + '`' + str(message.content) + '` is not the proper syntax')
 				return
