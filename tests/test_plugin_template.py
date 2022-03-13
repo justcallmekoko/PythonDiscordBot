@@ -17,8 +17,3 @@ def test_check_cat_true():
 def test_check_cat_false():
 	template = Template()
 	assert template.checkCat('arrow') == False
-
-def test_raise_exception_check_cat():
-	template = Template()
-	with pytest.raises(TypeError):
-		template.checkCat(0)
