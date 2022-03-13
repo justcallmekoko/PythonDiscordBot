@@ -3,5 +3,4 @@ discord
 mcrcon
 python-dotenv
 requests
-json
 pytz
