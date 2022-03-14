@@ -4,3 +4,4 @@ mcrcon
 python-dotenv
 requests
 pytz
+pytest-cov
