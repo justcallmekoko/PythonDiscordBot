@@ -67,6 +67,22 @@ class TestAsyncMethods(unittest.IsolatedAsyncioTestCase):
 
 		await help.run(a_message, obj_list)
 
+	async def test_run_help_command(self):
+		help = Help()
+		a_channel = channel()
+		a_message = message('!help !command', a_channel)
+		a_plugin = plugin('!command', 'Random Command', '!command')
+
+		print('message content: ' + str(a_message.content))
+
+		obj_list = [a_plugin]
+
+		await help.run(a_message, obj_list)
+
+	async def test_stop(self):
+		help = Help()
+		await help.stop('potato')
+
 '''
 @pytest.mark.asyncio
 async def test_stop():
