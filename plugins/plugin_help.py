@@ -42,16 +42,12 @@ class Help():
 		return True
 
 	async def run(self, message, obj_list):
-#		response = message.author.mention + '\n'
 		embed = discord.Embed(title="Help",
 				color=discord.Color.blue())
 
 		if str(message.content) == '!help':
 			for obj in obj_list:
 				embed.add_field(name=str(obj.name), value='`' + str(obj.desc) + '`', inline=False)
-#				embed.add_field(name="Description", value='`' + str(obj.desc) + '`', inline=True)
-#				embed.add_field(name = chr(173), value = chr(173))
-#				response = response + str(obj.name) + '\t- ' + str(obj.desc) + '\n'
 
 			await message.channel.send(embed=embed)
 		elif '!help ' in str(message.content):
@@ -59,7 +55,6 @@ class Help():
 				if str(message.content).split(' ')[1] == str(obj.name):
 					embed.add_field(name="Command", value='`' + str(obj.name) + '`', inline=True)
 					embed.add_field(name="Description", value='`' + str(obj.synt) + '`', inline=True)
-#					response = response + str(obj.synt)
 			await message.channel.send(embed=embed)
 
 		return

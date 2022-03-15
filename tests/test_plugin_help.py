@@ -46,6 +46,7 @@ def test_check_cat_false():
 	help = Help()
 	assert help.checkCat('arrow') == False
 
+'''
 @pytest.mark.asyncio
 async def test_run_cheer():
 	help = Help()
@@ -81,3 +82,4 @@ async def test_run_help_command():
 	obj_list = [a_plugin]
 
 	await help.run(a_message, obj_list)
+'''
