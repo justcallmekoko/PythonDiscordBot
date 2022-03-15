@@ -38,10 +38,10 @@ class Template():
 		return False
 	
 	async def runCheer(self, user, amount):
-		return
+		return True
 
 	async def run(self, message, obj_list):
-		return
+		return True
 
 	async def stop(self, message):
 		self.looping = False

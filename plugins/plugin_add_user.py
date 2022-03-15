@@ -53,14 +53,14 @@ class AddUser():
 		return False
 	
 	async def runCheer(self, user, amount):
-		return
+		return True
 
 	async def run(self, message, obj_list):
 		# Check if user can run this command
 		for role in message.author.roles:
 			if str(role.name) in self.blacklisted:
 				await message.channel.send(message.author.mention + ', Users with the role, `' + str(role.name) + '` are not permitted to run this command')
-				return
+				return True
 
 		role_found = False
 		for role in message.author.roles:
@@ -70,7 +70,7 @@ class AddUser():
 
 		if not role_found:
 			await message.channel.send(message.author.mention + ', Users require one of these roles to run this command.\n`' + str(self.groups) + '`')
-			return
+			return True
 
 		discord_user = str(message.author)
 		if not os.path.isfile('users.txt'):

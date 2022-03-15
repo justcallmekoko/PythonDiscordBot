@@ -38,11 +38,11 @@ class Butts():
 		return False
 	
 	async def runCheer(self, user, amount):
-		return
+		return True
 
 	async def run(self, message, obj_list):
 		await message.channel.send(message.author.mention + ' likes butts.')
-		return
+		return True
 
 	async def stop(self, message):
 		self.looping = False
