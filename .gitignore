@@ -1,4 +1,6 @@
 .env
+.coverage
 montystats.json
 ozzystats.json
 users.txt
+__pycache__/

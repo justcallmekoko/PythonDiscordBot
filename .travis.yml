@@ -8,6 +8,7 @@ install:
 
 script:
   - pytest --cov-report term --cov=plugins tests/
+#  - pytest --cov-report xml:cov.xml --cov=plugins tests/
 
 after_success:
   - codecov
