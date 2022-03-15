@@ -9,7 +9,7 @@ install:
 script:
 #  - pytest --cov-report term --cov=plugins tests/
   - coverage run -m unittest discover tests -v
-  - coverage report xml
+  - coverage report
 #  - pytest --cov-report xml:cov.xml --cov=plugins tests/
 
 after_success:
