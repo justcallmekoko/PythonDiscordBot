@@ -5,4 +5,5 @@ python-dotenv
 requests
 pytz
 pytest-cov
+pytest-asyncio
 codecov
