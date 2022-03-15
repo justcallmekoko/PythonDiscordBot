@@ -7,7 +7,7 @@ install:
   - pip3 install -r requirements.txt
 
 script:
-  - pytest --asyncio-mode=auto --cov-report term --cov=plugins tests/
+  - pytest --cov-report term --cov=plugins tests/
 #  - pytest --cov-report xml:cov.xml --cov=plugins tests/
 
 after_success:
