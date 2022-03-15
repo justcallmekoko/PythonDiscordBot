@@ -1,6 +1,6 @@
 import os
 import sys
-import pytest
+#import pytest
 import unittest
 sys.dont_write_bytecode = True
 sys.path.append(os.path.abspath('plugins'))

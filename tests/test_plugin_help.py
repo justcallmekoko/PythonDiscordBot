@@ -1,6 +1,6 @@
 import os
 import sys
-import pytest
+#import pytest
 import asyncio
 import unittest
 sys.dont_write_bytecode = True
@@ -49,15 +49,25 @@ class TestHelp(unittest.TestCase):
 		help = Help()
 		assert help.checkCat('arrow') == False
 
-if __name__ == '__main__':
-	unittest.main()
+
+class TestAsyncMethods(unittest.IsolatedAsyncioTestCase):
+	async def test_run_cheer(self):
+		help = Help()
+		assert await help.runCheer('potato', 0) == True
+
+	async def test_run_help(self):
+		help = Help()
+		a_channel = channel()
+		a_message = message('!help', a_channel)
+		a_plugin = plugin('!help', 'help menu', '!help')
+
+		print('message content: ' + str(a_message.content))
+
+		obj_list = [a_plugin]
+
+		await help.run(a_message, obj_list)
 
 '''
-@pytest.mark.asyncio
-async def test_run_cheer():
-	help = Help()
-	assert await help.runCheer('potato', 0) == True
-
 @pytest.mark.asyncio
 async def test_stop():
 	help = Help()
@@ -89,3 +99,6 @@ async def test_run_help_command():
 
 	await help.run(a_message, obj_list)
 '''
+
+if __name__ == '__main__':
+	unittest.main()
