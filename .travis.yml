@@ -4,8 +4,9 @@ language: python
 python: 3.8
 
 install:
-  - apt-get install docker -y
-  - apt-get install docker.io -y
+  - sudo apt-get update
+  - sudo apt-get install docker -y
+  - sudo apt-get install docker.io -y
   - mkdir -p ~/.docker/cli-plugins
   - mv buildx ~/.docker/cli-plugins/docker-buildx
   - docker buildx version
