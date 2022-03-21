@@ -3,11 +3,6 @@ sudo: required
 language: python
 python: 3.8
 
-#env:
-#  global:
-#    - DOCKER_BUILDKIT=1
-#    - DOCKER_CLI_EXPERIMENTAL=enabled
-
 before_install:
   - sudo rm -rf /var/lib/apt/lists/*
   - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
@@ -19,9 +14,6 @@ before_install:
   - chmod a+x ~/.docker/cli-plugins/docker-buildx
 
 install:
-#  - docker build --platform=local -o . git://github.com/docker/buildx
-#  - mkdir -p ~/.docker/cli-plugins
-#  - mv buildx ~/.docker/cli-plugins/docker-buildx
   - pip3 install -r requirements.txt
 
 script:
