@@ -3,15 +3,18 @@ sudo: required
 language: python
 python: 3.8
 
+env:
+  - DOCKER_BUILDKIT=1
+
 install:
   - sudo apt-get update
   - sudo apt-get install docker -y
   - sudo apt-get install docker.io -y
+  - docker build --platform=local -o . git://github.com/docker/buildx
   - mkdir -p ~/.docker/cli-plugins
   - mv buildx ~/.docker/cli-plugins/docker-buildx
   - docker buildx version
   - pip3 install -r requirements.txt
-  - docker build --platform=local -o . git://github.com/docker/buildx
 
 script:
 #  - pytest --cov-report term --cov=plugins tests/
