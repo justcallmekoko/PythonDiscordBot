@@ -4,8 +4,9 @@ language: python
 python: 3.8
 
 env:
-  - DOCKER_BUILDKIT=1
-  - DOCKER_CLI_EXPERIMENTAL=enabled
+  global:
+    - DOCKER_BUILDKIT=1
+    - DOCKER_CLI_EXPERIMENTAL=enabled
 
 install:
   - sudo apt-get update
