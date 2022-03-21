@@ -63,7 +63,7 @@ class Giveaway():
 		return False
 	
 	async def runCheer(self, user, amount):
-		return
+		return True
 
 	@loop(seconds = 1)
 	async def loop_func(self):
@@ -76,7 +76,7 @@ class Giveaway():
 					# Check if user is blacklisted
 					for role in user.roles:
 						if str(role.name) in self.blacklisted:
-							return
+							return True
 
 					# Check if user has the required roles
 					role_found = False
@@ -86,7 +86,7 @@ class Giveaway():
 							break
 
 					if not role_found:
-						return
+						return False
 
 					if (real_member not in self.users) and (self.looping):
 						print('Adding ' + str(real_member) + ' to giveaway list')
@@ -139,7 +139,7 @@ class Giveaway():
 #				await message.channel.send(embed=embed)
 			else:
 				await message.channel.send(message.author.mention + ' There are no giveaways running')
-			return
+			return True
 
 		command = seg[1]
 
@@ -178,9 +178,13 @@ class Giveaway():
 			embed.add_field(name='Winners', value='``` ```', inline=False)
 
 			local_post_channel = await self.get_post_channel(message)
+			if local_post_channel == None:
+				return False
 			self.giveaway_message = await local_post_channel.send(embed=embed)
 			self.looping = True
 			self.loop_func.start()
+
+			return self.giveaway_name
 
 		# Stoping giveaway
 		if command == 'stop':
@@ -276,7 +280,7 @@ class Giveaway():
 				await self.update_giveaway_embed()
 
 #			await message.channel.send(embed=embed)
-		return
+		return True
 
 	async def stop(self, message):
 		self.looping = False
