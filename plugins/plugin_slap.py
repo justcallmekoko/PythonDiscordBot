@@ -41,24 +41,16 @@ class Slap():
 		return True
 
 	async def run(self, message, obj_list):
-		target_user = str(message.content).split(' ')[1]
-
-		# Search for the user
-		found = False
-
-		for member in message.guild.members:
-			if str(member.display_name) == target_user:
-				found = True
-				real_member = member
-				break
-
-		# Did not find the user
-		if not found:
-			await message.channel.send(message.author.mention + ', The user was not found')
+		if len(message.mentions) <= 0:
 			return False
-		# Found the user
-		else:
-			await message.channel.send(message.author.mention + ' just slapped ' + real_member.mention)
+			
+		new_msg = message.author.mention + ' just slapped '
+		for member in message.mentions:
+			new_msg = new_msg + member.mention + ', '
+
+		new_msg = new_msg[:-2]
+
+		await message.channel.send(new_msg)
 
 		return True
 
