@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from discord.ext.tasks import loop
 from requests import get
 
-class Template():
+class Slap():
 	name = '!slap'
 
 	desc = 'Slap someone on the server'
@@ -59,7 +59,7 @@ class Template():
 		# Found the user
 		else:
 			await message.channel.send(message.author.mention + ' just slapped ' + real_member.mention)
-			
+
 		return True
 
 	async def stop(self, message):
