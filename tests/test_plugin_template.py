@@ -4,35 +4,10 @@ import sys
 import unittest
 sys.dont_write_bytecode = True
 sys.path.append(os.path.abspath('plugins'))
+sys.path.append(os.path.abspath('tests'))
 
 from plugin_template import Template
-
-class plugin():
-	name = None
-	desc = None
-	synt = None
-
-	def __init__(self, name, desc, synt):
-		self.name = name
-		self.desc = desc
-		self.synt = synt
-
-class message():
-	content = None
-	channel = None
-	embed = None
-
-	def __init__(self, content, channel):
-			self.content = content
-			self.channel = channel
-			channel = None
-
-class channel():
-	def __init__(self):
-		return
-
-	async def send(self, content=None, embed=None):
-		return True
+from injectables.discord_dependencies import *
 
 class TestTemplate(unittest.TestCase):
 

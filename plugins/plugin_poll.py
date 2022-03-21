@@ -227,9 +227,9 @@ class Poll():
 			# Check permissions
 			role_found = False
 			for role in message.author.roles:
-	                        if str(role.name) in self.service_roles:
-	                                role_found = True
-	                                break
+				if str(role.name) in self.service_roles:
+					role_found = True
+					break
 			# Only do service stuff if user has role
 			if role_found:
 				# Service is being started
