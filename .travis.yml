@@ -3,15 +3,16 @@ sudo: required
 language: python
 python: 3.8
 
-env:
-  global:
-    - DOCKER_BUILDKIT=1
-    - DOCKER_CLI_EXPERIMENTAL=enabled
+#env:
+#  global:
+#    - DOCKER_BUILDKIT=1
+#    - DOCKER_CLI_EXPERIMENTAL=enabled
 
 install:
-  - sudo apt-get update
+  - sudo apt update
 #  - sudo apt-get install docker -y
-  - sudo apt-get install docker.io -y
+  - sudo apt install docker.io -y
+  - export DOCKER_CLI_EXPERIMENTAL=enabled
 #  - docker build --platform=local -o . git://github.com/docker/buildx
 #  - mkdir -p ~/.docker/cli-plugins
 #  - mv buildx ~/.docker/cli-plugins/docker-buildx
