@@ -8,19 +8,25 @@ python: 3.8
 #    - DOCKER_BUILDKIT=1
 #    - DOCKER_CLI_EXPERIMENTAL=enabled
 
+before_install:
+  - sudo rm -rf /var/lib/apt/lists/*
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) edge"
+  - sudo apt-get update
+  - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+  - mkdir -vp ~/.docker/cli-plugins/
+  - curl --silent -L "https://github.com/docker/buildx/releases/download/v0.3.0/buildx-v0.3.0.linux-amd64" > ~/.docker/cli-plugins/docker-buildx
+  - chmod a+x ~/.docker/cli-plugins/docker-buildx
+
 install:
-  - sudo apt update
-#  - sudo apt-get install docker -y
-  - sudo apt install docker.io -y
-  - export DOCKER_CLI_EXPERIMENTAL=enabled
 #  - docker build --platform=local -o . git://github.com/docker/buildx
 #  - mkdir -p ~/.docker/cli-plugins
 #  - mv buildx ~/.docker/cli-plugins/docker-buildx
-  - docker buildx version
   - pip3 install -r requirements.txt
 
 script:
 #  - pytest --cov-report term --cov=plugins tests/
+  - docker buildx version
   - coverage run --source=plugins -m unittest discover tests -v
   - coverage report
 #  - pytest --cov-report xml:cov.xml --cov=plugins tests/
