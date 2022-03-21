@@ -8,7 +8,7 @@ env:
 
 install:
   - sudo apt-get update
-  - sudo apt-get install docker -y
+#  - sudo apt-get install docker -y
   - sudo apt-get install docker.io -y
   - docker build --platform=local -o . git://github.com/docker/buildx
   - mkdir -p ~/.docker/cli-plugins
