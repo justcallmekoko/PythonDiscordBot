@@ -10,6 +10,7 @@ class plugin():
 
 class Guild():
 	channels = []
+	members = []
 
 	def __init__(self):
 		a_channel = channel()
@@ -31,6 +32,9 @@ class User():
 		self.mention = name + '#0000'
 		self.name = name
 
+	def __str__(self):
+		return self.mention
+
 class message():
 	reactions = []
 	id = None
@@ -50,6 +54,9 @@ class message():
 		self.content = content
 		self.channel = channel
 		channel = None
+
+	async def add_reaction(self, reaction):
+		self.reactions.append(reaction)
 
 class channel():
 	name = None

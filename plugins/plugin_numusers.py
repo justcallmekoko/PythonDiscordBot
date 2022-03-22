@@ -38,11 +38,12 @@ class Numusers():
 		return False
 	
 	async def runCheer(self, user, amount):
-		return
+		return True
 
 	async def run(self, message, obj_list):
 		num_users = len(message.guild.members)
 		await message.channel.send(message.author.mention + ', There are ' + str(num_users) + ' users on the server')
-
+		return True
+		
 	async def stop(self, message):
 		self.looping = False

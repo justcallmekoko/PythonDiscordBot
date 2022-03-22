@@ -38,7 +38,7 @@ class OzzyStats():
 		return False
 	
 	async def runCheer(self, user, amount):
-		return
+		return True
 
 	async def run(self, message, obj_list):
 		# Create fresh stat file
@@ -59,6 +59,7 @@ class OzzyStats():
 		f.close()
 
 		await message.channel.send(message.author.mention + ', Ozzy has been pet ' + str(json_data['pets']) + ' time(s)')
-
+		return True
+		
 	async def stop(self, message):
 		self.looping = False

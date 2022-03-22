@@ -5,12 +5,11 @@ sys.dont_write_bytecode = True
 sys.path.append(os.path.abspath('plugins'))
 sys.path.append(os.path.abspath('tests'))
 
-from plugin_template import Template
+from plugin_ozzy_stats import OzzyStats
 from injectables.discord_dependencies import *
 
-class TestTemplate(unittest.TestCase):
-	obj = Template()
-
+class TestOzzyStats(unittest.TestCase):
+	obj = OzzyStats()
 	def test_check_bits(self):
 		assert self.obj.checkBits(0) == False
 
@@ -21,19 +20,25 @@ class TestTemplate(unittest.TestCase):
 		assert self.obj.checkCat('arrow') == False
 
 class TestAsyncMethods(unittest.IsolatedAsyncioTestCase):
-	obj = Template()
-	
-	a_channel = channel()
-	a_message = message('!help', a_channel)
-	a_plugin = plugin('!help', 'help menu', '!help')
-
-	obj_list = [a_plugin]
+	obj = OzzyStats()
 
 	async def test_run_cheer(self):
 		assert await self.obj.runCheer('potato', 0) == True
 
-	async def test_run(self):
-		assert await self.obj.run('potato', 0) == True
+	async def test_run_file_not_exist(self):
+		a_channel = channel()
+		a_message = message('!ozzystats', a_channel)
+		a_plugin = plugin('!help', 'help menu', '!help')
+
+		if os.path.isfile('ozzystats.json'):
+			os.remove('ozzystats.json')
+
+		obj_list = [a_plugin]
+
+		assert await self.obj.run(a_message, obj_list) == True
+
+		if os.path.isfile('ozzystats.json'):
+			os.remove('ozzystats.json')
 
 	async def test_stop(self):
 		await self.obj.stop('potato')

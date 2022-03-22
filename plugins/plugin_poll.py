@@ -74,7 +74,7 @@ class Poll():
 		return False
 	
 	async def runCheer(self, user, amount):
-		return
+		return True
 
 	async def update_poll_embed(self, msg, embed, seconds_diff):
 		# Convert seconds to datetime
@@ -203,7 +203,7 @@ class Poll():
 		for role in message.author.roles:
 			if str(role.name) in self.blacklisted:
 				await message.channel.send(message.author.mention + ', Users with the role, `' + str(role.name) + '` are not permitted to run this command')
-				return
+				return False
 
 		role_found = False
 		for role in message.author.roles:
@@ -213,13 +213,13 @@ class Poll():
 
 		if not role_found:
 			await message.channel.send(message.author.mention + ', Users require one of these roles to run this command.\n`' + str(self.groups) + '`')
-			return
+			return False
 
 		cmd = str(message.content)
 		seg = str(message.content).split(' ')
 		if len(seg) < 1:
 			await message.channel.send(message.author.mention + '`' + str(message.content) + '` is not the proper syntax')
-			return
+			return False
 
 
 		# Do service stuff
@@ -238,22 +238,24 @@ class Poll():
 						self.looping = True
 						await message.channel.send(message.author.mention + ' Starting ' + str(self.name))
 						self.loop_func.start()
-						return
+						return True
 				if str(seg[1]) == 'stop':
 					if self.looping:
 						self.looping = False
 						await message.channel.send(message.author.mention + ' Stopping ' + str(self.name))
 						self.loop_func.stop()
-						return
+						return True
+					else:
+						return False
 			else:
-				return
+				return False
 
 		elif len(seg) == 1:
 			if self.looping:
 				await message.channel.send(message.author.mention + ' ' + str(self.name) + ' is running')
 			else:
 				await message.channel.send(message.author.mention + ' ' + str(self.name) + ' is not running')
-			return
+			return True
 
 		# Start the pole here
 		test_name = ''
@@ -287,7 +289,7 @@ class Poll():
 
 			await msg.add_reaction(self.no_vote)
 
-		return
+		return True
 
 	async def stop(self, message):
 		self.looping = False
