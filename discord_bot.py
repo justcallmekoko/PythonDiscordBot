@@ -32,6 +32,8 @@ GUILD = os.getenv('DISCORD_GUILD')
 RCONIP = os.getenv('RCON_IP')
 PASSW = os.getenv('RCON_PASSWORD')
 
+# Potato
+
 global obj_list
 global channels_list
 obj_list = []
