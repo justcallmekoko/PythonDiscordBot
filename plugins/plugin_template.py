@@ -119,7 +119,7 @@ class Template():
 		arg = self.getFirstArg(message)
 
 		if arg == 'config':
-			message.channel.send(message.author.mention + str(self.guild_confs[0].keys()))
+			await message.channel.send(message.author.mention + str(self.guild_confs[0].keys()))
 
 		return True
 
