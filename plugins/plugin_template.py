@@ -1,5 +1,6 @@
 import os
 import json
+import discord
 from dotenv import load_dotenv
 from discord.ext.tasks import loop
 from requests import get
@@ -119,7 +120,15 @@ class Template():
 		arg = self.getFirstArg(message)
 
 		if arg == 'config':
-			await message.channel.send(message.author.mention + str(self.guild_confs[0].keys()))
+			embed = discord.Embed(title=self.name,
+				color=discord.Color.blue())
+			for key in self.guild_confs[0].keys():
+				if isinstance(self.guild_confs[0][key], str):
+					embed.add_field(name=str(key), value='set', inline=False)
+				else:
+					embed.add_field(name=str(key), value='add/remove', inline=False)
+			
+			await message.channel.send(embed=embed)
 
 		return True
 
