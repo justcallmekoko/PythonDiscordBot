@@ -5,7 +5,7 @@ from discord.ext.tasks import loop
 from requests import get
 
 class Template():
-	conf_path = os.path.join(os.path.dirname(__file__, 'configs')
+	conf_path = os.path.join(os.path.dirname(__file__), 'configs')
 
 	name = '!template'
 
