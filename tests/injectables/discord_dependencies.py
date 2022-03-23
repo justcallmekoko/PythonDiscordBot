@@ -1,3 +1,5 @@
+from datetime import datetime
+
 class plugin():
 	name = None
 	desc = None
@@ -11,6 +13,7 @@ class plugin():
 class Guild():
 	channels = []
 	members = []
+	member_count = 0
 
 	def __init__(self):
 		a_channel = channel()
@@ -35,6 +38,14 @@ class User():
 	def __str__(self):
 		return self.mention
 
+class Reaction():
+	count = 0
+	emoji = None
+
+	def __init__(self, emoji):
+		self.emoji = emoji
+		self.count = self.count + 1
+
 class message():
 	reactions = []
 	id = None
@@ -43,6 +54,7 @@ class message():
 	embed = None
 	author = None
 	guild = None
+	created_at = None
 
 	def __init__(self, content, channel):
 		id = 0
@@ -53,10 +65,14 @@ class message():
 		self.author = user
 		self.content = content
 		self.channel = channel
+		self.created_at = datetime.now()
 		channel = None
 
 	async def add_reaction(self, reaction):
 		self.reactions.append(reaction)
+
+	async def edit(self, embed=None):
+		self.embed = embed
 
 class channel():
 	name = None

@@ -116,6 +116,8 @@ class Poll():
 
 		await msg.edit(embed=embed)
 
+		return True
+
 	async def close_poll_embed(self, msg, embed):
 		for i in range(0, len(embed.fields)):
 			if embed.fields[i].name=='Status':
@@ -150,6 +152,8 @@ class Poll():
 
 		await msg.edit(embed=embed)
 
+		return True
+
 	async def check_poll_embed(self, msg, embed):
 		for field in embed.fields:
 			if (field.name == 'Status') and (field.value == '```OPEN```'):
@@ -174,6 +178,7 @@ class Poll():
 					print(str(now) + ' - ' + str(msg_time))
 					print('Found open Poll that needs to be closed: ' + str(message_hist_sec))
 					await self.close_poll_embed(msg, embed)
+		return True
 
 	@loop(seconds = 3)
 	async def loop_func(self):
