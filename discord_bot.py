@@ -122,8 +122,8 @@ class CustomClient(discord.Client):
 
 		# Get all guilds
 		for guild in client.guilds:
-                        if guild.name == GUILD:
-                                break
+			if guild.name == GUILD:
+				break
 
 		# Ignore bot's own messages
 		if message.author == client.user:
@@ -146,7 +146,7 @@ class CustomClient(discord.Client):
 
 		# Work response
 		if message.content == '!muster':
-                        await message.channel.send(message.author.mention + ' Here')
+			await message.channel.send(message.author.mention + ' Here')
 
 		# Check plugins
 		found = False
