@@ -80,7 +80,7 @@ class Template():
 					the_config['standard_groups'] = ['@everyone']
 					the_config['admin_groups'] = []
 					the_config['blacklisted'] = []
-					the_config['post_channel'] = None
+					the_config['post_channel'] = ''
 					json_data['plugins'].append(the_config)
 					with open(full_conf_file, 'w') as f:
 						json.dump(json_data, f)
