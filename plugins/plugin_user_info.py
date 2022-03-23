@@ -73,6 +73,7 @@ class UserInfo():
 			for perm in real_member.permissions_in(message.channel):
 				if perm[1]:
 					member_perms = member_perms + str(perm[0]) + '\n'
+
 #			await message.channel.send(message.author.mention + ', ' + real_member.mention + ' joined ' + str(join_days) + ' day(s) ago')
 			embed.add_field(name="Username", value='`' + str(real_member.name) + '#' + str(real_member.discriminator) + '`', inline=True)
 			embed.add_field(name="User ID", value='`' + str(real_member.id) + '`', inline=True)
