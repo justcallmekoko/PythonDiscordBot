@@ -70,6 +70,7 @@ class Template():
 						the_config = plugin
 						break
 
+				# Plugin config does not exist. Create one
 				if the_config == None:
 					print('Could not find plugin configuration. Creating...')
 					the_config = {}
@@ -101,12 +102,25 @@ class Template():
 	
 	def checkBits(self, bits):
 		return False
+
+	def getFirstArg(self, message):
+		cmd = str(message.content)
+		seg = str(message.content).split(' ')
+
+		if len(seg) > 1:
+			return seg[1]
+		else:
+			return None
 	
 	async def runCheer(self, user, amount):
 		return True
 
 	async def run(self, message, obj_list):
-		print('User ran template')
+		arg = self.getFirstArg(message)
+
+		if arg == 'config':
+			message.channel.send(message.author.mention + str(self.guild_confs[0].keys()))
+
 		return True
 
 	async def stop(self, message):
