@@ -4,8 +4,28 @@ from dotenv import load_dotenv
 from discord.ext.tasks import loop
 from requests import get
 
+class TargGuild():
+	name = None
+	groups = []
+	announcement_channel = None
+
+	def __init__(self, name):
+		self.name = name
+
+	def has_perms(self, message):
+		user_groups = []
+
+		for role in message.author.roles:
+			user_groups.append(role.name)
+
+		if isinstance(self.groups, str):
+			if self.group in user_groups:
+				return True
+			else:
+				return False
+
 class Template():
-	conf_path = os.path.join(os.path.dirname(__file__, 'configs')
+	conf_path = os.path.join(os.path.dirname(__file__), 'configs')
 
 	name = '!template'
 
@@ -19,6 +39,8 @@ class Template():
 
 	looping = False
 
+	guild_confs = []
+
 	# Server configurable
 
 	group = 'Owner'
@@ -31,6 +53,16 @@ class Template():
 	
 	def __init__(self, client = None):
 		self.client = client
+
+		for entity in os.listdir(self.conf_path):
+			if os.path.isfile(os.path.join(self.conf_path, entity)):
+				full_conf_file = os.path.join(self.conf_path, entity)
+				print(__file__ + ': Loading conf...' + str(entity))
+				guild_name = entity.split('_')[0] + entity.split('_')[1]
+				targ_guild = TargGuild(guild_name)
+				self.guild_confs.append(targ_guild)
+
+
 
 
 	def checkCat(self, check_cat):
