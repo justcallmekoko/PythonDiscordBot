@@ -85,10 +85,11 @@ class Template():
 
 				self.guild_confs.append(the_config)
 
-				print('Configs Loaded:')
-				for config in self.guild_confs:
-					print('\t' + config['name'] + ': ' + config['guild'])
+		print('\n\nConfigs Loaded:')
+		for config in self.guild_confs:
+			print('\t' + config['name'] + ': ' + config['guild'])
 
+#			print(json.dumps(config, indent=4, sort_keys=True))
 
 
 
