@@ -7,7 +7,8 @@ from requests import get
 class TargGuild():
 	name = None
 	groups = []
-	announcement_channel = None
+	blacklist = []
+	post_channel = None
 
 	def __init__(self, name):
 		self.name = name
@@ -43,7 +44,7 @@ class Template():
 
 	# Server configurable
 
-	group = 'Owner'
+	group = '@everyone'
 
 	admin = False
 	
@@ -55,7 +56,7 @@ class Template():
 		self.client = client
 
 		for entity in os.listdir(self.conf_path):
-			if os.path.isfile(os.path.join(self.conf_path, entity)):
+			if (os.path.isfile(os.path.join(self.conf_path, entity))) and (entity.endswith('_conf.json')):
 				full_conf_file = os.path.join(self.conf_path, entity)
 				print(__file__ + ': Loading conf...' + str(entity))
 				guild_name = entity.split('_')[0] + entity.split('_')[1]
@@ -78,6 +79,7 @@ class Template():
 		return True
 
 	async def run(self, message, obj_list):
+		print('User ran template')
 		return True
 
 	async def stop(self, message):

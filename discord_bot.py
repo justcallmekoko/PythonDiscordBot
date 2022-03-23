@@ -201,7 +201,7 @@ intents = discord.Intents.all()
 client = CustomClient(intents)
 
 for loader, mod_name, ispkg in modules:
-	if mod_name not in sys.modules:
+	if (mod_name not in sys.modules) and (mod_name.startswith('plugin_')):
 
 		loaded_mod = __import__(path+"."+mod_name, fromlist=[mod_name])
 
