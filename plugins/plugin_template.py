@@ -6,7 +6,8 @@ from requests import get
 
 class TargGuild():
 	name = None
-	groups = []
+	standard_groups = []
+	admin_groups = []
 	blacklist = []
 	post_channel = None
 
@@ -55,10 +56,27 @@ class Template():
 	def __init__(self, client = None):
 		self.client = client
 
+		# Get each guild configuration
 		for entity in os.listdir(self.conf_path):
 			if (os.path.isfile(os.path.join(self.conf_path, entity))) and (entity.endswith('_conf.json')):
+				# Open guild configuration file
 				full_conf_file = os.path.join(self.conf_path, entity)
 				print(__file__ + ': Loading conf...' + str(entity))
+
+				# Try to get json stuff
+				f = open(full_conf_file)
+				json_data = json.load(f)
+				f.close()
+
+				found = True
+				# If guilds json doesn't exist, write the key
+				if 'guilds' not in json_data:
+					data = {}
+					data['guilds'] = []
+					with open(full_conf_file, 'w') as f:
+						json.dump(data, f)
+
+				# Create guild config object
 				guild_name = entity.split('_')[0] + entity.split('_')[1]
 				targ_guild = TargGuild(guild_name)
 				self.guild_confs.append(targ_guild)
