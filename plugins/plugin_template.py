@@ -4,28 +4,6 @@ from dotenv import load_dotenv
 from discord.ext.tasks import loop
 from requests import get
 
-class TargGuild():
-	name = None
-	standard_groups = []
-	admin_groups = []
-	blacklist = []
-	post_channel = None
-
-	def __init__(self, name):
-		self.name = name
-
-	def has_perms(self, message):
-		user_groups = []
-
-		for role in message.author.roles:
-			user_groups.append(role.name)
-
-		if isinstance(self.groups, str):
-			if self.group in user_groups:
-				return True
-			else:
-				return False
-
 class Template():
 	conf_path = os.path.join(os.path.dirname(__file__), 'configs')
 
@@ -59,9 +37,12 @@ class Template():
 		# Get each guild configuration
 		for entity in os.listdir(self.conf_path):
 			if (os.path.isfile(os.path.join(self.conf_path, entity))) and (entity.endswith('_conf.json')):
+
 				# Open guild configuration file
 				full_conf_file = os.path.join(self.conf_path, entity)
 				print(__file__ + ': Loading conf...' + str(entity))
+
+				guild_name = entity.split('_')[0] + entity.split('_')[1]
 
 				# Try to get json stuff
 				f = open(full_conf_file)
@@ -91,20 +72,22 @@ class Template():
 
 				if the_config == None:
 					print('Could not find plugin configuration. Creating...')
-					data = {}
-					data['name'] = __file__
-					data['standard_groups'] = ['@everyone']
-					data['admin_groups'] = []
-					data['blacklisted'] = []
-					data['post_channel'] = None
-					json_data['plugins'].append(data)
+					the_config = {}
+					the_config['name'] = __file__
+					the_config['guild'] = guild_name
+					the_config['standard_groups'] = ['@everyone']
+					the_config['admin_groups'] = []
+					the_config['blacklisted'] = []
+					the_config['post_channel'] = None
+					json_data['plugins'].append(the_config)
 					with open(full_conf_file, 'w') as f:
 						json.dump(json_data, f)
 
-				# Create guild config object
-				guild_name = entity.split('_')[0] + entity.split('_')[1]
-				targ_guild = TargGuild(guild_name)
-				self.guild_confs.append(targ_guild)
+				self.guild_confs.append(the_config)
+
+				print('Configs Loaded:')
+				for config in self.guild_confs:
+					print('\t' + config['name'] + ': ' + config['guild'])
 
 
 
