@@ -47,6 +47,8 @@ class CustomClient(discord.Client):
 	global members_list
 	global channels_list
 
+	conf_path = os.path.join(os.path.dirname(__file__), "plugins/configs")
+
 	members_list = []
 
 	def __init__(self, discord_intents: discord.Intents):
@@ -59,35 +61,42 @@ class CustomClient(discord.Client):
 		print (f'{self.user} has connected to Discord!')
 
 		for guild in client.guilds:
-			if guild.name == GUILD:
-				break
+#			if guild.name == GUILD:
+#				break
 
-		print(
-			f'\n{client.user} is connected to the following guild:\n'
-			f'{guild.name}(id: {guild.id})\n'
-		)
+			print(
+				f'\n{client.user} is connected to the following guild:\n'
+				f'{guild.name}(id: {guild.id})\n'
+			)
 
-		print('Member count: ' + str(guild.member_count))
+			file_name = str(guild.name) + '_conf.json'
 
-		for member in guild.members:
-			members_list.append(member.name)
+			if not os.path.isfile(os.path.join(self.conf_path, file_name)):
+				print('Guild configuration file not found. Creating...')
+				with open(os.path.join(self.conf_path, file_name), 'w'):
+					pass
 
-		print('len(members_list): ' + str(len(members_list)))
+			print('Member count: ' + str(guild.member_count))
 
-		print ('Guild Roles:')
-		for role in guild.roles:
-			print('\t' + role.name)
+			for member in guild.members:
+				members_list.append(member.name)
+
+			print('len(members_list): ' + str(len(members_list)))
+
+			print ('Guild Roles:')
+			for role in guild.roles:
+				print('\t' + role.name)
 
 
-		print ()
+			print ()
 
-		print('Guild text channels:')
-		for channel in guild.channels:
-			if str(channel.type) == 'text':
-				channels_list.append(channel)
-				print('\t' + str(channel.name))
+			print('Guild text channels:')
+			for channel in guild.channels:
+				if str(channel.type) == 'text':
+					channels_list.append(channel)
+					print('\t' + str(channel.name))
 
-		print ()
+			print ()
 
 		print('Plugins loaded:')
 		for obj in obj_list:

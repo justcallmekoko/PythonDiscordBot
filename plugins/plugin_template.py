@@ -5,13 +5,21 @@ from discord.ext.tasks import loop
 from requests import get
 
 class Template():
+	conf_path = os.path.join(os.path.dirname(__file__, 'configs')
+
 	name = '!template'
 
 	desc = 'This does nothing. Developer only'
 
 	synt = '!template'
 
+	is_service = False
+
+	client = None
+
 	looping = False
+
+	# Server configurable
 
 	group = 'Owner'
 
@@ -21,12 +29,9 @@ class Template():
 	
 	cat = 'admin'
 	
-	is_service = False
-
-	client = None
-
 	def __init__(self, client = None):
 		self.client = client
+
 
 	def checkCat(self, check_cat):
 		if self.cat == check_cat:

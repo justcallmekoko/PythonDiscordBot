@@ -1,4 +1,5 @@
 .env
+*_conf.json
 montystats.json
 ozzystats.json
 users.txt
