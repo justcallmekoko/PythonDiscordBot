@@ -65,16 +65,41 @@ class Template():
 
 				# Try to get json stuff
 				f = open(full_conf_file)
-				json_data = json.load(f)
+				try:
+					json_data = json.load(f)
+				except:
+					json_data = {}
 				f.close()
 
-				found = True
-				# If guilds json doesn't exist, write the key
-				if 'guilds' not in json_data:
+				# If plugins json doesn't exist, write the key
+				if 'plugins' not in json_data:
+					print('JSON config does not exist. Creating...')
 					data = {}
-					data['guilds'] = []
+					data['plugins'] = []
 					with open(full_conf_file, 'w') as f:
 						json.dump(data, f)
+
+				# Get plugin configuration
+				with open(full_conf_file) as f:
+					json_data = json.load(f)
+
+				the_config = None
+				for plugin in json_data['plugins']:
+					if plugin['name'] == __file__:
+						the_config = plugin
+						break
+
+				if the_config == None:
+					print('Could not find plugin configuration. Creating...')
+					data = {}
+					data['name'] = __file__
+					data['standard_groups'] = ['@everyone']
+					data['admin_groups'] = []
+					data['blacklisted'] = []
+					data['post_channel'] = None
+					json_data['plugins'].append(data)
+					with open(full_conf_file, 'w') as f:
+						json.dump(json_data, f)
 
 				# Create guild config object
 				guild_name = entity.split('_')[0] + entity.split('_')[1]
