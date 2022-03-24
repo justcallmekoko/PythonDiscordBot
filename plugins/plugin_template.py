@@ -127,6 +127,64 @@ class Template():
 
 				print(json.dumps(new_json, indent=4, sort_keys=True))
 
+	async def runConfig(self, message, arg):
+		if arg[1] == 'config':
+			embed = discord.Embed(title=self.name,
+				color=discord.Color.blue())
+			for key in self.guild_confs[0].keys():
+				if isinstance(self.guild_confs[0][key], str):
+					embed.add_field(name=str(key), value='set/get', inline=False)
+				else:
+					embed.add_field(name=str(key), value='add/remove/get', inline=False)
+			
+			await message.channel.send(embed=embed)
+			return True
+
+		elif arg[1] == 'get':
+			embed = discord.Embed(title=self.name,
+				color=discord.Color.blue())
+
+			the_conf = None
+			for conf in self.guild_confs:
+				if conf['guild'] == message.guild.name + str(message.guild.id):
+					the_conf = conf
+					break
+
+			if the_conf != None:
+				if str(arg[2]) in the_conf:
+					embed.add_field(name=str(arg[2]), value=str(the_conf[str(arg[2])]), inline=False)
+				else:
+					embed.add_field(name=str(arg[2]), value='Not Found', inline=False)
+
+			await message.channel.send(embed=embed)
+			return True
+
+		elif arg[1] == 'set':
+			embed = discord.Embed(title=self.name,
+				color=discord.Color.blue())
+
+			the_conf = None
+			for conf in self.guild_confs:
+				if conf['guild'] == message.guild.name + str(message.guild.id):
+					the_conf = conf
+					break
+
+			if the_conf != None:
+				if str(arg[2]) in the_conf:
+					the_conf[str(arg[2])] = arg[3]
+
+			for conf in self.guild_confs:
+				if conf['guild'] == message.guild.name + str(message.guild.id):
+					conf = the_conf
+					print(json.dumps(conf, indent=4, sort_keys=True))
+
+			self.saveConfig(message.guild.name + '_' + str(message.guild.id))
+
+			await message.channel.send(embed=embed)
+			return True
+
+		return False
+
 
 	def getArgs(self, message):
 		cmd = str(message.content)
@@ -152,58 +210,10 @@ class Template():
 	async def run(self, message, obj_list):
 		arg = self.getArgs(message)
 
+		# Check for config stuff
 		if arg != None:
-			if arg[1] == 'config':
-				embed = discord.Embed(title=self.name,
-					color=discord.Color.blue())
-				for key in self.guild_confs[0].keys():
-					if isinstance(self.guild_confs[0][key], str):
-						embed.add_field(name=str(key), value='set/get', inline=False)
-					else:
-						embed.add_field(name=str(key), value='add/remove/get', inline=False)
-				
-				await message.channel.send(embed=embed)
-
-			elif arg[1] == 'get':
-				embed = discord.Embed(title=self.name,
-					color=discord.Color.blue())
-
-				the_conf = None
-				for conf in self.guild_confs:
-					if conf['guild'] == message.guild.name + str(message.guild.id):
-						the_conf = conf
-						break
-
-				if the_conf != None:
-					if str(arg[2]) in the_conf:
-						embed.add_field(name=str(arg[2]), value=str(the_conf[str(arg[2])]), inline=False)
-					else:
-						embed.add_field(name=str(arg[2]), value='Not Found', inline=False)
-
-				await message.channel.send(embed=embed)
-
-			elif arg[1] == 'set':
-				embed = discord.Embed(title=self.name,
-					color=discord.Color.blue())
-
-				the_conf = None
-				for conf in self.guild_confs:
-					if conf['guild'] == message.guild.name + str(message.guild.id):
-						the_conf = conf
-						break
-
-				if the_conf != None:
-					if str(arg[2]) in the_conf:
-						the_conf[str(arg[2])] = arg[3]
-
-				for conf in self.guild_confs:
-					if conf['guild'] == message.guild.name + str(message.guild.id):
-						conf = the_conf
-						print(json.dumps(conf, indent=4, sort_keys=True))
-
-				self.saveConfig(message.guild.name + '_' + str(message.guild.id))
-
-				await message.channel.send(embed=embed)
+			if await self.runConfig(message, arg):
+				return True
 
 		return True
 
