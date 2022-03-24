@@ -35,14 +35,15 @@ class Poop():
 			return False
 	
 	def checkBits(self, bits):
+		# This will be deleted soon
 		return False
 	
 	async def runCheer(self, user, amount):
-		return
+		return True
 
 	async def run(self, message, obj_list):
 		await message.channel.send(message.author.mention + ' just pooped')
-		return
+		return True
 
 	async def stop(self, message):
 		self.looping = False
