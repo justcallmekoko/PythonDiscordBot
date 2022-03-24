@@ -99,6 +99,8 @@ class Template():
 		for entity in os.listdir(self.conf_path):
 			if (os.path.isfile(os.path.join(self.conf_path, entity))) and (entity == str(targ_guild) + '_conf.json'):
 
+				print('Found target conf file to save')
+
 				full_conf_file = os.path.join(self.conf_path, entity)
 
 				# Get plugin configuration
@@ -106,13 +108,25 @@ class Template():
 					json_data = json.load(f)
 
 				
-				for that_config in json_data['plugins']:
-					for this_config in self.guild_confs:
-						if that_config['name'] == this_config['name']:
-							that_config = this_config
+				new_json = {}
+				new_json['plugins'] = []
 
+				for that_config in json_data['plugins']:
+					found = False
+					for this_config in self.guild_confs:
+						if (that_config['name'] == this_config['name']) and (that_config['guild'] == this_config['guild']):
+							print('Found target config to save: ' + str(that_config['name']))
+							new_json['plugins'].append(this_config)
+							found = True
+					if not found:
+						new_json['plugins'].append(that_config)
+
+				print('Writing to configuration file: ' + str(full_conf_file))
 				with open(full_conf_file, 'w') as f:
-					json.dump(json_data, f, indent=4)
+					json.dump(new_json, f, indent=4)
+
+				print(json.dumps(new_json, indent=4, sort_keys=True))
+
 
 	def getArgs(self, message):
 		cmd = str(message.content)
@@ -185,6 +199,7 @@ class Template():
 				for conf in self.guild_confs:
 					if conf['guild'] == message.guild.name + str(message.guild.id):
 						conf = the_conf
+						print(json.dumps(conf, indent=4, sort_keys=True))
 
 				self.saveConfig(message.guild.name + '_' + str(message.guild.id))
 
