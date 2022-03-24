@@ -129,13 +129,13 @@ class Template():
 
 			return False
 
-	def saveConfig(self, targ_guild):
-		for entity in os.listdir(self.conf_path):
-			if (os.path.isfile(os.path.join(self.conf_path, entity))) and (entity == str(targ_guild) + '_conf.json'):
+	def saveConfig(self, targ_guild, configs, conf_path):
+		for entity in os.listdir(conf_path):
+			if (os.path.isfile(os.path.join(conf_path, entity))) and (entity == str(targ_guild) + '_conf.json'):
 
 				#print('Found target conf file to save')
 
-				full_conf_file = os.path.join(self.conf_path, entity)
+				full_conf_file = os.path.join(conf_path, entity)
 
 				# Get plugin configuration
 				with open(full_conf_file) as f:
@@ -147,7 +147,7 @@ class Template():
 
 				for that_config in json_data['plugins']:
 					found = False
-					for this_config in self.guild_confs:
+					for this_config in configs:
 						if (that_config['name'] == this_config['name']) and (that_config['guild'] == this_config['guild']):
 							#print('Found target config to save: ' + str(that_config['name']))
 							new_json['plugins'].append(this_config)
@@ -161,11 +161,11 @@ class Template():
 
 				#print(json.dumps(new_json, indent=4, sort_keys=True))
 
-	async def runConfig(self, message, arg, configs):
+	async def runConfig(self, message, arg, configs, conf_path):
 		if arg[1] == 'config':
 			if not self.hasPerms(message, True, configs):
 				return True
-			embed = discord.Embed(title=self.name,
+			embed = discord.Embed(title=str(arg[0]),
 				color=discord.Color.blue())
 			for key in configs[0].keys():
 				if isinstance(configs[0][key], str):
@@ -179,7 +179,7 @@ class Template():
 		elif arg[1] == 'get':
 			if not self.hasPerms(message, True, configs):
 				return True
-			embed = discord.Embed(title=self.name,
+			embed = discord.Embed(title=str(arg[0]),
 				color=discord.Color.blue())
 
 			the_conf = None
@@ -200,7 +200,7 @@ class Template():
 		elif arg[1] == 'set':
 			if not self.hasPerms(message, True, configs):
 				return True
-			embed = discord.Embed(title=self.name,
+			embed = discord.Embed(title=str(arg[0]),
 				color=discord.Color.blue())
 
 			the_conf = None
@@ -218,7 +218,7 @@ class Template():
 					conf = the_conf
 					#print(json.dumps(conf, indent=4, sort_keys=True))
 
-			self.saveConfig(message.guild.name + '_' + str(message.guild.id))
+			self.saveConfig(message.guild.name + '_' + str(message.guild.id), configs, conf_path)
 
 			await message.channel.send(embed=embed)
 			return True
