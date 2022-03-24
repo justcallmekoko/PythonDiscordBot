@@ -12,7 +12,7 @@ class Template():
 
 	desc = 'This does nothing. Developer only'
 
-	synt = '!template'
+	synt = '!template [config|get <config>|set <config> <value>|add/remove <config> <value>]'
 
 	is_service = False
 
@@ -93,13 +93,41 @@ class Template():
 		for config in self.guild_confs:
 			print('\t' + config['name'] + ': ' + config['guild'])
 
-#			print(json.dumps(config, indent=4, sort_keys=True))
+	def getGuildConfig(self, message, configs):
+		guild_config_name = message.guild.name + str(message.guild.id)
+
+		for config in configs:
+			if config['guild'] == guild_config_name:
+				return config
+
+		return None
+
+	def hasPerms(self, message, admin_req, configs):
+		if admin_req:
+			for role in message.author.roles:
+				if (role.permissions.administrator):
+					return True
+			return False
+		else:
+			user_roles = []
+			for role in message.author.roles:
+				user_roles.append(role.name)
+
+			
+			config = self.getGuildConfig(message, configs)
+			for user_role in user_roles:
+				if user_role in config['standard_groups']:
+					return True
+				if user_role in config['admin_groups']:
+					return True
+
+			return False
 
 	def saveConfig(self, targ_guild):
 		for entity in os.listdir(self.conf_path):
 			if (os.path.isfile(os.path.join(self.conf_path, entity))) and (entity == str(targ_guild) + '_conf.json'):
 
-				print('Found target conf file to save')
+				#print('Found target conf file to save')
 
 				full_conf_file = os.path.join(self.conf_path, entity)
 
@@ -115,24 +143,26 @@ class Template():
 					found = False
 					for this_config in self.guild_confs:
 						if (that_config['name'] == this_config['name']) and (that_config['guild'] == this_config['guild']):
-							print('Found target config to save: ' + str(that_config['name']))
+							#print('Found target config to save: ' + str(that_config['name']))
 							new_json['plugins'].append(this_config)
 							found = True
 					if not found:
 						new_json['plugins'].append(that_config)
 
-				print('Writing to configuration file: ' + str(full_conf_file))
+				#print('Writing to configuration file: ' + str(full_conf_file))
 				with open(full_conf_file, 'w') as f:
 					json.dump(new_json, f, indent=4)
 
-				print(json.dumps(new_json, indent=4, sort_keys=True))
+				#print(json.dumps(new_json, indent=4, sort_keys=True))
 
-	async def runConfig(self, message, arg):
+	async def runConfig(self, message, arg, configs):
 		if arg[1] == 'config':
+			if not self.hasPerms(message, True, configs):
+				return True
 			embed = discord.Embed(title=self.name,
 				color=discord.Color.blue())
-			for key in self.guild_confs[0].keys():
-				if isinstance(self.guild_confs[0][key], str):
+			for key in configs[0].keys():
+				if isinstance(configs[0][key], str):
 					embed.add_field(name=str(key), value='set/get', inline=False)
 				else:
 					embed.add_field(name=str(key), value='add/remove/get', inline=False)
@@ -141,11 +171,13 @@ class Template():
 			return True
 
 		elif arg[1] == 'get':
+			if not self.hasPerms(message, True, configs):
+				return True
 			embed = discord.Embed(title=self.name,
 				color=discord.Color.blue())
 
 			the_conf = None
-			for conf in self.guild_confs:
+			for conf in configs:
 				if conf['guild'] == message.guild.name + str(message.guild.id):
 					the_conf = conf
 					break
@@ -160,11 +192,13 @@ class Template():
 			return True
 
 		elif arg[1] == 'set':
+			if not self.hasPerms(message, True, configs):
+				return True
 			embed = discord.Embed(title=self.name,
 				color=discord.Color.blue())
 
 			the_conf = None
-			for conf in self.guild_confs:
+			for conf in configs:
 				if conf['guild'] == message.guild.name + str(message.guild.id):
 					the_conf = conf
 					break
@@ -173,10 +207,10 @@ class Template():
 				if str(arg[2]) in the_conf:
 					the_conf[str(arg[2])] = arg[3]
 
-			for conf in self.guild_confs:
+			for conf in configs:
 				if conf['guild'] == message.guild.name + str(message.guild.id):
 					conf = the_conf
-					print(json.dumps(conf, indent=4, sort_keys=True))
+					#print(json.dumps(conf, indent=4, sort_keys=True))
 
 			self.saveConfig(message.guild.name + '_' + str(message.guild.id))
 
@@ -212,7 +246,7 @@ class Template():
 
 		# Check for config stuff
 		if arg != None:
-			if await self.runConfig(message, arg):
+			if await self.runConfig(message, arg, self.guild_confs):
 				return True
 
 		return True
