@@ -52,7 +52,7 @@ class Template():
 			if (os.path.isfile(os.path.join(self.conf_path, entity))) and (entity.endswith('_conf.json')):
 
 				# Load configuration if it exists
-				the_config, json_data = self.configutils.loadConfig(self.conf_path, entity)
+				the_config, json_data, full_conf_file = self.configutils.loadConfig(self.conf_path, entity)
 
 				guild_name = entity.split('_')[0] + entity.split('_')[1]
 
