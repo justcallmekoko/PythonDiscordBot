@@ -11,6 +11,8 @@ class plugin():
 		self.synt = synt
 
 class Guild():
+	name = None
+	id = None
 	channels = []
 	members = []
 	member_count = 0
@@ -18,6 +20,8 @@ class Guild():
 	def __init__(self):
 		a_channel = channel()
 		self.channels.append(a_channel)
+		self.name = 'Guild'
+		self.id = 0
 
 class Role():
 	name = None

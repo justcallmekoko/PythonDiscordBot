@@ -100,7 +100,7 @@ class Template():
 			if config['guild'] == guild_config_name:
 				return config
 
-		return None
+		return {}
 
 	def hasPerms(self, message, admin_req, configs):
 		if admin_req:
@@ -115,6 +115,11 @@ class Template():
 
 			
 			config = self.getGuildConfig(message, configs)
+			if 'standard_groups' not in config:
+				return False
+			if 'admin_groups' not in config:
+				return False
+
 			for user_role in user_roles:
 				if user_role in config['standard_groups']:
 					return True
@@ -248,6 +253,10 @@ class Template():
 		if arg != None:
 			if await self.runConfig(message, arg, self.guild_confs):
 				return True
+
+		if not self.hasPerms(message, False, self.guild_confs):
+			await message.channel.send(message.author.mention + ' Permission denied')
+			return False
 
 		return True
 

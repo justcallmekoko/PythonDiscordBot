@@ -33,7 +33,7 @@ class TestAsyncMethods(unittest.IsolatedAsyncioTestCase):
 		assert await self.obj.runCheer('potato', 0) == True
 
 	async def test_run(self):
-		assert await self.obj.run(self.a_message, 0) == True
+		assert await self.obj.run(self.a_message, 0) == False
 
 	async def test_stop(self):
 		await self.obj.stop('potato')
