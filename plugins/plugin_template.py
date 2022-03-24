@@ -103,10 +103,11 @@ class Template():
 		return {}
 
 	def hasPerms(self, message, admin_req, configs):
+		for role in message.author.roles:
+			if (role.permissions.administrator):
+				return True
+
 		if admin_req:
-			for role in message.author.roles:
-				if (role.permissions.administrator):
-					return True
 			return False
 		else:
 			user_roles = []
@@ -247,16 +248,16 @@ class Template():
 		return True
 
 	async def run(self, message, obj_list):
+		if not self.hasPerms(message, False, self.guild_confs):
+			await message.channel.send(message.author.mention + ' Permission denied')
+			return False
+
 		arg = self.getArgs(message)
 
 		# Check for config stuff
 		if arg != None:
 			if await self.runConfig(message, arg, self.guild_confs):
 				return True
-
-		if not self.hasPerms(message, False, self.guild_confs):
-			await message.channel.send(message.author.mention + ' Permission denied')
-			return False
 
 		return True
 

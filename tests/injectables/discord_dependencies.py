@@ -23,10 +23,19 @@ class Guild():
 		self.name = 'Guild'
 		self.id = 0
 
+class Permissions():
+	administrator = None
+
+	def __init__(self, admin):
+		self.administrator = admin
+
 class Role():
 	name = None
+	permissions = None
 
 	def __init__(self, name):
+		permissions = Permissions(True)
+		self.permissions = permissions
 		self.name = name
 
 class User():
