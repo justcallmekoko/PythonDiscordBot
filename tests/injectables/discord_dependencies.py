@@ -11,6 +11,8 @@ class plugin():
 		self.synt = synt
 
 class Guild():
+	name = None
+	id = None
 	channels = []
 	members = []
 	member_count = 0
@@ -18,11 +20,22 @@ class Guild():
 	def __init__(self):
 		a_channel = channel()
 		self.channels.append(a_channel)
+		self.name = 'Guild'
+		self.id = 0
+
+class Permissions():
+	administrator = None
+
+	def __init__(self, admin):
+		self.administrator = admin
 
 class Role():
 	name = None
+	permissions = None
 
 	def __init__(self, name):
+		permissions = Permissions(True)
+		self.permissions = permissions
 		self.name = name
 
 class User():

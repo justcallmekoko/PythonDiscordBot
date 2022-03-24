@@ -48,6 +48,7 @@ class CustomClient(discord.Client):
 	global channels_list
 
 	conf_path = os.path.join(os.path.dirname(__file__), "plugins/configs")
+	#conf_path = os.path.dirname(os.path.abspath(__file__))
 
 	members_list = []
 
@@ -69,7 +70,7 @@ class CustomClient(discord.Client):
 				f'{guild.name}(id: {guild.id})\n'
 			)
 
-			file_name = str(guild.name) + '_conf.json'
+			file_name = str(guild.name) + '_' + str(guild.id) + '_conf.json'
 
 			if not os.path.isfile(os.path.join(self.conf_path, file_name)):
 				print('Guild configuration file not found. Creating...')
@@ -121,8 +122,8 @@ class CustomClient(discord.Client):
 
 		# Get all guilds
 		for guild in client.guilds:
-                        if guild.name == GUILD:
-                                break
+			if guild.name == GUILD:
+				break
 
 		# Ignore bot's own messages
 		if message.author == client.user:
@@ -145,7 +146,7 @@ class CustomClient(discord.Client):
 
 		# Work response
 		if message.content == '!muster':
-                        await message.channel.send(message.author.mention + ' Here')
+			await message.channel.send(message.author.mention + ' Here')
 
 		# Check plugins
 		found = False
@@ -200,8 +201,8 @@ intents = discord.Intents.all()
 client = CustomClient(intents)
 
 for loader, mod_name, ispkg in modules:
-	if mod_name not in sys.modules:
-
+	if (mod_name not in sys.modules) and (mod_name.startswith('plugin_')):
+	
 		loaded_mod = __import__(path+"."+mod_name, fromlist=[mod_name])
 
 		class_name = get_class_name(mod_name)
