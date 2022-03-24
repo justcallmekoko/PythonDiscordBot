@@ -256,7 +256,7 @@ class Template():
 
 		# Check for config stuff
 		if arg != None:
-			if await self.runConfig(message, arg, self.guild_confs):
+			if await self.runConfig(message, arg, self.guild_confs, self.conf_path):
 				return True
 
 		return True
