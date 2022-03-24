@@ -83,7 +83,7 @@ class Template():
 					the_config['post_channel'] = ''
 					json_data['plugins'].append(the_config)
 					with open(full_conf_file, 'w') as f:
-						json.dump(json_data, f)
+						json.dump(json_data, f, indent=4)
 
 				self.guild_confs.append(the_config)
 
@@ -137,7 +137,7 @@ class Template():
 
 				the_conf = None
 				for conf in self.guild_confs:
-					if conf.guild == message.guild.name + str(message.guild.id):
+					if conf['guild'] == message.guild.name + str(message.guild.id):
 							the_conf = conf
 							break
 
