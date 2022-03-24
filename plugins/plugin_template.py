@@ -11,6 +11,7 @@ sys.path.append(os.path.abspath('utils'))
 from utils.config_utils import ConfigUtils
 
 class Template():
+	# Required for all plugins
 	conf_path = os.path.join(os.path.dirname(__file__), 'configs')
 
 	name = '!template'
@@ -47,41 +48,11 @@ class Template():
 
 		# Get each guild configuration
 		for entity in os.listdir(self.conf_path):
+			# Make sure the file is a config file
 			if (os.path.isfile(os.path.join(self.conf_path, entity))) and (entity.endswith('_conf.json')):
+
+				# Load configuration if it exists
 				the_config = self.configutils.loadConfig(self.conf_path, entity)
-				'''
-				# Open guild configuration file
-				full_conf_file = os.path.join(self.conf_path, entity)
-				print(__file__ + ': Loading conf...' + str(entity))
-
-				guild_name = entity.split('_')[0] + entity.split('_')[1]
-
-				# Try to get json stuff
-				f = open(full_conf_file)
-				try:
-					json_data = json.load(f)
-				except:
-					json_data = {}
-				f.close()
-
-				# If plugins json doesn't exist, write the key
-				if 'plugins' not in json_data:
-					print('JSON config does not exist. Creating...')
-					data = {}
-					data['plugins'] = []
-					with open(full_conf_file, 'w') as f:
-						json.dump(data, f)
-
-				# Get plugin configuration
-				with open(full_conf_file) as f:
-					json_data = json.load(f)
-
-				the_config = None
-				for plugin in json_data['plugins']:
-					if plugin['name'] == __file__:
-						the_config = plugin
-						break
-				'''
 
 				# Plugin config does not exist. Create one
 				if the_config == None:
