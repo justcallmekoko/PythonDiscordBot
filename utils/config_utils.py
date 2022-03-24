@@ -37,7 +37,7 @@ class ConfigUtils():
 			if plugin['name'] == __file__:
 				the_config = plugin
 				break
-		return the_config
+		return the_config, json_data
 
 	def getGuildConfig(self, message, configs):
 		guild_config_name = message.guild.name + str(message.guild.id)
