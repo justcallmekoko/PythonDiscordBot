@@ -22,6 +22,8 @@ class Template():
 
 	guild_confs = []
 
+	full_conf_file = None
+
 	# Server configurable
 
 	group = '@everyone'
@@ -40,13 +42,13 @@ class Template():
 			if (os.path.isfile(os.path.join(self.conf_path, entity))) and (entity.endswith('_conf.json')):
 
 				# Open guild configuration file
-				full_conf_file = os.path.join(self.conf_path, entity)
+				self.full_conf_file = os.path.join(self.conf_path, entity)
 				print(__file__ + ': Loading conf...' + str(entity))
 
 				guild_name = entity.split('_')[0] + entity.split('_')[1]
 
 				# Try to get json stuff
-				f = open(full_conf_file)
+				f = open(self.full_conf_file)
 				try:
 					json_data = json.load(f)
 				except:
@@ -58,11 +60,11 @@ class Template():
 					print('JSON config does not exist. Creating...')
 					data = {}
 					data['plugins'] = []
-					with open(full_conf_file, 'w') as f:
+					with open(self.full_conf_file, 'w') as f:
 						json.dump(data, f)
 
 				# Get plugin configuration
-				with open(full_conf_file) as f:
+				with open(self.full_conf_file) as f:
 					json_data = json.load(f)
 
 				the_config = None
@@ -82,7 +84,7 @@ class Template():
 					the_config['blacklisted'] = []
 					the_config['post_channel'] = ''
 					json_data['plugins'].append(the_config)
-					with open(full_conf_file, 'w') as f:
+					with open(self.full_conf_file, 'w') as f:
 						json.dump(json_data, f, indent=4)
 
 				self.guild_confs.append(the_config)
@@ -93,16 +95,14 @@ class Template():
 
 #			print(json.dumps(config, indent=4, sort_keys=True))
 
+	def saveConfig(self):
+		data = {}
+		data['plugins'] = []
+		for config in self.guild_confs:
+			data['plugins'].append(config)
 
-
-	def checkCat(self, check_cat):
-		if self.cat == check_cat:
-			return True
-		else:
-			return False
-	
-	def checkBits(self, bits):
-		return False
+		with open(self.full_conf_file, 'w') as f:
+			json.dump(data, f, indent=4)
 
 	def getArgs(self, message):
 		cmd = str(message.content)
@@ -112,6 +112,15 @@ class Template():
 			return seg
 		else:
 			return None
+
+	def checkCat(self, check_cat):
+		if self.cat == check_cat:
+			return True
+		else:
+			return False
+	
+	def checkBits(self, bits):
+		return False
 	
 	async def runCheer(self, user, amount):
 		return True
@@ -138,14 +147,36 @@ class Template():
 				the_conf = None
 				for conf in self.guild_confs:
 					if conf['guild'] == message.guild.name + str(message.guild.id):
-							the_conf = conf
-							break
+						the_conf = conf
+						break
 
 				if the_conf != None:
 					if str(arg[2]) in the_conf:
 						embed.add_field(name=str(arg[2]), value=str(the_conf[str(arg[2])]), inline=False)
 					else:
 						embed.add_field(name=str(arg[2]), value='Not Found', inline=False)
+
+				await message.channel.send(embed=embed)
+
+			elif arg[1] == 'set':
+				embed = discord.Embed(title=self.name,
+					color=discord.Color.blue())
+
+				the_conf = None
+				for conf in self.guild_confs:
+					if conf['guild'] == message.guild.name + str(message.guild.id):
+						the_conf = conf
+						break
+
+				if the_conf != None:
+					if str(arg[2]) in the_conf:
+						the_conf[str(arg[2])] = arg[3]
+
+				for conf in self.guild_confs:
+					if conf['guild'] == message.guild.name + str(message.guild.id):
+						conf = the_conf
+
+				self.saveConfig()
 
 				await message.channel.send(embed=embed)
 
