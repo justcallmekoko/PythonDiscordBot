@@ -6,9 +6,9 @@ from discord.ext.tasks import loop
 from requests import get
 
 class ConfigUtils():
-	def loadConfig(self, conf_path, entity):
+	def loadConfig(self, conf_path, entity, file_name):
 		full_conf_file = os.path.join(conf_path, entity)
-		print(__file__ + ': Loading conf...' + str(entity))
+		print(file_name + ': Loading conf...' + str(entity))
 
 		guild_name = entity.split('_')[0] + entity.split('_')[1]
 
@@ -34,7 +34,7 @@ class ConfigUtils():
 
 		the_config = None
 		for plugin in json_data['plugins']:
-			if plugin['name'] == __file__:
+			if plugin['name'] == file_name:
 				the_config = plugin
 				break
 		return the_config, json_data, full_conf_file
