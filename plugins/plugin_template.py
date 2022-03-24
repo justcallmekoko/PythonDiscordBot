@@ -1,9 +1,14 @@
 import os
+import sys
 import json
 import discord
 from dotenv import load_dotenv
 from discord.ext.tasks import loop
 from requests import get
+
+sys.path.append(os.path.abspath('utils'))
+
+from utils.config_utils import ConfigUtils
 
 class Template():
 	conf_path = os.path.join(os.path.dirname(__file__), 'configs')
@@ -24,6 +29,8 @@ class Template():
 
 	full_conf_file = None
 
+	configutils = None
+
 	# Server configurable
 
 	group = '@everyone'
@@ -36,6 +43,7 @@ class Template():
 	
 	def __init__(self, client = None):
 		self.client = client
+		self.configutils = ConfigUtils()
 
 		# Get each guild configuration
 		for entity in os.listdir(self.conf_path):
@@ -93,6 +101,7 @@ class Template():
 		for config in self.guild_confs:
 			print('\t' + config['name'] + ': ' + config['guild'])
 
+	'''
 	def getGuildConfig(self, message, configs):
 		guild_config_name = message.guild.name + str(message.guild.id)
 
@@ -224,7 +233,7 @@ class Template():
 			return True
 
 		return False
-
+	'''
 
 	def getArgs(self, message):
 		cmd = str(message.content)
@@ -248,16 +257,20 @@ class Template():
 		return True
 
 	async def run(self, message, obj_list):
-		if not self.hasPerms(message, False, self.guild_confs):
+		# Permissions check
+		if not self.configutils.hasPerms(message, False, self.guild_confs):
 			await message.channel.send(message.author.mention + ' Permission denied')
 			return False
 
+		# Parse args
 		arg = self.getArgs(message)
 
-		# Check for config stuff
+		# Config set/get check
 		if arg != None:
-			if await self.runConfig(message, arg, self.guild_confs, self.conf_path):
+			if await self.configutils.runConfig(message, arg, self.guild_confs, self.conf_path):
 				return True
+
+		# Do Specific Plugin Stuff
 
 		return True
 
