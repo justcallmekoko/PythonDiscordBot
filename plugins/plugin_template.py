@@ -54,6 +54,8 @@ class Template():
 				# Load configuration if it exists
 				the_config = self.configutils.loadConfig(self.conf_path, entity)
 
+				guild_name = entity.split('_')[0] + entity.split('_')[1]
+
 				# Plugin config does not exist. Create one
 				if the_config == None:
 					print('Could not find plugin configuration. Creating...')
