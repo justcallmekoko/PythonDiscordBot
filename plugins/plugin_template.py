@@ -48,7 +48,8 @@ class Template():
 		# Get each guild configuration
 		for entity in os.listdir(self.conf_path):
 			if (os.path.isfile(os.path.join(self.conf_path, entity))) and (entity.endswith('_conf.json')):
-
+				the_config = self.configutils.loadConfig(self.conf_path, entity)
+				'''
 				# Open guild configuration file
 				full_conf_file = os.path.join(self.conf_path, entity)
 				print(__file__ + ': Loading conf...' + str(entity))
@@ -80,6 +81,7 @@ class Template():
 					if plugin['name'] == __file__:
 						the_config = plugin
 						break
+				'''
 
 				# Plugin config does not exist. Create one
 				if the_config == None:
