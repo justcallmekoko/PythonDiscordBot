@@ -95,14 +95,24 @@ class Template():
 
 #			print(json.dumps(config, indent=4, sort_keys=True))
 
-	def saveConfig(self):
-		data = {}
-		data['plugins'] = []
-		for config in self.guild_confs:
-			data['plugins'].append(config)
+	def saveConfig(self, targ_guild):
+		for entity in os.listdir(self.conf_path):
+			if (os.path.isfile(os.path.join(self.conf_path, entity))) and (entity == str(targ_guild) + '_conf.json'):
 
-		with open(self.full_conf_file, 'w') as f:
-			json.dump(data, f, indent=4)
+				full_conf_file = os.path.join(self.conf_path, entity)
+
+				# Get plugin configuration
+				with open(full_conf_file) as f:
+					json_data = json.load(f)
+
+				
+				for that_config in json_data['plugins']:
+					for this_config in self.guild_confs:
+						if that_config['name'] == this_config['name']:
+							that_config = this_config
+
+				with open(full_conf_file, 'w') as f:
+					json.dump(json_data, f, indent=4)
 
 	def getArgs(self, message):
 		cmd = str(message.content)
@@ -176,7 +186,7 @@ class Template():
 					if conf['guild'] == message.guild.name + str(message.guild.id):
 						conf = the_conf
 
-				self.saveConfig()
+				self.saveConfig(message.guild.name + '_' + str(message.guild.id))
 
 				await message.channel.send(embed=embed)
 
