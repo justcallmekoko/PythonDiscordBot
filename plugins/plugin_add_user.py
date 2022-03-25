@@ -1,14 +1,22 @@
 import os
+import sys
 import discord
 from dotenv import load_dotenv
 from mcrcon import MCRcon
 from discord.ext.tasks import loop
 from requests import get
 
+sys.path.append(os.path.abspath('utils'))
+
+from utils.config_utils import ConfigUtils
+
 RCONIP = os.getenv('RCON_IP')
 PASSW = os.getenv('RCON_PASSWORD')
 
 class AddUser():
+	# Required for all plugins
+	conf_path = os.path.join(os.path.dirname(__file__), 'configs')
+
 	name = '!add'
 
 	desc = 'Add user to minecraft server whitelist'
@@ -17,6 +25,22 @@ class AddUser():
 
 	looping = False
 
+	guild_confs = []
+
+	configutils = None
+
+	default_config = {}
+	default_config['name'] = __file__
+	default_config['guild'] = None
+	default_config['standard_groups'] = ['@everyone']
+	default_config['admin_groups'] = []
+	default_config['blacklisted'] = []
+	default_config['post_channel'] = ''
+
+	client = None
+
+	is_service = False
+
 	group = 'members'
 
 	admin = False
@@ -24,10 +48,6 @@ class AddUser():
 	cheer = -1
 	
 	cat = 'admin'
-
-	is_service = False
-
-	client = None
 
 #	groups = ['People who pooped their pants']
 	groups = [
@@ -42,6 +62,24 @@ class AddUser():
 	
 	def __init__(self, client = None):
 		self.client = client
+		self.configutils = ConfigUtils()
+
+		# Load configuration if it exists
+		self.guild_confs = self.configutils.loadConfig(self.conf_path, self.default_config, __file__)
+
+
+		print('\n\nConfigs Loaded:')
+		for config in self.guild_confs:
+			print('\t' + config['name'] + ': ' + config['guild'])
+
+	def getArgs(self, message):
+		cmd = str(message.content)
+		seg = str(message.content).split(' ')
+
+		if len(seg) > 1:
+			return seg
+		else:
+			return None
 
 	def checkCat(self, check_cat):
 		if self.cat == check_cat:
@@ -56,6 +94,19 @@ class AddUser():
 		return True
 
 	async def run(self, message, obj_list):
+		# Permissions check
+		if not self.configutils.hasPerms(message, False, self.guild_confs):
+			await message.channel.send(message.author.mention + ' Permission denied')
+			return False
+
+		# Parse args
+		arg = self.getArgs(message)
+
+		# Config set/get check
+		if arg != None:
+			if await self.configutils.runConfig(message, arg, self.guild_confs, self.conf_path):
+				return True
+
 		# Check if user can run this command
 		for role in message.author.roles:
 			if str(role.name) in self.blacklisted:
