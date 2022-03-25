@@ -54,26 +54,9 @@ class Template():
 		self.client = client
 		self.configutils = ConfigUtils()
 
-		# Get each guild configuration
-		for entity in os.listdir(self.conf_path):
-			# Make sure the file is a config file
-			if (os.path.isfile(os.path.join(self.conf_path, entity))) and (entity.endswith('_conf.json')):
+		# Load configuration if it exists
+		self.guild_confs = self.configutils.loadConfig(self.conf_path, self.default_config, __file__)
 
-				# Load configuration if it exists
-				the_config, json_data, full_conf_file = self.configutils.loadConfig(self.conf_path, entity, __file__)
-
-				guild_name = entity.split('_')[0] + entity.split('_')[1]
-
-				# Plugin config does not exist. Create one
-				if the_config == None:
-					print('Could not find plugin configuration. Creating...')
-					self.default_config['guild'] = guild_name
-					json_data['plugins'].append(self.default_config)
-					with open(full_conf_file, 'w') as f:
-						json.dump(json_data, f, indent=4)
-
-				else:
-					self.guild_confs.append(the_config)
 
 		print('\n\nConfigs Loaded:')
 		for config in self.guild_confs:

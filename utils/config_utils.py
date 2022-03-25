@@ -6,38 +6,56 @@ from discord.ext.tasks import loop
 from requests import get
 
 class ConfigUtils():
-	def loadConfig(self, conf_path, entity, file_name):
-		full_conf_file = os.path.join(conf_path, entity)
-		print(file_name + ': Loading conf...' + str(entity))
+	def loadConfig(self, conf_path, default_config, file_name):
+		configs = []
 
-		guild_name = entity.split('_')[0] + entity.split('_')[1]
+		for entity in os.listdir(conf_path):
+			# Make sure the file is a config file
+			if (os.path.isfile(os.path.join(conf_path, entity))) and (entity.endswith('_conf.json')):
+				guild_name = entity.split('_')[0] + entity.split('_')[1]
 
-		# Try to get json stuff
-		f = open(full_conf_file)
-		try:
-			json_data = json.load(f)
-		except:
-			json_data = {}
-		f.close()
+				full_conf_file = os.path.join(conf_path, entity)
+				print(file_name + ': Loading conf...' + str(entity))
 
-		# If plugins json doesn't exist, write the key
-		if 'plugins' not in json_data:
-			print('JSON config does not exist. Creating...')
-			data = {}
-			data['plugins'] = []
-			with open(full_conf_file, 'w') as f:
-				json.dump(data, f)
+				guild_name = entity.split('_')[0] + entity.split('_')[1]
 
-		# Get plugin configuration
-		with open(full_conf_file) as f:
-			json_data = json.load(f)
+				# Try to get json stuff
+				f = open(full_conf_file)
+				try:
+					json_data = json.load(f)
+				except:
+					json_data = {}
+				f.close()
 
-		the_config = None
-		for plugin in json_data['plugins']:
-			if plugin['name'] == file_name:
-				the_config = plugin
-				break
-		return the_config, json_data, full_conf_file
+				# If plugins json doesn't exist, write the key
+				if 'plugins' not in json_data:
+					print('JSON config does not exist. Creating...')
+					data = {}
+					data['plugins'] = []
+					with open(full_conf_file, 'w') as f:
+						json.dump(data, f)
+
+				# Get plugin configuration
+				with open(full_conf_file) as f:
+					json_data = json.load(f)
+
+				the_config = None
+				for plugin in json_data['plugins']:
+					if plugin['name'] == file_name:
+						the_config = plugin
+						break
+
+				if the_config == None:
+					print('Could not find plugin configuration. Creating...')
+					default_config['guild'] = guild_name
+					json_data['plugins'].append(default_config)
+					with open(full_conf_file, 'w') as f:
+						json.dump(json_data, f, indent=4)
+					configs.append(default_config)
+				else:
+					configs.append(the_config)
+
+		return configs
 
 	def getGuildConfig(self, message, configs):
 		guild_config_name = message.guild.name + str(message.guild.id)
