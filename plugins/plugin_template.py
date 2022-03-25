@@ -67,12 +67,13 @@ class Template():
 				# Plugin config does not exist. Create one
 				if the_config == None:
 					print('Could not find plugin configuration. Creating...')
+					self.default_config['guild'] = guild_name
 					json_data['plugins'].append(self.default_config)
 					with open(full_conf_file, 'w') as f:
 						json.dump(json_data, f, indent=4)
 
-				self.default_config['guild'] = guild_name
-				self.guild_confs.append(the_config)
+				else:
+					self.guild_confs.append(the_config)
 
 		print('\n\nConfigs Loaded:')
 		for config in self.guild_confs:
