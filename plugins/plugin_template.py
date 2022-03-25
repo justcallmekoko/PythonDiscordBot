@@ -32,6 +32,14 @@ class Template():
 
 	configutils = None
 
+	default_config = {}
+	default_config['name'] = __file__
+	default_config['guild'] = guild_name
+	default_config['standard_groups'] = ['@everyone']
+	default_config['admin_groups'] = []
+	default_config['blacklisted'] = []
+	default_config['post_channel'] = ''
+
 	# Server configurable
 
 	group = '@everyone'
@@ -59,14 +67,7 @@ class Template():
 				# Plugin config does not exist. Create one
 				if the_config == None:
 					print('Could not find plugin configuration. Creating...')
-					the_config = {}
-					the_config['name'] = __file__
-					the_config['guild'] = guild_name
-					the_config['standard_groups'] = ['@everyone']
-					the_config['admin_groups'] = []
-					the_config['blacklisted'] = []
-					the_config['post_channel'] = ''
-					json_data['plugins'].append(the_config)
+					json_data['plugins'].append(self.default_config)
 					with open(full_conf_file, 'w') as f:
 						json.dump(json_data, f, indent=4)
 
