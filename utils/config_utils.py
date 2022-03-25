@@ -97,7 +97,7 @@ class ConfigUtils():
 		for entity in os.listdir(conf_path):
 			if (os.path.isfile(os.path.join(conf_path, entity))) and (entity == str(targ_guild) + '_conf.json'):
 
-				#print('Found target conf file to save')
+				print('Found target conf file to save')
 
 				full_conf_file = os.path.join(conf_path, entity)
 
@@ -113,13 +113,13 @@ class ConfigUtils():
 					found = False
 					for this_config in configs:
 						if (that_config['name'] == this_config['name']) and (that_config['guild'] == this_config['guild']):
-							#print('Found target config to save: ' + str(that_config['name']))
+							print('Found target config to save: ' + str(that_config['name']))
 							new_json['plugins'].append(this_config)
 							found = True
 					if not found:
 						new_json['plugins'].append(that_config)
 
-				#print('Writing to configuration file: ' + str(full_conf_file))
+				print('Writing to configuration file: ' + str(full_conf_file))
 				with open(full_conf_file, 'w') as f:
 					json.dump(new_json, f, indent=4)
 
