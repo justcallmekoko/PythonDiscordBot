@@ -34,7 +34,7 @@ class Template():
 
 	default_config = {}
 	default_config['name'] = __file__
-	default_config['guild'] = guild_name
+	default_config['guild'] = None
 	default_config['standard_groups'] = ['@everyone']
 	default_config['admin_groups'] = []
 	default_config['blacklisted'] = []
@@ -71,6 +71,7 @@ class Template():
 					with open(full_conf_file, 'w') as f:
 						json.dump(json_data, f, indent=4)
 
+				self.default_config['guild'] = guild_name
 				self.guild_confs.append(the_config)
 
 		print('\n\nConfigs Loaded:')
