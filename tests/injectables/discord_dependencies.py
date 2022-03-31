@@ -14,6 +14,7 @@ class Guild():
 	name = None
 	id = None
 	channels = []
+	roles = []
 	members = []
 	member_count = 0
 
