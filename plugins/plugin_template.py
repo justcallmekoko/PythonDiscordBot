@@ -36,7 +36,7 @@ class Template():
 	default_config['protected'] = {}
 	default_config['protected']['name'] = __file__
 	default_config['protected']['guild'] = None
-	default_config['standard_groups'] = ['@everyone']
+	default_config['standard_groups'] = []
 	default_config['admin_groups'] = []
 	default_config['blacklisted'] = []
 	default_config['post_channel'] = ''
