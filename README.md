@@ -5,16 +5,4 @@
 
 A modular Python bot that integrates with Discord
 
-## Development Setup:
-1. [Fork the repo](https://github.com/justcallmekoko/PythonDiscordBot.git)
-2. Install Python >=3.8
-3. Install your favorite IDE
-4. From the repo directory, run `pip install -r requirements.txt`
-
-## To work on an issue:
-1. Open the issue
-1. Click the link to create a branch from the issue
-1. Use the defaults for naming the branch, etc.
-1. Go to your editor and Fetch
-1. Switch to the branch you just created
-1. Work
+Read the [Contribution Guide](https://github.com/justcallmekoko/PythonDiscordBot/wiki/contribution-guide) if you would like to help
