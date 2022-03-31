@@ -90,7 +90,7 @@ class ConfigUtils():
 
 			# Check role objects
 			for role in message.author.roles:
-				print(role)
+				print(role.mention)
 				if role in config['standard_groups']:
 					print(role + ' found in standard_groups')
 					return True
