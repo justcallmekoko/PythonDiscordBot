@@ -6,6 +6,8 @@ from discord.ext.tasks import loop
 from requests import get
 
 class ConfigUtils():
+	protected_key = 'protected'
+
 	def loadConfig(self, conf_path, default_config, file_name):
 		configs = []
 
@@ -41,13 +43,13 @@ class ConfigUtils():
 
 				the_config = None
 				for plugin in json_data['plugins']:
-					if plugin['protected']['name'] == file_name:
+					if plugin[self.protected_key]['name'] == file_name:
 						the_config = plugin
 						break
 
 				if the_config == None:
 					print('Could not find plugin configuration. Creating...')
-					default_config['protected']['guild'] = guild_name
+					default_config[self.protected_key]['guild'] = guild_name
 					json_data['plugins'].append(default_config)
 					with open(full_conf_file, 'w') as f:
 						json.dump(json_data, f, indent=4)
@@ -61,7 +63,7 @@ class ConfigUtils():
 		guild_config_name = message.guild.name + str(message.guild.id)
 
 		for config in configs:
-			if config['protected']['guild'] == guild_config_name:
+			if config[self.protected_key]['guild'] == guild_config_name:
 				return config
 
 		return {}
@@ -112,8 +114,8 @@ class ConfigUtils():
 				for that_config in json_data['plugins']:
 					found = False
 					for this_config in configs:
-						if (that_config['protected']['name'] == this_config['protected']['name']) and (that_config['protected']['guild'] == this_config['protected']['guild']):
-							print('Found target config to save: ' + str(that_config['protected']['name']))
+						if (that_config[self.protected_key]['name'] == this_config[self.protected_key]['name']) and (that_config[self.protected_key]['guild'] == this_config[self.protected_key]['guild']):
+							print('Found target config to save: ' + str(that_config[self.protected_key]['name']))
 							new_json['plugins'].append(this_config)
 							found = True
 					if not found:
@@ -132,6 +134,8 @@ class ConfigUtils():
 			embed = discord.Embed(title=str(arg[0]),
 				color=discord.Color.blue())
 			for key in configs[0].keys():
+				if key == self.protected_key:
+					continue
 				if isinstance(configs[0][key], str):
 					embed.add_field(name=str(key), value='set/get', inline=False)
 				else:
@@ -148,7 +152,7 @@ class ConfigUtils():
 
 			the_conf = None
 			for conf in configs:
-				if conf['protected']['guild'] == message.guild.name + str(message.guild.id):
+				if conf[self.protected_key]['guild'] == message.guild.name + str(message.guild.id):
 					the_conf = conf
 					break
 
@@ -169,20 +173,24 @@ class ConfigUtils():
 
 			the_conf = None
 			for conf in configs:
-				if conf['protected']['guild'] == message.guild.name + str(message.guild.id):
+				if conf[self.protected_key]['guild'] == message.guild.name + str(message.guild.id):
 					the_conf = conf
 					break
 
 			if the_conf != None:
-				if str(arg[2]) in the_conf:
+				if (str(arg[2]) in the_conf) and (str(arg[2]) != self.protected_key):
 					the_conf[str(arg[2])] = arg[3]
+				else:
+					return True
 
 			for conf in configs:
-				if conf['protected']['guild'] == message.guild.name + str(message.guild.id):
+				if conf[self.protected_key]['guild'] == message.guild.name + str(message.guild.id):
 					conf = the_conf
 					#print(json.dumps(conf, indent=4, sort_keys=True))
 
 			self.saveConfig(message.guild.name + '_' + str(message.guild.id), configs, conf_path)
+
+			embed.add_field(name=str(arg[2]), value=str(the_conf[str(arg[2])]), inline=False)
 
 			await message.channel.send(embed=embed)
 			return True
