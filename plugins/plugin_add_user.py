@@ -71,7 +71,7 @@ class AddUser():
 
 		print('\n\nConfigs Loaded:')
 		for config in self.guild_confs:
-			print('\t' + config['name'] + ': ' + config['guild'])
+			print('\t' + config['protected']['name'] + ': ' + config['protected']['guild'])
 
 	def getArgs(self, message):
 		cmd = str(message.content)
