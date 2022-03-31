@@ -44,7 +44,7 @@ class Poll():
 
 	message_history_limit = 100
 
-	tag_role = '@Voter'
+	tag_role = 'Voter'
 
 	post_channel = 'polls-and-suggestions'
 #	post_channel = 'bot-commands'
@@ -284,13 +284,19 @@ class Poll():
 
 		post_channel = None
 
+		the_role = None
+
+		for role in message.guild.roles:
+			if role.name == self.tag_role:
+				the_role = role
+
 		# Find where the bot will be posting its announcements
 		for channel in message.guild.channels:
 			if str(channel.name) == self.post_channel:
 				post_channel = channel
 
-		if post_channel != None:
-			msg = await post_channel.send(self.tag_role, embed=embed)
+		if (post_channel != None) and (the_role != None):
+			msg = await post_channel.send(the_role.mention, embed=embed)
 
 			await msg.add_reaction(self.yes_vote)
 
