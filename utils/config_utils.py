@@ -128,6 +128,7 @@ class ConfigUtils():
 				#print(json.dumps(new_json, indent=4, sort_keys=True))
 
 	async def runConfig(self, message, arg, configs, conf_path):
+		# Get all available config keys
 		if arg[1] == 'config':
 			if not self.hasPerms(message, True, configs):
 				return True
@@ -144,6 +145,7 @@ class ConfigUtils():
 			await message.channel.send(embed=embed)
 			return True
 
+		# Get a config key's value
 		elif arg[1] == 'get':
 			if not self.hasPerms(message, True, configs):
 				return True
@@ -165,12 +167,15 @@ class ConfigUtils():
 			await message.channel.send(embed=embed)
 			return True
 
+		# Set a single value key
 		elif arg[1] == 'set':
+			# Check if the user has permissions to do this
 			if not self.hasPerms(message, True, configs):
 				return True
 			embed = discord.Embed(title=str(arg[0]),
 				color=discord.Color.blue())
 
+			# Get the specific guild config
 			the_conf = None
 			for conf in configs:
 				if conf[self.protected_key]['guild'] == message.guild.name + str(message.guild.id):
@@ -178,16 +183,20 @@ class ConfigUtils():
 					break
 
 			if the_conf != None:
-				if (str(arg[2]) in the_conf) and (str(arg[2]) != self.protected_key):
+				# Check if key exists, is not protected, and is not a list
+				if (str(arg[2]) in the_conf) and (str(arg[2]) != self.protected_key) and (not isinstance(the_conf[str(arg[2])], list)):
+					# Set the value of the key
 					the_conf[str(arg[2])] = arg[3]
 				else:
 					return True
 
+			# Set the config in the objects list of configs
 			for conf in configs:
 				if conf[self.protected_key]['guild'] == message.guild.name + str(message.guild.id):
 					conf = the_conf
 					#print(json.dumps(conf, indent=4, sort_keys=True))
 
+			# Save the new config and reply with message
 			self.saveConfig(message.guild.name + '_' + str(message.guild.id), configs, conf_path)
 
 			embed.add_field(name=str(arg[2]), value=str(the_conf[str(arg[2])]), inline=False)
@@ -195,4 +204,42 @@ class ConfigUtils():
 			await message.channel.send(embed=embed)
 			return True
 
+		# Add a value to a list key
+		elif (arg[1] == 'add') or (arg[1] == 'remove'):
+			# Check if the user has permissions to do this
+			if not self.hasPerms(message, True, configs):
+				return True
+			embed = discord.Embed(title=str(arg[0]),
+				color=discord.Color.blue())
+
+			# Get the specific guild config
+			the_conf = None
+			for conf in configs:
+				if conf[self.protected_key]['guild'] == message.guild.name + str(message.guild.id):
+					the_conf = conf
+					break
+
+			if the_conf != None:
+				# Make sure key exists and is a list
+				if (str(arg[2]) in the_conf) and (isinstance(the_conf[str(arg[2])], list)) and (arg[1] == 'add'):
+					the_conf[str(arg[2])].append(str(arg[3]))
+				elif (str(arg[2]) in the_conf) and (isinstance(the_conf[str(arg[2])], list)) and (arg[1] == 'remove'):
+					the_conf[str(arg[2])].remove(str(arg[3]))
+				else:
+					return True
+			else:
+				return True
+
+			# Set the config in the objects list of configs
+			for conf in configs:
+				if conf[self.protected_key]['guild'] == message.guild.name + str(message.guild.id):
+					conf = the_conf
+
+			# Save the new config and reply with message
+			self.saveConfig(message.guild.name + '_' + str(message.guild.id), configs, conf_path)
+
+			embed.add_field(name=str(arg[2]), value=str(the_conf[str(arg[2])]), inline=False)
+
+			await message.channel.send(embed=embed)
+			return True
 		return False
