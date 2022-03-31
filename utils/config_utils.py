@@ -88,6 +88,16 @@ class ConfigUtils():
 			if 'admin_groups' not in config:
 				return False
 
+			# Check role objects
+			for role in message.author.roles:
+				if role in config['standard_groups']:
+					print(role + ' found in standard_groups')
+					return True
+				if role in config['admin_groups']:
+					print(role + ' found in admin_groups')
+					return True
+
+			# Check string roles (old)
 			for user_role in user_roles:
 				if user_role in config['standard_groups']:
 					print(user_role + ' found in standard_groups')
