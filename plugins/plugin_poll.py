@@ -44,6 +44,8 @@ class Poll():
 
 	message_history_limit = 100
 
+	tag_role = '@Voter'
+
 	post_channel = 'polls-and-suggestions'
 #	post_channel = 'bot-commands'
 
@@ -288,7 +290,7 @@ class Poll():
 				post_channel = channel
 
 		if post_channel != None:
-			msg = await post_channel.send(embed=embed)
+			msg = await post_channel.send(self.tag_role, embed=embed)
 
 			await msg.add_reaction(self.yes_vote)
 
