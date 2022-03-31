@@ -33,8 +33,9 @@ class Template():
 	configutils = None
 
 	default_config = {}
-	default_config['name'] = __file__
-	default_config['guild'] = None
+	default_config['protected'] = {}
+	default_config['protected']['name'] = __file__
+	default_config['protected']['guild'] = None
 	default_config['standard_groups'] = ['@everyone']
 	default_config['admin_groups'] = []
 	default_config['blacklisted'] = []

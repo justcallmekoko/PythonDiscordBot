@@ -41,13 +41,13 @@ class ConfigUtils():
 
 				the_config = None
 				for plugin in json_data['plugins']:
-					if plugin['name'] == file_name:
+					if plugin['protected']['name'] == file_name:
 						the_config = plugin
 						break
 
 				if the_config == None:
 					print('Could not find plugin configuration. Creating...')
-					default_config['guild'] = guild_name
+					default_config['protected']['guild'] = guild_name
 					json_data['plugins'].append(default_config)
 					with open(full_conf_file, 'w') as f:
 						json.dump(json_data, f, indent=4)
@@ -61,7 +61,7 @@ class ConfigUtils():
 		guild_config_name = message.guild.name + str(message.guild.id)
 
 		for config in configs:
-			if config['guild'] == guild_config_name:
+			if config['protected']['guild'] == guild_config_name:
 				return config
 
 		return {}
@@ -112,8 +112,8 @@ class ConfigUtils():
 				for that_config in json_data['plugins']:
 					found = False
 					for this_config in configs:
-						if (that_config['name'] == this_config['name']) and (that_config['guild'] == this_config['guild']):
-							print('Found target config to save: ' + str(that_config['name']))
+						if (that_config['protected']['name'] == this_config['protected']['name']) and (that_config['protected']['guild'] == this_config['protected']['guild']):
+							print('Found target config to save: ' + str(that_config['protected']['name']))
 							new_json['plugins'].append(this_config)
 							found = True
 					if not found:
@@ -148,7 +148,7 @@ class ConfigUtils():
 
 			the_conf = None
 			for conf in configs:
-				if conf['guild'] == message.guild.name + str(message.guild.id):
+				if conf['protected']['guild'] == message.guild.name + str(message.guild.id):
 					the_conf = conf
 					break
 
@@ -169,7 +169,7 @@ class ConfigUtils():
 
 			the_conf = None
 			for conf in configs:
-				if conf['guild'] == message.guild.name + str(message.guild.id):
+				if conf['protected']['guild'] == message.guild.name + str(message.guild.id):
 					the_conf = conf
 					break
 
@@ -178,7 +178,7 @@ class ConfigUtils():
 					the_conf[str(arg[2])] = arg[3]
 
 			for conf in configs:
-				if conf['guild'] == message.guild.name + str(message.guild.id):
+				if conf['protected']['guild'] == message.guild.name + str(message.guild.id):
 					conf = the_conf
 					#print(json.dumps(conf, indent=4, sort_keys=True))
 
