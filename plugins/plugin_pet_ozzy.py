@@ -16,7 +16,7 @@ class PetOzzy():
 
 	desc = 'Give Ozzy a pet. He deserves it'
 
-	synt = '!petozzy'
+	synt = '!petozzy [config|get <config>|set <config> <value>|add/remove <config> <value>]'
 
 	looping = False
 

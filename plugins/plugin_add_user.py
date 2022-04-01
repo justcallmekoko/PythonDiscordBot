@@ -21,7 +21,7 @@ class AddUser():
 
 	desc = 'Add user to minecraft server whitelist'
 
-	synt = '!add <minecraft username>'
+	synt = '!add [<minecraft username>|config|get <config>|set <config> <value>|add/remove <config> <value>]'
 
 	looping = False
 
