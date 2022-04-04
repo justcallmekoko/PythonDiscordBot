@@ -131,7 +131,7 @@ class ConfigUtils():
 				for that_config in json_data['plugins']:
 					found = False
 					for this_config in configs:
-						# This if statement is disgusting
+						# This if statement is really fucking disgusting
 						if (that_config[self.protected_key]['name'] == this_config[self.protected_key]['name']) and (that_config[self.protected_key]['guild'] == this_config[self.protected_key]['guild']):
 							print('Found target config to save: ' + str(that_config[self.protected_key]['name']))
 							new_json['plugins'].append(this_config)
