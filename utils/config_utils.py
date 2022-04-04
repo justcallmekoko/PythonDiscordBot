@@ -131,6 +131,7 @@ class ConfigUtils():
 				for that_config in json_data['plugins']:
 					found = False
 					for this_config in configs:
+						# This if statement is disgusting
 						if (that_config[self.protected_key]['name'] == this_config[self.protected_key]['name']) and (that_config[self.protected_key]['guild'] == this_config[self.protected_key]['guild']):
 							print('Found target config to save: ' + str(that_config[self.protected_key]['name']))
 							new_json['plugins'].append(this_config)
@@ -157,7 +158,7 @@ class ConfigUtils():
 			for key in the_config.keys():
 				if key == self.protected_key:
 					continue
-				if isinstance(the_config[key], str):
+				if isinstance(the_config[key]['value'], str):
 					embed.add_field(name=str(key), value=str(the_config[key]['description'] + '\nset/get'), inline=False)
 				else:
 					embed.add_field(name=str(key), value=str(the_config[key]['description'] + '\nadd/remove/get'), inline=False)
