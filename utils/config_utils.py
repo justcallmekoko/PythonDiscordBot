@@ -177,7 +177,7 @@ class ConfigUtils():
 
 			if the_conf != None:
 				if str(arg[2]) in the_conf:
-					embed.add_field(name=str(arg[2]), value=str(the_conf[str(arg[2])]), inline=False)
+					embed.add_field(name=str(arg[2]), value=str(the_conf[str(arg[2])]['value']), inline=False)
 				else:
 					embed.add_field(name=str(arg[2]), value='Not Found', inline=False)
 
