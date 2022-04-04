@@ -180,6 +180,8 @@ class ConfigUtils():
 					embed.add_field(name=str(arg[2]), value=str(the_conf[str(arg[2])]['value']), inline=False)
 				else:
 					embed.add_field(name=str(arg[2]), value='Not Found', inline=False)
+			else:
+				print('Did not find configuration')
 
 			await message.channel.send(embed=embed)
 			return True
