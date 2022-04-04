@@ -36,10 +36,18 @@ class Template():
 	default_config['protected'] = {}
 	default_config['protected']['name'] = __file__
 	default_config['protected']['guild'] = None
-	default_config['standard_groups'] = []
-	default_config['admin_groups'] = []
-	default_config['blacklisted'] = []
-	default_config['post_channel'] = ''
+	default_config['standard_groups'] = {}
+	default_config['standard_groups']['value'] = []
+	default_config['standard_groups']['description'] = "Authorized groups to use this command"
+	default_config['admin_groups'] = {}
+	default_config['admin_groups']['value'] = []
+	default_config['admin_groups']['description'] = "Authorized groups to use admin functions of this command"
+	default_config['blacklisted'] = {}
+	default_config['blacklisted']['value'] = []
+	default_config['blacklisted']['description'] = "Groups explicitly denied access to this command"
+	default_config['post_channel'] = {}
+	default_config['post_channel']['value'] = ""
+	default_config['post_channel']['description'] = "Desitination channel to post messages from this plugin"
 
 	# Server configurable
 
