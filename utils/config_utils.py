@@ -90,21 +90,25 @@ class ConfigUtils():
 
 			# Check role objects
 			for role in message.author.roles:
-				if role.mention in config['standard_groups']:
-					print(str(role.mention) + ' found in standard_groups')
-					return True
-				if role.mention in config['admin_groups']:
-					print(str(role.mention) + ' found in admin_groups')
-					return True
+				if 'values' in config['standard_groups']:
+					if role.mention in config['standard_groups']['values']:
+						print(str(role.mention) + ' found in standard_groups')
+						return True
+				if 'values' in config['admin_groups']:
+					if role.mention in config['admin_groups']['values']:
+						print(str(role.mention) + ' found in admin_groups')
+						return True
 
 			# Check string roles (old)
 			for user_role in user_roles:
-				if user_role in config['standard_groups']:
-					print(user_role + ' found in standard_groups')
-					return True
-				if user_role in config['admin_groups']:
-					print(user_role + ' found in admin_groups')
-					return True
+				if 'values' in config['standard_groups']:
+					if user_role in config['standard_groups']:
+						print(user_role + ' found in standard_groups')
+						return True
+				if 'values' in config['admin_groups']:
+					if user_role in config['admin_groups']:
+						print(user_role + ' found in admin_groups')
+						return True
 
 			return False
 
@@ -197,9 +201,8 @@ class ConfigUtils():
 
 			if the_conf != None:
 				# Check if key exists, is not protected, and is not a list
-				if (str(arg[2]) in the_conf) and (str(arg[2]) != self.protected_key) and (not isinstance(the_conf[str(arg[2])], list)):
-					# Set the value of the key
-					the_conf[str(arg[2])] = arg[3]
+				if (str(arg[2]) in the_conf) and (str(arg[2]) != self.protected_key) and (not isinstance(the_conf[str(arg[2])]['value'], list)):
+					the_conf[str(arg[2])]['value'] = arg[3]
 				else:
 					return True
 
@@ -212,7 +215,10 @@ class ConfigUtils():
 			# Save the new config and reply with message
 			self.saveConfig(message.guild.name + '_' + str(message.guild.id), configs, conf_path)
 
-			embed.add_field(name=str(arg[2]), value=str(the_conf[str(arg[2])]), inline=False)
+			if 'value' in the_conf[str(arg[2])]:
+				embed.add_field(name=str(arg[2]), value=str(the_conf[str(arg[2])]['value']), inline=False)
+			else:
+				embed.add_field(name=str(arg[2]), value=str(the_conf[str(arg[2])]), inline=False)
 
 			await message.channel.send(embed=embed)
 			return True
@@ -234,10 +240,10 @@ class ConfigUtils():
 
 			if the_conf != None:
 				# Make sure key exists and is a list
-				if (str(arg[2]) in the_conf) and (isinstance(the_conf[str(arg[2])], list)) and (arg[1] == 'add'):
-					the_conf[str(arg[2])].append(str(arg[3]))
-				elif (str(arg[2]) in the_conf) and (isinstance(the_conf[str(arg[2])], list)) and (arg[1] == 'remove'):
-					the_conf[str(arg[2])].remove(str(arg[3]))
+				if (str(arg[2]) in the_conf) and (isinstance(the_conf[str(arg[2])]['value'], list)) and (arg[1] == 'add'):
+					the_conf[str(arg[2])]['value'].append(str(arg[3]))
+				elif (str(arg[2]) in the_conf) and (isinstance(the_conf[str(arg[2])]['value'], list)) and (arg[1] == 'remove'):
+					the_conf[str(arg[2])]['value'].remove(str(arg[3]))
 				else:
 					return True
 			else:
