@@ -151,13 +151,16 @@ class ConfigUtils():
 				return True
 			embed = discord.Embed(title=str(arg[0]),
 				color=discord.Color.blue())
-			for key in configs[0].keys():
+
+			the_config = self.getGuildConfig(message, configs)
+
+			for key in the_config.keys():
 				if key == self.protected_key:
 					continue
-				if isinstance(configs[0][key], str):
-					embed.add_field(name=str(key), value='set/get', inline=False)
+				if isinstance(the_config[key], str):
+					embed.add_field(name=str(key), value=str(the_config[key]['description'] + '\nset/get'), inline=False)
 				else:
-					embed.add_field(name=str(key), value='add/remove/get', inline=False)
+					embed.add_field(name=str(key), value=str(the_config[key]['description'] + '\nadd/remove/get'), inline=False)
 			
 			await message.channel.send(embed=embed)
 			return True
@@ -259,7 +262,7 @@ class ConfigUtils():
 			# Save the new config and reply with message
 			self.saveConfig(message.guild.name + '_' + str(message.guild.id), configs, conf_path)
 
-			embed.add_field(name=str(arg[2]), value=str(the_conf[str(arg[2])]), inline=False)
+			embed.add_field(name=str(arg[2]), value=str(the_conf[str(arg[2])]['value']), inline=False)
 
 			await message.channel.send(embed=embed)
 			return True
