@@ -202,6 +202,9 @@ class AutoRole():
 			if the_guild not in self.running_guilds:
 				#self.looping = True
 				self.running_guilds.append(the_guild)
+				print('Guilds running autorole:')
+				for gu in self.running_guilds:
+					print('\t' + gu)
 				await message.channel.send(message.author.mention + ' Starting autorole')
 				#self.loop_func.start()
 
