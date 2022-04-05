@@ -19,7 +19,7 @@ class AutoRole():
 
 	desc = 'Apply roles automatically based on time spent'
 
-	synt = '!autorole [start|stop]'
+	synt = '!autorole [config|get <config>|set <config> <value>|add/remove <config> <value>|start|stop]'
 
 	looping = False
 
