@@ -86,7 +86,6 @@ class ConfigUtils():
 
 	def hasPerms(self, message, admin_req, configs):
 		for role in message.author.roles:
-			print('Checking Role: ' + str(role.name))
 			if (role.permissions.administrator):
 				print(role.name + ' has administrator permissions')
 				return True
@@ -106,15 +105,11 @@ class ConfigUtils():
 				return False
 
 			# Check role objects
-			print('Checking standard and admin')
 			for role in message.author.roles:
 				if 'value' in config['standard_groups']:
-					print('Check if ' + str(role.mention) + ' is in ' + str(config['standard_groups']['value']))
 					if role.mention in config['standard_groups']['value']:
 						print(str(role.mention) + ' found in standard_groups')
 						return True
-				else:
-					print('Did not find values')
 				if 'value' in config['admin_groups']:
 					if role.mention in config['admin_groups']['value']:
 						print(str(role.mention) + ' found in admin_groups')
