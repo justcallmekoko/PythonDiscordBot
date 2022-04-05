@@ -86,6 +86,7 @@ class ConfigUtils():
 
 	def hasPerms(self, message, admin_req, configs):
 		for role in message.author.roles:
+			print('Checking Role: ' + str(role.name))
 			if (role.permissions.administrator):
 				print(role.name + ' has administrator permissions')
 				return True
