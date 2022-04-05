@@ -109,6 +109,7 @@ class ConfigUtils():
 			print('Checking standard and admin')
 			for role in message.author.roles:
 				if 'values' in config['standard_groups']:
+					print('Check if ' + str(role.mention) + ' is in ' + str(config['standard_groups']['values']))
 					if role.mention in config['standard_groups']['values']:
 						print(str(role.mention) + ' found in standard_groups')
 						return True
