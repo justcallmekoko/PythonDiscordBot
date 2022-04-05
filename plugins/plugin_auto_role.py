@@ -48,7 +48,7 @@ class AutoRole():
 
 	running_guilds = []
 
-	admin = True
+	admin = False
 	
 	cheer = -1
 	
