@@ -113,6 +113,8 @@ class ConfigUtils():
 					if role.mention in config['standard_groups']['values']:
 						print(str(role.mention) + ' found in standard_groups')
 						return True
+				else:
+					print('Did not find values')
 				if 'values' in config['admin_groups']:
 					if role.mention in config['admin_groups']['values']:
 						print(str(role.mention) + ' found in admin_groups')
