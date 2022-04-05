@@ -1,5 +1,6 @@
 import os
 import sys
+import asyncio
 #import pytest
 import unittest
 sys.dont_write_bytecode = True

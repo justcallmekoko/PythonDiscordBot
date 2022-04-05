@@ -1,6 +1,7 @@
 import os
 import sys
 import json
+import asyncio
 from datetime import datetime
 from dotenv import load_dotenv
 from discord.ext.tasks import loop
@@ -17,7 +18,7 @@ class AutoRole():
 
 	name = '!autorole'
 
-	desc = 'Apply roles automatically based on time spent'
+	desc = 'Apply roles automatically based on time spent in server'
 
 	synt = '!autorole [config|get <config>|set <config> <value>|add/remove <config> <value>|start|stop]'
 
@@ -55,13 +56,7 @@ class AutoRole():
 
 	is_service = True
 
-	global_message = None
-
 	client = None
-
-	days_to_role = [[365, 'One Year'],
-			[180, '6 Months'],
-			[90, '3 Months']]
 
 	def __init__(self, client = None):
 		self.client = client
@@ -74,6 +69,9 @@ class AutoRole():
 		print('\n\nConfigs Loaded:')
 		for config in self.guild_confs:
 			print('\t' + config['protected']['name'] + ': ' + config['protected']['guild'])
+
+		loop = asyncio.new_event_loop()
+		asyncio.set_event_loop(loop)
 
 		self.looping = True
 		self.loop_func.start()
