@@ -103,22 +103,23 @@ class UserInfo():
 			if await self.configutils.runConfig(message, arg, self.guild_confs, self.conf_path):
 				return True
 
-		target_user = str(message.content).split(' ')[1]
+#		target_user = str(message.content).split(' ')[1]
 
 		# Search for the user
-		found = False
+#		found = False
 
-		for member in message.guild.members:
-			if str(member.display_name) == target_user:
-				found = True
-				real_member = member
-				break
+		for real_member in message.mentions:
+#			for member in message.guild.members:
+#				if str(member.display_name) == target_user:
+#					found = True
+#					real_member = member
+#					break
 
-		# Did not find the user
-		if not found:
-			await message.channel.send(message.author.mention + ', The user was not found')
-		# Found the user
-		else:
+			# Did not find the user
+#			if not found:
+#				await message.channel.send(message.author.mention + ', The user was not found')
+			# Found the user
+#			else:
 			embed=discord.Embed(title="User Info",
 					color=discord.Color.blue())
 
@@ -150,7 +151,7 @@ class UserInfo():
 
 			await message.channel.send(embed=embed)
 
-		return
+		return True
 
 	async def stop(self, message):
 		self.looping = False
