@@ -102,6 +102,8 @@ class CustomClient(discord.Client):
 		print('Plugins loaded:')
 		for obj in obj_list:
 			print('\t' + str(obj.name))
+			if obj.is_service:
+				await obj.startService()
 
 	# Member joins the discord server
 	async def on_member_join(self, member):

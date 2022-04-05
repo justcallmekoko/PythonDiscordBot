@@ -12,14 +12,17 @@ class TestAutoRole(unittest.TestCase):
 
 	def test_check_bits(self):
 		autorole = AutoRole()
+		autorole.startService()
 		assert autorole.checkBits(0) == False
 
 	def test_check_cat_true(self):
 		autorole = AutoRole()
+		autorole.startService()
 		assert autorole.checkCat('admin') == True
 
 	def test_check_cat_false(self):
 		autorole = AutoRole()
+		autorole.startService()
 		assert autorole.checkCat('arrow') == False
 
 if __name__ == '__main__':

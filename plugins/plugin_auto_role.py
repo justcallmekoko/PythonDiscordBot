@@ -73,8 +73,8 @@ class AutoRole():
 #		loop = asyncio.new_event_loop()
 #		asyncio.set_event_loop(loop)
 
-		self.looping = True
-		self.loop_func.start()
+#		self.looping = True
+#		self.loop_func.start()
 
 
 	def getArgs(self, message):
@@ -150,6 +150,13 @@ class AutoRole():
 			return False
 	
 	def checkBits(self, bits):
+		return False
+
+	async def startService(self):
+		if not self.looping:
+			self.looping = True
+			self.loop_func.start()
+			return True
 		return False
 	
 	async def runCheer(self, user, amount):
