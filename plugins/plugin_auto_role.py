@@ -70,8 +70,8 @@ class AutoRole():
 		for config in self.guild_confs:
 			print('\t' + config['protected']['name'] + ': ' + config['protected']['guild'])
 
-		loop = asyncio.new_event_loop()
-		asyncio.set_event_loop(loop)
+#		loop = asyncio.new_event_loop()
+#		asyncio.set_event_loop(loop)
 
 		self.looping = True
 		self.loop_func.start()
