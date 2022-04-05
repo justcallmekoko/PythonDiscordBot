@@ -13,6 +13,10 @@ class PetMonty():
 	# Required for all plugins
 	conf_path = os.path.join(os.path.dirname(__file__), 'configs')
 
+	guild_confs = []
+
+	configutils = None
+
 	name = '!petmonty'
 
 	desc = 'Give Monty a pet. He deserves it'

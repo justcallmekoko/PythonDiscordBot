@@ -16,6 +16,10 @@ class AutoRole():
 	# Required for all plugins
 	conf_path = os.path.join(os.path.dirname(__file__), 'configs')
 
+	guild_confs = []
+
+	configutils = None
+
 	name = '!autorole'
 
 	desc = 'Apply roles automatically based on time spent in server'
