@@ -108,25 +108,25 @@ class ConfigUtils():
 			# Check role objects
 			print('Checking standard and admin')
 			for role in message.author.roles:
-				if 'values' in config['standard_groups']:
+				if 'value' in config['standard_groups']:
 					print('Check if ' + str(role.mention) + ' is in ' + str(config['standard_groups']['values']))
 					if role.mention in config['standard_groups']['values']:
 						print(str(role.mention) + ' found in standard_groups')
 						return True
 				else:
 					print('Did not find values')
-				if 'values' in config['admin_groups']:
+				if 'value' in config['admin_groups']:
 					if role.mention in config['admin_groups']['values']:
 						print(str(role.mention) + ' found in admin_groups')
 						return True
 
 			# Check string roles (old)
 			for user_role in user_roles:
-				if 'values' in config['standard_groups']:
+				if 'value' in config['standard_groups']:
 					if user_role in config['standard_groups']:
 						print(user_role + ' found in standard_groups')
 						return True
-				if 'values' in config['admin_groups']:
+				if 'value' in config['admin_groups']:
 					if user_role in config['admin_groups']:
 						print(user_role + ' found in admin_groups')
 						return True
