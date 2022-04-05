@@ -89,8 +89,7 @@ class AutoRole():
 			return None
 
 
-	#@loop(seconds = 3600)
-	@loop(seconds = 10)
+	@loop(seconds = 3600)
 	async def loop_func(self):
 		if self.looping:
 			# Loop through all guilds running this service
