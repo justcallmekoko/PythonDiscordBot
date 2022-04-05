@@ -59,6 +59,22 @@ class ConfigUtils():
 
 		return configs
 
+	def getGuildConfigByGuildConfigName(self, guild_config_name, configs):
+		for config in configs:
+			if config[self.protected_key]['guild'] == guild_config_name:
+				return config
+
+		return {}
+
+	def getGuildConfigByGuild(self, guild, configs):
+		guild_config_name = guild.name + str(guild.id)
+
+		for config in configs:
+			if config[self.protected_key]['guild'] == guild_config_name:
+				return config
+
+		return {}
+
 	def getGuildConfig(self, message, configs):
 		guild_config_name = message.guild.name + str(message.guild.id)
 
