@@ -24,7 +24,7 @@ class AutoRole():
 
 	looping = False
 
-	group = 'Moderator'
+	group = '@everyone'
 
 	default_config = {}
 	default_config['protected'] = {}
