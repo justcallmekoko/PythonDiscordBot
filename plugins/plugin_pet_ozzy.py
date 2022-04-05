@@ -12,6 +12,11 @@ from utils.config_utils import ConfigUtils
 class PetOzzy():
 	# Required for all plugins
 	conf_path = os.path.join(os.path.dirname(__file__), 'configs')
+
+	guild_confs = []
+
+	configutils = None
+	
 	name = '!petozzy'
 
 	desc = 'Give Ozzy a pet. He deserves it'

@@ -14,6 +14,10 @@ class Template():
 	# Required for all plugins
 	conf_path = os.path.join(os.path.dirname(__file__), 'configs')
 
+	guild_confs = []
+
+	configutils = None
+
 	name = '!template'
 
 	desc = 'This does nothing. Developer only'
@@ -26,11 +30,7 @@ class Template():
 
 	looping = False
 
-	guild_confs = []
-
 	full_conf_file = None
-
-	configutils = None
 
 	default_config = {}
 	default_config['protected'] = {}
