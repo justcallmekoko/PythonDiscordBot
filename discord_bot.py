@@ -103,7 +103,10 @@ class CustomClient(discord.Client):
 		for obj in obj_list:
 			print('\t' + str(obj.name))
 			if obj.is_service:
-				await obj.startService()
+				try:
+					await obj.startService()
+				except:
+					continue
 
 	# Member joins the discord server
 	async def on_member_join(self, member):
