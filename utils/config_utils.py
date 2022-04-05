@@ -106,6 +106,7 @@ class ConfigUtils():
 				return False
 
 			# Check role objects
+			print('Checking standard and admin')
 			for role in message.author.roles:
 				if 'values' in config['standard_groups']:
 					if role.mention in config['standard_groups']['values']:
