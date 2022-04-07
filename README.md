@@ -1,6 +1,7 @@
 # PythonDiscordBot
 [![Test](https://github.com/justcallmekoko/PythonDiscordBot/actions/workflows/test.yml/badge.svg)](https://github.com/justcallmekoko/PythonDiscordBot/actions/workflows/test.yml)
-[![Build Status](https://app.travis-ci.com/justcallmekoko/PythonDiscordBot.svg?branch=main)](https://app.travis-ci.com/github/justcallmekoko/PythonDiscordBot)
+[![Travis Test](https://img.shields.io/travis/justcallmekoko/pythondiscordbot/main?label=Travis%20Test)](https://app.travis-ci.com/github/justcallmekoko/PythonDiscordBot)
+[![Build and Push](https://github.com/justcallmekoko/PythonDiscordBot/actions/workflows/build_push.yml/badge.svg)](https://github.com/justcallmekoko/PythonDiscordBot/actions/workflows/build_push.yml)
 [![codecov](https://codecov.io/gh/justcallmekoko/PythonDiscordBot/branch/main/graph/badge.svg?token=TNCWYVYCM2)](https://codecov.io/gh/justcallmekoko/PythonDiscordBot)
 
 A modular Python bot that integrates with Discord
