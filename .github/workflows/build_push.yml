@@ -26,6 +26,12 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Create SHA Container Tag
+        id: sha_tag
+        run: |
+          tag=$(cut -c 1-7 <<< $GITHUB_SHA)
+          echo "::set-output name=tag::$tag"
+          
       - name: Checkout Code
         uses: actions/checkout@v3
         
@@ -56,5 +62,7 @@ jobs:
           push: true
           cache-from: type=registry,ref=ghcr.io/justcallmekoko/pythondiscordbot:latest
           cache-to: type=inline
-          tags: ghcr.io/justcallmekoko/pythondiscordbot:latest
+          tags: |
+            ghcr.io/justcallmekoko/pythondiscordbot:latest
+            ghcr.io/justcallmekoko/pythondiscordbot:${{ steps.sha_tag.outputs.tag }}
           build-args: git_sha=${{ github.sha }}
