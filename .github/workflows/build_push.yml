@@ -41,6 +41,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Give X perms to startup.sh
+        run: |
+          chmod +x startup.sh
+          ls -la | grep startup.sh
           
       - name: Build and Push
         uses: docker/build-push-action@v2
