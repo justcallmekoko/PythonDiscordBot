@@ -49,7 +49,7 @@ jobs:
           platforms: linux/arm64
           file: ./Dockerfile
           push: true
-          cache-from: type=registry,ref=ghcr.io/justcallmekoko/PythonDiscordBot:latest
+          cache-from: type=registry,ref=ghcr.io/justcallmekoko/pythondiscordbot:latest
           cache-to: type=inline
-          tags: ghcr.io/justcallmekoko/PythonDiscordBot:latest
+          tags: ghcr.io/justcallmekoko/pythondiscordbot:latest
           build-args: git_sha=${{ github.sha }}
