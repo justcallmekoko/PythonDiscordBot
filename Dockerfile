@@ -10,7 +10,7 @@ RUN pip3 install -r requirements.txt
 COPY . .
 
 # Run app directly
-#CMD [ "python3", "discord_bot.py" ]
+CMD [ "python3", "discord_bot.py" ]
 
 # Run app in a screen session via startup script
-CMD [ "startup.sh" ]
+#CMD [ "startup.sh" ]
