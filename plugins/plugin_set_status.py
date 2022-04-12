@@ -92,7 +92,7 @@ class SetStatus():
 
 	async def run(self, message, obj_list):
 		# Permissions check
-		if not self.configutils.hasPerms(message, False, self.guild_confs):
+		if not self.configutils.hasPerms(message, True, self.guild_confs):
 			await message.channel.send(message.author.mention + ' Permission denied')
 			return False
 
