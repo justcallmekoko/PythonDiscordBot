@@ -73,6 +73,7 @@ class CustomClient(discord.Client):
 	async def on_ready(self):
 		print (f'{self.user} has connected to Discord!')
 
+		# This probably needs to be moved so it's AFTER creating guild config files
 		for loader, mod_name, ispkg in modules:
 			if (mod_name not in sys.modules) and (mod_name.startswith('plugin_')):
 			

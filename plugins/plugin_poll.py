@@ -184,11 +184,16 @@ class Poll():
 				# Check votes
 				yes_count = 0
 				no_count = 0
+
+				guild_conf = self.configutils.getGuildConfig(msg, self.guild_confs)
+				yes_vote = guild_conf['yes_vote']['value']
+				no_vote = guild_conf['no_vote']['value']
+
 				for reaction in msg.reactions:
 					print(str(reaction) + ': ' + str(reaction.count))
-					if str(reaction.emoji) == self.yes_vote:
+					if str(reaction.emoji) == yes_vote:
 						yes_count = reaction.count
-					elif str(reaction.emoji) == self.no_vote:
+					elif str(reaction.emoji) == no_vote:
 						no_count = reaction.count
 
 				print(str(yes_count) + ' | ' + str(no_count))
@@ -242,13 +247,13 @@ class Poll():
 	async def loop_func(self):
 		if self.looping:
 			for guild in self.client.guilds:
-				print('Checking guild: ' + str(guild.name))
+				#print('Checking guild: ' + str(guild.name))
 				guild_conf = self.configutils.getGuildConfigByGuild(guild, self.guild_confs)
 				post_channel = None
 				# Find where the bot will be posting its announcements
 				for channel in guild.channels:
 					if str(channel.mention) == guild_conf['post_channel']['value']:
-						print('Found post channel')
+						#print('Found post channel')
 						post_channel = channel
 
 				if post_channel == None:
@@ -261,7 +266,7 @@ class Poll():
 					# Check for message Poll embeds
 					for embed in embeds:
 						if embed.title == 'Poll':
-							print('Found message with Poll embed')
+							#print('Found message with Poll embed')
 							await self.check_poll_embed(msg, embed)
 			return
 
@@ -382,9 +387,9 @@ class Poll():
 		if (post_channel != None) and (the_role != None):
 			msg = await post_channel.send(the_role.mention, embed=embed)
 
-			await msg.add_reaction(self.yes_vote)
+			await msg.add_reaction(guild_conf['yes_vote']['value'])
 
-			await msg.add_reaction(self.no_vote)
+			await msg.add_reaction(guild_conf['no_vote']['value'])
 
 		return True
 
