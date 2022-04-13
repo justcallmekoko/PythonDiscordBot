@@ -242,7 +242,7 @@ class Poll():
 	async def loop_func(self):
 		if self.looping:
 			for guild in self.client.guilds:
-				guild_conf = self.configutils.getGuildConfigByGuild(str(guild.name) + str(guild.id), self.guild_confs)
+				guild_conf = self.configutils.getGuildConfigByGuild(guild, self.guild_confs)
 				post_channel = None
 				# Find where the bot will be posting its announcements
 				for channel in guild.channels:
