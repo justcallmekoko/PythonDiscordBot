@@ -57,17 +57,6 @@ class CustomClient(discord.Client):
 	def __init__(self, discord_intents: discord.Intents):
 		super().__init__(intents=discord_intents)
 
-		for loader, mod_name, ispkg in modules:
-			if (mod_name not in sys.modules) and (mod_name.startswith('plugin_')):
-			
-				loaded_mod = __import__(path+"."+mod_name, fromlist=[mod_name])
-
-				class_name = self.get_class_name(mod_name)
-				loaded_class = getattr(loaded_mod, class_name)
-
-				instance = loaded_class(self)
-				obj_list.append(instance)
-
 		print('Init done')
 
 	def get_class_name(self, mod_name):
@@ -83,6 +72,17 @@ class CustomClient(discord.Client):
 	# Bot connects to discord server
 	async def on_ready(self):
 		print (f'{self.user} has connected to Discord!')
+
+		for loader, mod_name, ispkg in modules:
+			if (mod_name not in sys.modules) and (mod_name.startswith('plugin_')):
+			
+				loaded_mod = __import__(path+"."+mod_name, fromlist=[mod_name])
+
+				class_name = self.get_class_name(mod_name)
+				loaded_class = getattr(loaded_mod, class_name)
+
+				instance = loaded_class(self)
+				obj_list.append(instance)
 
 		for guild in client.guilds:
 #			if guild.name == GUILD:
