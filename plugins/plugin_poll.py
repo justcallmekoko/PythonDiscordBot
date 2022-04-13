@@ -331,6 +331,7 @@ class Poll():
 
 		# Do service stuff
 		if len(seg) == 2:
+			print('Service command')
 			# Check if user has admin permissions to run the service
 			if not self.configutils.hasPerms(message, True, self.guild_confs):
 				await message.channel.send(message.author.mention + ' Permission denied')
