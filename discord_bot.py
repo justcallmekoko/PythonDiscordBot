@@ -70,7 +70,7 @@ class CustomClient(discord.Client):
 
 		print('Init done')
 
-	def get_class_name(mod_name):
+	def get_class_name(self, mod_name):
 		output = ""
 
 		words = mod_name.split("_")[1:]
