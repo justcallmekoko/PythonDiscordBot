@@ -202,18 +202,22 @@ class AutoRole():
 			if the_guild not in self.running_guilds:
 				#self.looping = True
 				self.running_guilds.append(the_guild)
-				print('Guilds running autorole:')
+				print('Guilds running ' + str(self.name) + ':')
 				for gu in self.running_guilds:
 					print('\t' + gu)
-				await message.channel.send(message.author.mention + ' Starting autorole')
+				await message.channel.send(message.author.mention + ' Starting ' + str(self.name))
 				#self.loop_func.start()
+				return True
 
 		if str(arg) == 'stop':
 			if the_guild in self.running_guilds:
 				#self.looping = False
 				self.running_guilds.remove(the_guild)
-				await message.channel.send(message.author.mention + ' Stopping autorole')
+				await message.channel.send(message.author.mention + ' Stopping ' + str(self.name))
+				for gu in self.running_guilds:
+					print('\t' + gu)
 				#self.loop_func.stop()
+				return True
 		return
 
 	async def stop(self, message):

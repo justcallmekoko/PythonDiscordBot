@@ -57,6 +57,8 @@ class Poll():
 	default_config['time_lim']['value'] = 0
 	default_config['time_lim']['description'] = "Duration of a poll in seconds"
 
+	running_guilds = []
+
 	looping = False
 
 	group = '@everyone'
@@ -114,6 +116,13 @@ class Poll():
 			return seg
 		else:
 			return None
+
+	async def startService(self):
+		if not self.looping:
+			self.looping = True
+			self.loop_func.start()
+			return True
+		return False
 
 	def checkCat(self, check_cat):
 		if self.cat == check_cat:
@@ -253,6 +262,10 @@ class Poll():
 	async def loop_func(self):
 		if self.looping:
 			for guild in self.client.guilds:
+				# Only run on guilds that have the service enabled
+				if str(guild.name) + str(guild.id) not in self.running_guilds:
+					continue
+
 				#print('Checking guild: ' + str(guild.name))
 				guild_conf = self.configutils.getGuildConfigByGuild(guild, self.guild_confs)
 				post_channel = None
@@ -332,20 +345,46 @@ class Poll():
 			# Only do service stuff if user has role
 			#if role_found:
 				# Service is being started
-			if str(seg[1]) == 'start':
-				if not self.looping:
-					self.looping = True
+
+			the_guild = str(message.guild.name) + str(message.guild.id)
+
+			if str(arg) == 'start':
+				if the_guild not in self.running_guilds:
+					#self.looping = True
+					self.running_guilds.append(the_guild)
+					print('Guilds running ' + str(self.name) + ':')
+					for gu in self.running_guilds:
+						print('\t' + gu)
 					await message.channel.send(message.author.mention + ' Starting ' + str(self.name))
-					self.loop_func.start()
+					#self.loop_func.start()
 					return True
-				return False
-			if str(seg[1]) == 'stop':
-				if self.looping:
-					self.looping = False
+
+			if str(arg) == 'stop':
+				if the_guild in self.running_guilds:
+					#self.looping = False
+					self.running_guilds.remove(the_guild)
 					await message.channel.send(message.author.mention + ' Stopping ' + str(self.name))
-					self.loop_func.stop()
+					for gu in self.running_guilds:
+						print('\t' + gu)
+					#self.loop_func.stop()
 					return True
-				return False
+
+			return False
+
+#			if str(seg[1]) == 'start':
+#				if not self.looping:
+#					self.looping = True
+#					await message.channel.send(message.author.mention + ' Starting ' + str(self.name))
+#					self.loop_func.start()
+#					return True
+#				return False
+#			if str(seg[1]) == 'stop':
+#				if self.looping:
+#					self.looping = False
+#					await message.channel.send(message.author.mention + ' Stopping ' + str(self.name))
+#					self.loop_func.stop()
+#					return True
+#				return False
 			#else:
 			#	return False
 

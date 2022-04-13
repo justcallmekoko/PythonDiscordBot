@@ -123,6 +123,7 @@ class CustomClient(discord.Client):
 
 			print ()
 
+		# Show all plugins and start all services that can be started
 		print('Plugins loaded:')
 		for obj in obj_list:
 			print('\t' + str(obj.name))
