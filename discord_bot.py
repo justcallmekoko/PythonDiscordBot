@@ -62,7 +62,7 @@ class CustomClient(discord.Client):
 			
 				loaded_mod = __import__(path+"."+mod_name, fromlist=[mod_name])
 
-				class_name = get_class_name(mod_name)
+				class_name = self.get_class_name(mod_name)
 				loaded_class = getattr(loaded_mod, class_name)
 
 				instance = loaded_class(client)
