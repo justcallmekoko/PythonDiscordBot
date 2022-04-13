@@ -384,6 +384,7 @@ class Poll():
 		# Find where the bot will be posting its announcements
 		guild_conf = self.configutils.getGuildConfig(message, self.guild_confs)
 		for channel in message.guild.channels:
+			print('Checking ' + str(channel.mention) + ' against ' + str(guild_conf['post_channel']['value']))
 			if str(channel.mention) == guild_conf['post_channel']['value']:
 				post_channel = channel
 		#for channel in message.guild.channels:
