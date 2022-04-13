@@ -331,7 +331,6 @@ class Poll():
 
 		# Do service stuff
 		if len(seg) == 2:
-			print('Service command')
 			# Check if user has admin permissions to run the service
 			if not self.configutils.hasPerms(message, True, self.guild_confs):
 				await message.channel.send(message.author.mention + ' Permission denied')
@@ -348,10 +347,8 @@ class Poll():
 				# Service is being started
 
 			the_guild = str(message.guild.name) + str(message.guild.id)
-			print('Running ' + str(seg) + ' command for ' + str(the_guild))
 
-			if str(arg) == 'start':
-				print('Checking start')
+			if str(seg[1]) == 'start':
 				if the_guild not in self.running_guilds:
 					#self.looping = True
 					self.running_guilds.append(the_guild)
@@ -362,12 +359,12 @@ class Poll():
 					#self.loop_func.start()
 					return True
 
-			if str(arg) == 'stop':
-				print('Checking stop')
+			if str(seg[1]) == 'stop':
 				if the_guild in self.running_guilds:
 					#self.looping = False
 					self.running_guilds.remove(the_guild)
 					await message.channel.send(message.author.mention + ' Stopping ' + str(self.name))
+					print('Guilds running ' + str(self.name) + ':')
 					for gu in self.running_guilds:
 						print('\t' + gu)
 					#self.loop_func.stop()
