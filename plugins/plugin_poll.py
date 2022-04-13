@@ -179,8 +179,14 @@ class Poll():
 				no_count = 0
 
 				guild_conf = self.configutils.getGuildConfig(msg, self.guild_confs)
-				yes_vote = guild_conf['yes_vote']['value']
-				no_vote = guild_conf['no_vote']['value']
+				try:
+					yes_vote = guild_conf['yes_vote']['value']
+				except:
+					yes_vote = 0
+				try:
+					no_vote = guild_conf['no_vote']['value']
+				except:
+					no_vote = 0
 
 				for reaction in msg.reactions:
 					print(str(reaction) + ': ' + str(reaction.count))
@@ -229,7 +235,11 @@ class Poll():
 #				print('Seconds left: ' + str(self.poll_time_limit - message_hist_sec))
 
 				guild_conf = self.configutils.getGuildConfig(msg, self.guild_confs)
-				poll_time_limit = int(guild_conf['time_lim']['value'])
+
+				try:
+					poll_time_limit = int(guild_conf['time_lim']['value'])
+				except:
+					poll_time_limit = 0
 
 				await self.update_poll_embed(msg, embed, poll_time_limit - message_hist_sec)
 
@@ -381,8 +391,15 @@ class Poll():
 		# Find where the bot will be posting its announcements
 		for channel in message.guild.channels:
 			#print('Checking ' + str(channel.mention) + ' against ' + str(guild_conf['post_channel']['value']))
-			if str(channel.mention) == str(guild_conf['post_channel']['value']):
-				post_channel = channel
+			try:
+				if str(channel.mention) == str(guild_conf['post_channel']['value']):
+					post_channel = channel
+			except:
+				try:
+					if str(channel.name) == str(guild_conf['post_channel']['value']):
+						post_channel = channel
+				except:
+					continue
 		#for channel in message.guild.channels:
 		#	if str(channel.name) == self.post_channel:
 		#		post_channel = channel
