@@ -349,6 +349,7 @@ class Poll():
 			the_guild = str(message.guild.name) + str(message.guild.id)
 
 			if str(arg) == 'start':
+				print('Checking start')
 				if the_guild not in self.running_guilds:
 					#self.looping = True
 					self.running_guilds.append(the_guild)
@@ -360,6 +361,7 @@ class Poll():
 					return True
 
 			if str(arg) == 'stop':
+				print('Checking stop')
 				if the_guild in self.running_guilds:
 					#self.looping = False
 					self.running_guilds.remove(the_guild)
