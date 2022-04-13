@@ -82,9 +82,9 @@ class ConfigUtils():
 		guild_config_name = message.guild.name + str(message.guild.id)
 
 		for config in configs:
-			print(config[self.protected_key]['guild'])
+			#print(config[self.protected_key]['guild'])
 			if config[self.protected_key]['guild'] == guild_config_name:
-				print('Found config')
+				#print('Found config')
 				return config
 
 		return {}

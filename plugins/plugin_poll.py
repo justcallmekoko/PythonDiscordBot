@@ -241,7 +241,7 @@ class Poll():
 				guild_conf = self.configutils.getGuildConfig(msg, self.guild_confs)
 				poll_time_limit = int(guild_conf['time_lim']['value'])
 
-				await self.update_poll_embed(msg, embed, self.poll_time_limit - message_hist_sec)
+				await self.update_poll_embed(msg, embed, poll_time_limit - message_hist_sec)
 
 				if message_hist_sec > self.poll_time_limit:
 					print(str(now) + ' - ' + str(msg_time))
