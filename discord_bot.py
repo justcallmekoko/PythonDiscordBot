@@ -65,7 +65,7 @@ class CustomClient(discord.Client):
 				class_name = self.get_class_name(mod_name)
 				loaded_class = getattr(loaded_mod, class_name)
 
-				instance = loaded_class(client)
+				instance = loaded_class(self)
 				obj_list.append(instance)
 
 		print('Init done')
