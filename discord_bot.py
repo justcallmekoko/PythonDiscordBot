@@ -81,7 +81,7 @@ class CustomClient(discord.Client):
 				class_name = self.get_class_name(mod_name)
 				loaded_class = getattr(loaded_mod, class_name)
 
-				instance = loaded_class(self)
+				instance = loaded_class(client)
 				obj_list.append(instance)
 
 		for guild in client.guilds:
