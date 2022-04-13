@@ -53,6 +53,9 @@ class Poll():
 	default_config['no_vote'] = {}
 	default_config['no_vote']['value'] = ""
 	default_config['no_vote']['description'] = "The emote to signify 'no'"
+	default_config['time_lim'] = {}
+	default_config['time_lim']['value'] = 0
+	default_config['time_lim']['description'] = "Duration of a poll in seconds"
 
 	looping = False
 
@@ -234,6 +237,9 @@ class Poll():
 #				print('Current time: ' + str(now))
 #				print('Elapsed time: ' + str(message_hist_sec))
 #				print('Seconds left: ' + str(self.poll_time_limit - message_hist_sec))
+
+				guild_conf = self.configutils.getGuildConfig(msg, self.guild_confs)
+				poll_time_limit = int(guild_conf['time_lim']['value'])
 
 				await self.update_poll_embed(msg, embed, self.poll_time_limit - message_hist_sec)
 
