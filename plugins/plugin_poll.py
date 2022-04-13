@@ -26,7 +26,7 @@ class Poll():
 
 	desc = 'Start a poll and start the poll service'
 
-	synt = '!poll [<description>]|[start]|[stop]'
+	synt = '!poll [<description>]|[start]|[stop][config|get <config>|set <config> <value>|add/remove <config> <value>]'
 
 	default_config = {}
 	default_config['protected'] = {}
@@ -79,30 +79,20 @@ class Poll():
 	poll_time_limit = 345600
 #	poll_time_limit = 20
 
-	global_message = None
-
 	time_zone = 'US/Eastern'
 
 	message_history_limit = 100
 
-	tag_role = 'Voter'
+	#groups = ['Twitch Subscriber',
+	#	'3 Months',
+	#	'6 Months',
+	#	'One Year',
+	#	'Server Booster',
+	#	'Moderator']
 
-	post_channel = 'polls-and-suggestions'
-#	post_channel = 'bot-commands'
+	#blacklisted = ['Restricted']
 
-	groups = ['Twitch Subscriber',
-		'3 Months',
-		'6 Months',
-		'One Year',
-		'Server Booster',
-		'Moderator']
-
-	blacklisted = ['Restricted']
-
-	service_roles = ['Moderator']
-
-	yes_vote = '<:plusone:912765835184074785>'
-	no_vote = '<:minusone:912765865789898793>'
+	#service_roles = ['Moderator']
 
 	def __init__(self, client = None):
 		self.client = client
@@ -292,22 +282,22 @@ class Poll():
 
 		# Do Specific Plugin Stuff
 
-		self.global_message = message
+		#self.global_message = message
 		# Check if user can run this command
-		for role in message.author.roles:
-			if str(role.name) in self.blacklisted:
-				await message.channel.send(message.author.mention + ', Users with the role, `' + str(role.name) + '` are not permitted to run this command')
-				return False
+		#for role in message.author.roles:
+		#	if str(role.name) in self.blacklisted:
+		#		await message.channel.send(message.author.mention + ', Users with the role, `' + str(role.name) + '` are not permitted to run this command')
+		#		return False
 
-		role_found = False
-		for role in message.author.roles:
-			if str(role.name) in self.groups:
-				role_found = True
-				break
+		#role_found = False
+		#for role in message.author.roles:
+		#	if str(role.name) in self.groups:
+		#		role_found = True
+		#		break
 
-		if not role_found:
-			await message.channel.send(message.author.mention + ', Users require one of these roles to run this command.\n`' + str(self.groups) + '`')
-			return False
+		#if not role_found:
+		#	await message.channel.send(message.author.mention + ', Users require one of these roles to run this command.\n`' + str(self.groups) + '`')
+		#	return False
 
 		cmd = str(message.content)
 		seg = str(message.content).split(' ')
@@ -318,36 +308,38 @@ class Poll():
 
 		# Do service stuff
 		if len(seg) == 2:
+			# Check if user has admin permissions to run the service
 			if not self.configutils.hasPerms(message, True, self.guild_confs):
 				await message.channel.send(message.author.mention + ' Permission denied')
 				return False
 
 			# Check permissions
-			role_found = False
-			for role in message.author.roles:
-				if str(role.name) in self.service_roles:
-					role_found = True
-					break
+			#role_found = False
+			#for role in message.author.roles:
+			#	if str(role.name) in self.service_roles:
+			#		role_found = True
+			#		break
 			# Only do service stuff if user has role
-			if role_found:
+			#if role_found:
 				# Service is being started
-				if str(seg[1]) == 'start':
-					if not self.looping:
-						self.looping = True
-						await message.channel.send(message.author.mention + ' Starting ' + str(self.name))
-						self.loop_func.start()
-						return True
-				if str(seg[1]) == 'stop':
-					if self.looping:
-						self.looping = False
-						await message.channel.send(message.author.mention + ' Stopping ' + str(self.name))
-						self.loop_func.stop()
-						return True
-					else:
-						return False
-			else:
-				return False
+			if str(seg[1]) == 'start':
+				if not self.looping:
+					self.looping = True
+					await message.channel.send(message.author.mention + ' Starting ' + str(self.name))
+					self.loop_func.start()
+					return True
+			if str(seg[1]) == 'stop':
+				if self.looping:
+					self.looping = False
+					await message.channel.send(message.author.mention + ' Stopping ' + str(self.name))
+					self.loop_func.stop()
+					return True
+				else:
+					return False
+			#else:
+			#	return False
 
+		# User wants status of service
 		elif len(seg) == 1:
 			if self.looping:
 				await message.channel.send(message.author.mention + ' ' + str(self.name) + ' is running')

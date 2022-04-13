@@ -109,6 +109,13 @@ class ConfigUtils():
 			if 'admin_groups' not in config:
 				return False
 
+			# Check if user is blacklisted
+			for role in message.author.roles:
+				if 'value' in config['blacklisted']:
+					if role.mention in config['blacklisted']['value']:
+						print(str(role.mention) + ' found in blacklisted')
+						return False
+
 			# Check role objects
 			for role in message.author.roles:
 				if 'value' in config['standard_groups']:
