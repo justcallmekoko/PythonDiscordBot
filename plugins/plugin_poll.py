@@ -396,6 +396,8 @@ class Poll():
 			await msg.add_reaction(guild_conf['yes_vote']['value'])
 
 			await msg.add_reaction(guild_conf['no_vote']['value'])
+		else:
+			print('Could not find post channel. Not posting poll')
 
 		return True
 
