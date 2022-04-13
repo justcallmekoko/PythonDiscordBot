@@ -48,12 +48,13 @@ class ConfigUtils():
 						break
 
 				if the_config == None:
-					print('Could not find plugin configuration. Creating...')
-					default_config[self.protected_key]['guild'] = guild_name
-					json_data['plugins'].append(default_config)
+					new_conf = default_config
+					new_conf[self.protected_key]['guild'] = guild_name
+					print('Could not find plugin configuration. Creating...' + str(new_conf[self.protected_key]['guild']))
+					json_data['plugins'].append(new_conf)
 					with open(full_conf_file, 'w') as f:
 						json.dump(json_data, f, indent=4)
-					configs.append(default_config)
+					configs.append(new_conf)
 				else:
 					configs.append(the_config)
 
