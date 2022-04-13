@@ -252,7 +252,7 @@ class Poll():
 						post_channel = channel
 
 				if post_channel == None:
-					return
+					continue
 
 				# Get the messages
 				messages = await post_channel.history(limit=self.message_history_limit).flatten()
