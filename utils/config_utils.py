@@ -1,4 +1,5 @@
 import os
+import copy
 import json
 import discord
 from dotenv import load_dotenv
@@ -48,7 +49,7 @@ class ConfigUtils():
 						break
 
 				if the_config == None:
-					new_conf = default_config
+					new_conf = copy.copy(default_config)
 					new_conf[self.protected_key]['guild'] = guild_name
 					print('Could not find plugin configuration. Creating...' + str(new_conf[self.protected_key]['guild']))
 					configs.append(new_conf)
