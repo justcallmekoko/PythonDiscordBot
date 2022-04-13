@@ -348,6 +348,7 @@ class Poll():
 				# Service is being started
 
 			the_guild = str(message.guild.name) + str(message.guild.id)
+			print('Running ' + str(seg) + ' command for ' + str(the_guild))
 
 			if str(arg) == 'start':
 				print('Checking start')
