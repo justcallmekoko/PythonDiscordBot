@@ -241,23 +241,25 @@ class Poll():
 	@loop(seconds = 3)
 	async def loop_func(self):
 		if self.looping:
-			post_channel = None
-			# Find where the bot will be posting its announcements
-			for channel in self.global_message.guild.channels:
-				if str(channel.name) == self.post_channel:
-					post_channel = channel
+			for guild in self.client.guilds:
+				guild_conf = self.configutils.getGuildConfigByGuild(str(guild.name) + str(guild.id), self.guild_confs)
+				post_channel = None
+				# Find where the bot will be posting its announcements
+				for channel in guild.channels:
+					if str(channel.mention) == guild_conf['post_channel']['value']:
+						post_channel = channel
 
-			if post_channel == None:
-				return
+				if post_channel == None:
+					return
 
-			# Get the messages
-			messages = await post_channel.history(limit=self.message_history_limit).flatten()
-			for msg in messages:
-				embeds = msg.embeds
-				# Check for message Poll embeds
-				for embed in embeds:
-					if embed.title == 'Poll':
-						await self.check_poll_embed(msg, embed)
+				# Get the messages
+				messages = await post_channel.history(limit=self.message_history_limit).flatten()
+				for msg in messages:
+					embeds = msg.embeds
+					# Check for message Poll embeds
+					for embed in embeds:
+						if embed.title == 'Poll':
+							await self.check_poll_embed(msg, embed)
 			return
 
 	async def run(self, message, obj_list):
@@ -366,9 +368,13 @@ class Poll():
 				the_role = role
 
 		# Find where the bot will be posting its announcements
+		guild_conf = self.configutils.getGuildConfig(message, self.guild_confs)
 		for channel in message.guild.channels:
-			if str(channel.name) == self.post_channel:
+			if str(channel.mention) == guild_conf['post_channel']['value']:
 				post_channel = channel
+		#for channel in message.guild.channels:
+		#	if str(channel.name) == self.post_channel:
+		#		post_channel = channel
 
 		if (post_channel != None) and (the_role != None):
 			msg = await post_channel.send(the_role.mention, embed=embed)
