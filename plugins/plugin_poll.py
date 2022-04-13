@@ -243,7 +243,7 @@ class Poll():
 
 				await self.update_poll_embed(msg, embed, poll_time_limit - message_hist_sec)
 
-				if message_hist_sec > self.poll_time_limit:
+				if message_hist_sec > poll_time_limit:
 					print(str(now) + ' - ' + str(msg_time))
 					print('Found open Poll that needs to be closed: ' + str(message_hist_sec))
 					await self.close_poll_embed(msg, embed)
