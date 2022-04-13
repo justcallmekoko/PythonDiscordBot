@@ -338,14 +338,14 @@ class Poll():
 					await message.channel.send(message.author.mention + ' Starting ' + str(self.name))
 					self.loop_func.start()
 					return True
+				return False
 			if str(seg[1]) == 'stop':
 				if self.looping:
 					self.looping = False
 					await message.channel.send(message.author.mention + ' Stopping ' + str(self.name))
 					self.loop_func.stop()
 					return True
-				else:
-					return False
+				return False
 			#else:
 			#	return False
 
