@@ -377,15 +377,16 @@ class Poll():
 
 		the_role = None
 
+		guild_conf = self.configutils.getGuildConfig(message, self.guild_confs)
+
 		for role in message.guild.roles:
-			if role.name == self.tag_role:
+			if role.mention == guild_conf['tag_role']['value']:
 				the_role = role
 
 		if the_role == None:
 			the_role = '@everyone'
 
 		# Find where the bot will be posting its announcements
-		guild_conf = self.configutils.getGuildConfig(message, self.guild_confs)
 		for channel in message.guild.channels:
 			#print('Checking ' + str(channel.mention) + ' against ' + str(guild_conf['post_channel']['value']))
 			if str(channel.mention) == str(guild_conf['post_channel']['value']):
