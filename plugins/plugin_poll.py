@@ -247,6 +247,7 @@ class Poll():
 				# Find where the bot will be posting its announcements
 				for channel in guild.channels:
 					if str(channel.mention) == guild_conf['post_channel']['value']:
+						print('Found post channel')
 						post_channel = channel
 
 				if post_channel == None:
@@ -259,6 +260,7 @@ class Poll():
 					# Check for message Poll embeds
 					for embed in embeds:
 						if embed.title == 'Poll':
+							print('Found message with Poll embed')
 							await self.check_poll_embed(msg, embed)
 			return
 
