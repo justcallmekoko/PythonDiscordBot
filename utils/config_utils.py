@@ -53,7 +53,7 @@ class ConfigUtils():
 					new_conf = copy.copy(default_config)
 					new_conf[self.protected_key]['guild'] = guild_name
 					print('Could not find plugin configuration. Creating...' + str(new_conf[self.protected_key]['guild']))
-					configs.append(new_conf)
+					configs.append(copy.copy(new_conf))
 					json_data['plugins'].append(new_conf)
 					with open(full_conf_file, 'w') as f:
 						json.dump(json_data, f, indent=4)
