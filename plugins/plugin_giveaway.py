@@ -251,7 +251,11 @@ class Giveaway():
 
 			embed.add_field(name='Started at', value='```' + str(self.start_time) + '```', inline=False)
 
-			embed.add_field(name='Required Roles', value='```' + str(the_config['standard_groups']['value']) + '```', inline=False)
+			role_string = ''
+			for standard_role in the_config['standard_groups']['value']:
+				role_string = role_string + standard_role + ' '
+
+			embed.add_field(name='Required Roles', value='```' + str(role_string) + '```', inline=False)
 			embed.add_field(name='How to join', value='```React with any emote```', inline=False)
 			embed.add_field(name='Status', value='```OPEN```', inline=False)
 			embed.add_field(name='Winners', value='``` ```', inline=False)
