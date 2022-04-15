@@ -68,18 +68,8 @@ class Giveaway():
 	winner_list = []
 
 	running = False
-
-	admin_group = 'Moderator'
 	
-	participant_roles = ['members']
-	blacklisted = ['Restricted']
-
 	start_date = datetime.now()
-
-	giveaway_message = None
-
-	post_channel = 'giveaways'
-#	post_channel = 'bot-commands'
 
 	def __init__(self, client = None):
 		self.client = client
@@ -130,21 +120,6 @@ class Giveaway():
 						if not self.configutils.hasPermsUser(cache_message, real_member, False, self.guild_confs):
 							print('does not have permission to join the giveaway')
 							continue
-						# Check if user is blacklisted or has perms
-
-#						for role in user.roles:
-#							if str(role.name) in self.blacklisted:
-#								return True
-
-						# Check if user has the required roles
-#						role_found = False
-#						for role in user.roles:
-#							if str(role.name) in self.participant_roles:
-#								role_found = True
-#								break
-
-#						if not role_found:
-#							return False
 
 						if (real_member not in index[1]) and (self.looping):
 							print('Adding ' + str(real_member) + ' to giveaway: ' + str(msg.id))
@@ -207,11 +182,12 @@ class Giveaway():
 
 		# User just wants status of giveaway
 		if message.content == '!giveaway':
-			if self.running:
-				await message.channel.send(message.author.mention + ' `' + self.giveaway_name + '` is currently running: ' + str(self.giveaway_message.jump_url))
-			else:
-				await message.channel.send(message.author.mention + ' There are no giveaways running')
 			return True
+		#	if self.running:
+		#		await message.channel.send(message.author.mention + ' `' + self.giveaway_name + '` is currently running: ' + str(self.giveaway_message.jump_url))
+		#	else:
+		#		await message.channel.send(message.author.mention + ' There are no giveaways running')
+		#	return True
 
 		# Get commands args...again
 		command = seg[1]
@@ -229,12 +205,6 @@ class Giveaway():
 
 		# Starting giveaway
 		if command == 'start':
-			if self.admin_group not in user_groups:
-				await message.channel.send(message.author.mention + ' ' + str(cmd) + ' You must be a member of ' + self.admin_group + ' to run this command')
-				return
-			if len(seg) < 3:
-				await message.channel.send(message.author.mention + '`' + str(message.content) + '` is not the proper syntax')
-				return
 			test_name = ''
 			for i in range(2, len(seg)):
 				test_name = test_name + seg[i] + ' '
@@ -243,7 +213,6 @@ class Giveaway():
 			self.winner = None
 			self.running = True
 			self.start_time = datetime.now()
-			self.winner_list = []
 			embed.add_field(name='Title', value='```' + str(self.giveaway_name) + '```', inline=True)
 			embed.add_field(name='Participants', value='```' + str(len(self.users)) + '```', inline=True)
 
@@ -252,11 +221,14 @@ class Giveaway():
 			embed.add_field(name='Started at', value='```' + str(self.start_time) + '```', inline=False)
 
 			role_string = ''
-			for standard_role in the_config['standard_groups']['value']:
-				for role in message.guild.roles:
-					if str(role.mention) == standard_role:
-						role_string = role_string + role.mention + ' '
-						continue
+			try:
+				for standard_role in the_config['standard_groups']['value']:
+					for role in message.guild.roles:
+						if str(role.mention) == standard_role:
+							role_string = role_string + role.mention + ' '
+							continue
+			except:
+				pass
 
 			embed.add_field(name='Required Roles', value=str(role_string), inline=False)
 			embed.add_field(name='How to join', value='```React with any emote```', inline=False)
@@ -267,10 +239,10 @@ class Giveaway():
 			local_post_channel = await self.get_post_channel(message, the_config)
 			if local_post_channel == None:
 				return False
-			self.giveaway_message = await local_post_channel.send(embed=embed)
+			giveaway_message = await local_post_channel.send(embed=embed)
 
 			# Add giveaway message to list of running giveaways
-			self.running_giveaways.append([self.giveaway_message, [], [], test_name[:-1]])
+			self.running_giveaways.append([giveaway_message, [], [], test_name[:-1]])
 
 			# Show us the list of running giveaway messages
 			print('Giveaway messages: ')
@@ -286,15 +258,6 @@ class Giveaway():
 
 		# Stoping giveaway
 		if command == 'stop':
-#			if not self.running:
-#				await message.channel.send(message.author.mention + ' There are no giveaways running')
-#				return
-#			if self.admin_group not in user_groups:
-#								await message.channel.send(message.author.mention + ' ' + str(cmd) + ' You must be a member of ' + self.admin_group + ' to run this command')
-#								return
-#			if len(seg) != 2:
-#				await message.channel.send(message.author.mention + '`' + str(message.content) + '` is not the proper syntax')
-#				return
 			check_msg_id = str(arg[2])
 			print('Checking ' + check_msg_id)
 
@@ -314,14 +277,9 @@ class Giveaway():
 				await message.channel.send(message.author.mention + ' That giveaway is not running on this server')
 				return False
 
-#			self.users.clear()
-#			self.winner_list = []
-#			self.winner = None
-#			self.running = False
 			# Remove the target giveaway from the list of running giveaways
 			self.running_giveaways.remove(the_index)
 			await message.channel.send(message.author.mention + '`' + str(self.giveaway_name) + '` giveaway stopped')
-#			self.giveaway_name = None
 			the_embed = None
 			for embed in the_index[0].embeds:
 				if embed.title == 'Giveaway':
@@ -333,10 +291,6 @@ class Giveaway():
 					embed.set_field_at(i, name=embed.fields[i].name, value='```CLOSED```', inline=False)
 
 			await the_index[0].edit(embed=the_embed)
-#			self.giveaway_message = None
-#			self.looping = False
-#			self.loop_func.stop()
-#			await message.channel.send(embed=embed)
 
 			# Show us the list of running giveaway messages
 			print('Giveaway messages: ')
@@ -346,18 +300,6 @@ class Giveaway():
 
 		# Pick winner
 		if command == 'pick':
-#			if not self.running:
-#				await message.channel.send(message.author.mention + ' There are no giveaways running')
-#				return
-#			if self.admin_group not in user_groups:
-#				await message.channel.send(message.author.mention + ' ' + str(cmd) + ' You must be a member of ' + self.admin_group + ' to run this command')
-#				return
-#			if len(seg) != 2:
-#				await message.channel.send(message.author.mention + '`' + str(message.content) + '` is not the proper syntax')
-#				return
-#			if len(self.users) <= 0:
-#				await message.channel.send(message.author.mention + ' There are no participants in the giveaway')
-#				return
 
 			check_msg_id = str(arg[2])
 			print('Checking ' + check_msg_id)
@@ -403,7 +345,6 @@ class Giveaway():
 
 			await the_index[0].edit(embed=the_embed)
 			await self.update_giveaway_embed(the_index)
-#			await message.channel.send(embed=embed)
 
 		# Join giveaway
 		if command == 'asdfahsdlfkjahwefw8efh23487fhwed8f7ahsdfkqw43h':
@@ -428,7 +369,6 @@ class Giveaway():
 
 				await self.update_giveaway_embed()
 
-#			await message.channel.send(embed=embed)
 		return True
 
 	async def stop(self, message):
