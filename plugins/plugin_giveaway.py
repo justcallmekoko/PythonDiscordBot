@@ -24,7 +24,7 @@ class Giveaway():
 
 	desc = 'Start, stop, manage, and join giveaways'
 
-	synt = '!giveaway [start <name>|stop|pick <msg id>][config|get <config>|set <config> <value>|add/remove <config> <value>]'
+	synt = '!giveaway [start <name>|stop <msg id>|pick <msg id>][config|get <config>|set <config> <value>|add/remove <config> <value>]'
 
 	default_config = {}
 	default_config['protected'] = {}
@@ -279,23 +279,44 @@ class Giveaway():
 
 		# Stoping giveaway
 		if command == 'stop':
-			if not self.running:
-				await message.channel.send(message.author.mention + ' There are no giveaways running')
-				return
-			if self.admin_group not in user_groups:
-								await message.channel.send(message.author.mention + ' ' + str(cmd) + ' You must be a member of ' + self.admin_group + ' to run this command')
-								return
-			if len(seg) != 2:
-				await message.channel.send(message.author.mention + '`' + str(message.content) + '` is not the proper syntax')
-				return
-			self.users.clear()
-			self.winner_list = []
-			self.winner = None
-			self.running = False
+#			if not self.running:
+#				await message.channel.send(message.author.mention + ' There are no giveaways running')
+#				return
+#			if self.admin_group not in user_groups:
+#								await message.channel.send(message.author.mention + ' ' + str(cmd) + ' You must be a member of ' + self.admin_group + ' to run this command')
+#								return
+#			if len(seg) != 2:
+#				await message.channel.send(message.author.mention + '`' + str(message.content) + '` is not the proper syntax')
+#				return
+			check_msg_id = str(arg[2])
+			print('Checking ' + check_msg_id)
+
+			# Check if this message is even part of the user's server
+			# This will prevent someone with admin privs on another server from picking
+			# A winner on a server where they don't have admin privs
+			the_index = None
+			for index in self.running_giveaways:
+				msg = index[0]
+				if (msg.guild == message.guild) and (check_msg_id == str(msg.id)):
+					the_index = index
+					break
+
+			# User tried to pick a winner for a giveaway that wasn't running in their server
+			if the_index == None:
+				print('Source msg guild and target giveaway guild did not match')
+				await message.channel.send(message.author.mention + ' That giveaway is not running on this server')
+				return False
+
+#			self.users.clear()
+#			self.winner_list = []
+#			self.winner = None
+#			self.running = False
+			# Remove the target giveaway from the list of running giveaways
+			self.running_giveaways.remove(the_index)
 			await message.channel.send(message.author.mention + '`' + str(self.giveaway_name) + '` giveaway stopped')
-			self.giveaway_name = None
+#			self.giveaway_name = None
 			the_embed = None
-			for embed in self.giveaway_message.embeds:
+			for embed in the_index[0].embeds:
 				if embed.title == 'Giveaway':
 					the_embed = embed
 					break
@@ -304,11 +325,17 @@ class Giveaway():
 				if the_embed.fields[i].name=='Status':
 					embed.set_field_at(i, name=embed.fields[i].name, value='```CLOSED```', inline=False)
 
-			await self.giveaway_message.edit(embed=the_embed)
-			self.giveaway_message = None
-			self.looping = False
-			self.loop_func.stop()
+			await the_index[0].edit(embed=the_embed)
+#			self.giveaway_message = None
+#			self.looping = False
+#			self.loop_func.stop()
 #			await message.channel.send(embed=embed)
+
+			# Show us the list of running giveaway messages
+			print('Giveaway messages: ')
+			for index in self.running_giveaways:
+				msg = index[0]
+				print('\t' + str(msg.id))
 
 		# Pick winner
 		if command == 'pick':
@@ -334,7 +361,7 @@ class Giveaway():
 			the_index = None
 			for index in self.running_giveaways:
 				msg = index[0]
-				if msg.guild == message.guild:
+				if (msg.guild == message.guild) and (check_msg_id == str(msg.id)):
 					the_index = index
 					break
 
