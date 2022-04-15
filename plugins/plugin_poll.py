@@ -85,17 +85,6 @@ class Poll():
 
 	message_history_limit = 100
 
-	#groups = ['Twitch Subscriber',
-	#	'3 Months',
-	#	'6 Months',
-	#	'One Year',
-	#	'Server Booster',
-	#	'Moderator']
-
-	#blacklisted = ['Restricted']
-
-	#service_roles = ['Moderator']
-
 	def __init__(self, client = None):
 		self.client = client
 		self.configutils = ConfigUtils()
@@ -151,8 +140,6 @@ class Poll():
 		for field in embed.fields:
 			if field.name == 'Poll Description':
 				poll_desc = field.value
-
-#		print(str(poll_desc) + ': ' + str(time_left))
 
 		field_found = False
 		for i in range(0, len(embed.fields)):
@@ -228,7 +215,6 @@ class Poll():
 	async def check_poll_embed(self, msg, embed):
 		for field in embed.fields:
 			if (field.name == 'Status') and (field.value == '```OPEN```'):
-#				print('Found open Poll')
 
 				usest = pytz.timezone(self.time_zone)
 				msg_time = utc.localize(msg.created_at)
@@ -237,11 +223,6 @@ class Poll():
 				now = usest.localize(now)
 
 				message_hist_sec = (now - msg_time).total_seconds()
-
-#				print('Message time: ' + str(msg_time))
-#				print('Current time: ' + str(now))
-#				print('Elapsed time: ' + str(message_hist_sec))
-#				print('Seconds left: ' + str(self.poll_time_limit - message_hist_sec))
 
 				guild_conf = self.configutils.getGuildConfig(msg, self.guild_confs)
 
@@ -266,13 +247,11 @@ class Poll():
 				if str(guild.name) + str(guild.id) not in self.running_guilds:
 					continue
 
-				#print('Checking guild: ' + str(guild.name))
 				guild_conf = self.configutils.getGuildConfigByGuild(guild, self.guild_confs)
 				post_channel = None
 				# Find where the bot will be posting its announcements
 				for channel in guild.channels:
 					if str(channel.mention) == guild_conf['post_channel']['value']:
-						#print('Found post channel')
 						post_channel = channel
 
 				if post_channel == None:
@@ -285,7 +264,6 @@ class Poll():
 					# Check for message Poll embeds
 					for embed in embeds:
 						if embed.title == 'Poll':
-							#print('Found message with Poll embed')
 							await self.check_poll_embed(msg, embed)
 			return
 
@@ -305,23 +283,6 @@ class Poll():
 
 		# Do Specific Plugin Stuff
 
-		#self.global_message = message
-		# Check if user can run this command
-		#for role in message.author.roles:
-		#	if str(role.name) in self.blacklisted:
-		#		await message.channel.send(message.author.mention + ', Users with the role, `' + str(role.name) + '` are not permitted to run this command')
-		#		return False
-
-		#role_found = False
-		#for role in message.author.roles:
-		#	if str(role.name) in self.groups:
-		#		role_found = True
-		#		break
-
-		#if not role_found:
-		#	await message.channel.send(message.author.mention + ', Users require one of these roles to run this command.\n`' + str(self.groups) + '`')
-		#	return False
-
 		cmd = str(message.content)
 		seg = str(message.content).split(' ')
 		if len(seg) < 1:
@@ -336,58 +297,27 @@ class Poll():
 				await message.channel.send(message.author.mention + ' Permission denied')
 				return False
 
-			# Check permissions
-			#role_found = False
-			#for role in message.author.roles:
-			#	if str(role.name) in self.service_roles:
-			#		role_found = True
-			#		break
-			# Only do service stuff if user has role
-			#if role_found:
-				# Service is being started
-
 			the_guild = str(message.guild.name) + str(message.guild.id)
 
 			if str(seg[1]) == 'start':
 				if the_guild not in self.running_guilds:
-					#self.looping = True
 					self.running_guilds.append(the_guild)
 					print('Guilds running ' + str(self.name) + ':')
 					for gu in self.running_guilds:
 						print('\t' + gu)
 					await message.channel.send(message.author.mention + ' Starting ' + str(self.name))
-					#self.loop_func.start()
 					return True
 
 			if str(seg[1]) == 'stop':
 				if the_guild in self.running_guilds:
-					#self.looping = False
 					self.running_guilds.remove(the_guild)
 					await message.channel.send(message.author.mention + ' Stopping ' + str(self.name))
 					print('Guilds running ' + str(self.name) + ':')
 					for gu in self.running_guilds:
 						print('\t' + gu)
-					#self.loop_func.stop()
 					return True
 
 			return False
-
-#			if str(seg[1]) == 'start':
-#				if not self.looping:
-#					self.looping = True
-#					await message.channel.send(message.author.mention + ' Starting ' + str(self.name))
-#					self.loop_func.start()
-#					return True
-#				return False
-#			if str(seg[1]) == 'stop':
-#				if self.looping:
-#					self.looping = False
-#					await message.channel.send(message.author.mention + ' Stopping ' + str(self.name))
-#					self.loop_func.stop()
-#					return True
-#				return False
-			#else:
-			#	return False
 
 		# User wants status of service
 		elif len(seg) == 1:
@@ -403,8 +333,6 @@ class Poll():
 			test_name = test_name + seg[i] + ' '
 		self.poll_desc = test_name[:-1]
 
-#		await message.channel.send(self.poll_desc)
-
 		embed = discord.Embed(title="Poll",
 				color=discord.Color.blue())
 
@@ -412,8 +340,6 @@ class Poll():
 		embed.add_field(name='Creator', value=str(message.author.mention), inline=False)
 
 		embed.add_field(name='Status', value='```OPEN```', inline = False)
-
-#		embed.add_field(name='Rules', value='Vote with <:plusone:> or <:minusone:>', inline=False)
 
 		post_channel = None
 
@@ -430,7 +356,6 @@ class Poll():
 
 		# Find where the bot will be posting its announcements
 		for channel in message.guild.channels:
-			#print('Checking ' + str(channel.mention) + ' against ' + str(guild_conf['post_channel']['value']))
 			try:
 				if str(channel.mention) == str(guild_conf['post_channel']['value']):
 					post_channel = channel
@@ -440,9 +365,6 @@ class Poll():
 						post_channel = channel
 				except:
 					continue
-		#for channel in message.guild.channels:
-		#	if str(channel.name) == self.post_channel:
-		#		post_channel = channel
 
 		if (post_channel != None) and (the_role != None):
 			msg = await post_channel.send(the_role.mention, embed=embed)
@@ -452,7 +374,6 @@ class Poll():
 			await msg.add_reaction(guild_conf['no_vote']['value'])
 		else:
 			print('Could not find post channel. Not posting poll')
-			#print(guild_conf)
 
 		return True
 
