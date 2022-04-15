@@ -148,11 +148,11 @@ class Giveaway():
 						if (real_member not in self.users) and (self.looping):
 							print('Adding ' + str(real_member) + ' to giveaway list')
 							self.users.append(real_member)
-							await self.update_giveaway_embed()
+							await self.update_giveaway_embed(msg)
 
-	async def update_giveaway_embed(self):
+	async def update_giveaway_embed(self, msg):
 		the_embed = None
-		for embed in self.giveaway_message.embeds:
+		for embed in msg.embeds:
 			if embed.title == 'Giveaway':
 #				print('Found the giveaway')
 				the_embed = embed
@@ -163,7 +163,7 @@ class Giveaway():
 #				print('Setting the user amount')
 				the_embed.set_field_at(i, name=embed.fields[i].name, value='```' + str(len(self.users)) + '```', inline=True)
 
-		await self.giveaway_message.edit(embed=the_embed)
+		await msg.edit(embed=the_embed)
 
 	async def get_post_channel(self, message, the_config):
 		# Find where the bot will be posting its announcements
