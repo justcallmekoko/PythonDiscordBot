@@ -371,6 +371,10 @@ class Giveaway():
 				await message.channel.send(message.author.mention + ' That giveaway is not running on this server')
 				return False
 
+			if len(the_index[1]) <= 0:
+				await message.channel.send(message.author.mention + ' There are no particpants for that giveaway')
+				return False
+				
 			self.winner = random.choice(the_index[1])
 			the_index[2].append(self.winner) # Add winner to index list of winners
 			the_index[1].remove(self.winner) # Remove winner from index list of users
