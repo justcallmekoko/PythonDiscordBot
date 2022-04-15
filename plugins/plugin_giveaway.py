@@ -147,7 +147,7 @@ class Giveaway():
 #							return False
 
 						if (real_member not in index[1]) and (self.looping):
-							print('Adding ' + str(real_member) + ' to giveaway list')
+							print('Adding ' + str(real_member) + ' to giveaway: ' + str(msg.id))
 							index[1].append(real_member)
 							await self.update_giveaway_embed(index)
 
