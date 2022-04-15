@@ -258,7 +258,7 @@ class Giveaway():
 						role_string = role_string + role.mention + ' '
 						continue
 
-			embed.add_field(name='Required Roles', value='```' + str(role_string) + '```', inline=False)
+			embed.add_field(name='Required Roles', value=str(role_string), inline=False)
 			embed.add_field(name='How to join', value='```React with any emote```', inline=False)
 			embed.add_field(name='Status', value='```OPEN```', inline=False)
 			embed.add_field(name='Winners', value='``` ```', inline=False)
