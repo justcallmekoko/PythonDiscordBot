@@ -253,7 +253,10 @@ class Giveaway():
 
 			role_string = ''
 			for standard_role in the_config['standard_groups']['value']:
-				role_string = role_string + standard_role + ' '
+				for role in message.guild.roles:
+					if str(role.mention) == standard_role:
+						role_string = role_string + role + ' '
+						continue
 
 			embed.add_field(name='Required Roles', value='```' + str(role_string) + '```', inline=False)
 			embed.add_field(name='How to join', value='```React with any emote```', inline=False)
