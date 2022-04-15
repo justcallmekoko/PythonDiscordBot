@@ -118,7 +118,8 @@ class Giveaway():
 	async def loop_func(self):
 		if self.looping:
 			# Loop through all running giveaway messages
-			for msg in self.running_giveaways:
+			for index in self.running_giveaways:
+				msg = index[0]
 				cache_message = await msg.channel.fetch_message(msg.id)
 				for reaction in cache_message.reactions:
 					async for user in reaction.users():
@@ -145,12 +146,13 @@ class Giveaway():
 #						if not role_found:
 #							return False
 
-						if (real_member not in self.users) and (self.looping):
+						if (real_member not in index[1]) and (self.looping):
 							print('Adding ' + str(real_member) + ' to giveaway list')
-							self.users.append(real_member)
-							await self.update_giveaway_embed(msg)
+							index[1].append(real_member)
+							await self.update_giveaway_embed(index)
 
-	async def update_giveaway_embed(self, msg):
+	async def update_giveaway_embed(self, index):
+		msg = index[0]
 		the_embed = None
 		for embed in msg.embeds:
 			if embed.title == 'Giveaway':
@@ -161,7 +163,7 @@ class Giveaway():
 		for i in range(0, len(the_embed.fields)):
 			if the_embed.fields[i].name=='Participants':
 #				print('Setting the user amount')
-				the_embed.set_field_at(i, name=embed.fields[i].name, value='```' + str(len(self.users)) + '```', inline=True)
+				the_embed.set_field_at(i, name=embed.fields[i].name, value='```' + str(len(index[1])) + '```', inline=True)
 
 		await msg.edit(embed=the_embed)
 
@@ -261,7 +263,7 @@ class Giveaway():
 			self.giveaway_message = await local_post_channel.send(embed=embed)
 
 			# Add giveaway message to list of running giveaways
-			self.running_giveaways.append(self.giveaway_message)
+			self.running_giveaways.append([self.giveaway_message, [], [], test_name[:-1]])
 
 			# Show us the list of running giveaway messages
 			print('Giveaway messages: ')
