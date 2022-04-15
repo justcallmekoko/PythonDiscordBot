@@ -43,6 +43,8 @@ class Giveaway():
 	default_config['post_channel']['value'] = ""
 	default_config['post_channel']['description'] = "Desitination channel to post messages from this plugin"
 
+	running_giveaways = []
+
 	looping = False
 
 	group = '@everyone'
@@ -249,8 +251,18 @@ class Giveaway():
 			if local_post_channel == None:
 				return False
 			self.giveaway_message = await local_post_channel.send(embed=embed)
-			self.looping = True
-			self.loop_func.start()
+
+			# Add giveaway message to list of running giveaways
+			self.running_giveaways.append(self.giveaway_message)
+
+			# Show us the list of running giveaway messages
+			print('Giveaway messages: ')
+			for msg in self.running_giveaways:
+				print('\t' + str(msg.id))
+				
+			if not self.looping:
+				self.looping = True
+				self.loop_func.start()
 
 			return self.giveaway_name
 
