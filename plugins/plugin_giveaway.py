@@ -117,30 +117,38 @@ class Giveaway():
 	@loop(seconds = 1)
 	async def loop_func(self):
 		if self.looping:
-			cache_message = await self.giveaway_message.channel.fetch_message(self.giveaway_message.id)
-			for reaction in cache_message.reactions:
-				async for user in reaction.users():
-					real_member = user
+			# Loop through all running giveaway messages
+			for msg in self.running_giveaways:
+				cache_message = await msg.channel.fetch_message(msg.id)
+				for reaction in cache_message.reactions:
+					async for user in reaction.users():
+						real_member = user
 
-					# Check if user is blacklisted
-					for role in user.roles:
-						if str(role.name) in self.blacklisted:
-							return True
+						# Get the configuration of this specific message
+						the_config = self.configutils.getGuildConfig(msg, self.guild_confs)
+						if not self.configutils.hasPermsUser(cache_message, real_member, False, self.guild_confs):
+							print('does not have permission to join the giveaway')
+							continue
+						# Check if user is blacklisted or has perms
 
-					# Check if user has the required roles
-					role_found = False
-					for role in user.roles:
-						if str(role.name) in self.participant_roles:
-							role_found = True
-							break
+#						for role in user.roles:
+#							if str(role.name) in self.blacklisted:
+#								return True
 
-					if not role_found:
-						return False
+						# Check if user has the required roles
+#						role_found = False
+#						for role in user.roles:
+#							if str(role.name) in self.participant_roles:
+#								role_found = True
+#								break
 
-					if (real_member not in self.users) and (self.looping):
-						print('Adding ' + str(real_member) + ' to giveaway list')
-						self.users.append(real_member)
-						await self.update_giveaway_embed()
+#						if not role_found:
+#							return False
+
+						if (real_member not in self.users) and (self.looping):
+							print('Adding ' + str(real_member) + ' to giveaway list')
+							self.users.append(real_member)
+							await self.update_giveaway_embed()
 
 	async def update_giveaway_embed(self):
 		the_embed = None
@@ -259,7 +267,7 @@ class Giveaway():
 			print('Giveaway messages: ')
 			for msg in self.running_giveaways:
 				print('\t' + str(msg.id))
-				
+
 			if not self.looping:
 				self.looping = True
 				self.loop_func.start()
