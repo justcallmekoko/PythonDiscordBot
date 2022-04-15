@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import random
 import discord
@@ -7,16 +8,44 @@ from dotenv import load_dotenv
 from discord.ext.tasks import loop
 from requests import get
 
+sys.path.append(os.path.abspath('utils'))
+
+from utils.config_utils import ConfigUtils
+
 class Giveaway():
+	# Required for all plugins
+	conf_path = os.path.join(os.path.dirname(__file__), 'configs')
+
+	guild_confs = []
+
+	configutils = None
+
 	name = '!giveaway'
 
 	desc = 'Start, stop, manage, and join giveaways'
 
-	synt = '!giveaway [start <name>|stop|pick]'
+	synt = '!giveaway [start <name>|stop|pick][config|get <config>|set <config> <value>|add/remove <config> <value>]'
+
+	default_config = {}
+	default_config['protected'] = {}
+	default_config['protected']['name'] = __file__
+	default_config['protected']['guild'] = None
+	default_config['standard_groups'] = {}
+	default_config['standard_groups']['value'] = []
+	default_config['standard_groups']['description'] = "Authorized groups to use this command"
+	default_config['admin_groups'] = {}
+	default_config['admin_groups']['value'] = []
+	default_config['admin_groups']['description'] = "Authorized groups to use admin functions of this command"
+	default_config['blacklisted'] = {}
+	default_config['blacklisted']['value'] = []
+	default_config['blacklisted']['description'] = "Groups explicitly denied access to this command"
+	default_config['post_channel'] = {}
+	default_config['post_channel']['value'] = ""
+	default_config['post_channel']['description'] = "Desitination channel to post messages from this plugin"
 
 	looping = False
 
-	group = 'members'
+	group = '@everyone'
 
 	admin = False
 	
@@ -52,6 +81,24 @@ class Giveaway():
 
 	def __init__(self, client = None):
 		self.client = client
+		self.configutils = ConfigUtils()
+
+		# Load configuration if it exists
+		self.guild_confs = self.configutils.loadConfig(self.conf_path, self.default_config, __file__)
+
+
+		print('\n\nConfigs Loaded:')
+		for config in self.guild_confs:
+			print('\t' + config['protected']['name'] + ': ' + config['protected']['guild'])
+
+	def getArgs(self, message):
+		cmd = str(message.content)
+		seg = str(message.content).split(' ')
+
+		if len(seg) > 1:
+			return seg
+		else:
+			return None
 
 	def checkCat(self, check_cat):
 		if self.cat == check_cat:
@@ -116,6 +163,21 @@ class Giveaway():
 		return None
 
 	async def run(self, message, obj_list):
+		# Permissions check
+		if not self.configutils.hasPerms(message, False, self.guild_confs):
+			await message.channel.send(message.author.mention + ' Permission denied')
+			return False
+
+		# Parse args
+		arg = self.getArgs(message)
+
+		# Config set/get check
+		if arg != None:
+			if await self.configutils.runConfig(message, arg, self.guild_confs, self.conf_path):
+				return True
+
+		# Do Specific Plugin Stuff
+		
 		embed = discord.Embed(title="Giveaway",
 				color=discord.Color.green())
 
