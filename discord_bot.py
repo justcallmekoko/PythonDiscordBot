@@ -36,6 +36,7 @@ PASSW = os.getenv('RCON_PASSWORD')
 
 global obj_list
 global channels_list
+global modules
 obj_list = []
 channels_list = []
 
@@ -46,6 +47,7 @@ class CustomClient(discord.Client):
 	global obj_list
 	global members_list
 	global channels_list
+	global modules
 
 	conf_path = os.path.join(os.path.dirname(__file__), "plugins/configs")
 	#conf_path = os.path.dirname(os.path.abspath(__file__))
@@ -54,12 +56,34 @@ class CustomClient(discord.Client):
 
 	def __init__(self, discord_intents: discord.Intents):
 		super().__init__(intents=discord_intents)
+
 		print('Init done')
+
+	def get_class_name(self, mod_name):
+		output = ""
+
+		words = mod_name.split("_")[1:]
+
+		for word in words:
+			output += word.title()
+		return output
 
 
 	# Bot connects to discord server
 	async def on_ready(self):
 		print (f'{self.user} has connected to Discord!')
+
+		# This probably needs to be moved so it's AFTER creating guild config files
+		for loader, mod_name, ispkg in modules:
+			if (mod_name not in sys.modules) and (mod_name.startswith('plugin_')):
+			
+				loaded_mod = __import__(path+"."+mod_name, fromlist=[mod_name])
+
+				class_name = self.get_class_name(mod_name)
+				loaded_class = getattr(loaded_mod, class_name)
+
+				instance = loaded_class(client)
+				obj_list.append(instance)
 
 		for guild in client.guilds:
 #			if guild.name == GUILD:
@@ -99,6 +123,7 @@ class CustomClient(discord.Client):
 
 			print ()
 
+		# Show all plugins and start all services that can be started
 		print('Plugins loaded:')
 		for obj in obj_list:
 			print('\t' + str(obj.name))
@@ -193,28 +218,8 @@ class CustomClient(discord.Client):
 				await obj.run(message, obj_list)
 				break
 
-def get_class_name(mod_name):
-	output = ""
-
-	words = mod_name.split("_")[1:]
-
-	for word in words:
-		output += word.title()
-	return output
-
 intents = discord.Intents.all()
 client = CustomClient(intents)
-
-for loader, mod_name, ispkg in modules:
-	if (mod_name not in sys.modules) and (mod_name.startswith('plugin_')):
-	
-		loaded_mod = __import__(path+"."+mod_name, fromlist=[mod_name])
-
-		class_name = get_class_name(mod_name)
-		loaded_class = getattr(loaded_mod, class_name)
-
-		instance = loaded_class(client)
-		obj_list.append(instance)
 
 client.run(TOKEN)
 client.main.start()

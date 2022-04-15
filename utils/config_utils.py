@@ -82,9 +82,9 @@ class ConfigUtils():
 		guild_config_name = message.guild.name + str(message.guild.id)
 
 		for config in configs:
-			print(config[self.protected_key]['guild'])
+			#print(config[self.protected_key]['guild'])
 			if config[self.protected_key]['guild'] == guild_config_name:
-				print('Found config')
+				#print('Found config')
 				return config
 
 		return {}
@@ -108,6 +108,13 @@ class ConfigUtils():
 				return False
 			if 'admin_groups' not in config:
 				return False
+
+			# Check if user is blacklisted
+			for role in message.author.roles:
+				if 'value' in config['blacklisted']:
+					if role.mention in config['blacklisted']['value']:
+						print(str(role.mention) + ' found in blacklisted')
+						return False
 
 			# Check role objects
 			for role in message.author.roles:

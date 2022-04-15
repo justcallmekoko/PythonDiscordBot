@@ -90,9 +90,11 @@ class message():
 
 class channel():
 	name = None
+	mention = None
 
 	def __init__(self):
 		self.name = "Channel"
+		self.mention = '<#0>'
 		return
 
 	async def send(self, content=None, embed=None):
