@@ -239,7 +239,7 @@ class Giveaway():
 			local_post_channel = await self.get_post_channel(message, the_config)
 			if local_post_channel == None:
 				return False
-			giveaway_message = await local_post_channel.send(embed=embed)
+			giveaway_message = await local_post_channel.send('@everyone', embed=embed)
 
 			# Add giveaway message to list of running giveaways
 			self.running_giveaways.append([giveaway_message, [], [], test_name[:-1]])
