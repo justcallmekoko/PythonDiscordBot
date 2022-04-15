@@ -155,11 +155,15 @@ class Giveaway():
 
 		await self.giveaway_message.edit(embed=the_embed)
 
-	async def get_post_channel(self, message):
+	async def get_post_channel(self, message, the_config):
 		# Find where the bot will be posting its announcements
 		for channel in message.guild.channels:
-			if str(channel.name) == self.post_channel:
-				return channel
+			try:
+				if str(channel.mention) == str(the_config['post_channel']['value']):
+					print('Found post_channel: ' + str(channel.mention))
+					return channel
+			except:
+				return None
 		return None
 
 	async def run(self, message, obj_list):
@@ -167,6 +171,8 @@ class Giveaway():
 		if not self.configutils.hasPerms(message, False, self.guild_confs):
 			await message.channel.send(message.author.mention + ' Permission denied')
 			return False
+
+		the_config = self.configutils.getGuildConfig(message, self.guild_confs)
 
 		# Parse args
 		arg = self.getArgs(message)
@@ -177,7 +183,7 @@ class Giveaway():
 				return True
 
 		# Do Specific Plugin Stuff
-		
+
 		embed = discord.Embed(title="Giveaway",
 				color=discord.Color.green())
 
@@ -185,29 +191,29 @@ class Giveaway():
 		seg = str(message.content).split(' ')
 		if len(seg) < 1:
 			await message.channel.send(message.author.mention + '`' + str(message.content) + '` is not the proper syntax')
-			return
+			return False
 
+		# User just wants status of giveaway
 		if message.content == '!giveaway':
 			if self.running:
-#				embed.add_field(name='Title', value='```' + str(self.giveaway_name) + '```', inline=True)
-#				embed.add_field(name='Participants', value='```' + str(len(self.users)) + '```', inline=True)
-
-#				embed.add_field(name = chr(173), value = chr(173))
-
-#				embed.add_field(name='Started at', value='```' + str(self.start_time) + '```', inline=False)
-
-#				embed.add_field(name='Required Roles', value='```' + str(self.group) + '```', inline=False)
 				await message.channel.send(message.author.mention + ' `' + self.giveaway_name + '` is currently running: ' + str(self.giveaway_message.jump_url))
-#				await message.channel.send(embed=embed)
 			else:
 				await message.channel.send(message.author.mention + ' There are no giveaways running')
 			return True
 
+		# Get commands args...again
 		command = seg[1]
 
 		user_groups = []
 		for role in message.author.roles:
 			user_groups.append(role.name)
+
+		# Anything beyond this point requires admin privs
+
+		# Another permissions check
+		if not self.configutils.hasPerms(message, True, self.guild_confs):
+			await message.channel.send(message.author.mention + ' Permission denied')
+			return False
 
 		# Starting giveaway
 		if command == 'start':
@@ -226,7 +232,6 @@ class Giveaway():
 			self.running = True
 			self.start_time = datetime.now()
 			self.winner_list = []
-#			await message.channel.send(message.author.mention + '`' + str(self.giveaway_name) + '` giveaway started')
 			embed.add_field(name='Title', value='```' + str(self.giveaway_name) + '```', inline=True)
 			embed.add_field(name='Participants', value='```' + str(len(self.users)) + '```', inline=True)
 
@@ -239,7 +244,8 @@ class Giveaway():
 			embed.add_field(name='Status', value='```OPEN```', inline=False)
 			embed.add_field(name='Winners', value='``` ```', inline=False)
 
-			local_post_channel = await self.get_post_channel(message)
+			# Get the channel where stuff is going to be posted
+			local_post_channel = await self.get_post_channel(message, the_config)
 			if local_post_channel == None:
 				return False
 			self.giveaway_message = await local_post_channel.send(embed=embed)
