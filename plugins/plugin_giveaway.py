@@ -255,7 +255,7 @@ class Giveaway():
 			for standard_role in the_config['standard_groups']['value']:
 				for role in message.guild.roles:
 					if str(role.mention) == standard_role:
-						role_string = role_string + role + ' '
+						role_string = role_string + role.mention + ' '
 						continue
 
 			embed.add_field(name='Required Roles', value='```' + str(role_string) + '```', inline=False)
