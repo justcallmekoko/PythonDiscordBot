@@ -267,7 +267,8 @@ class Giveaway():
 
 			# Show us the list of running giveaway messages
 			print('Giveaway messages: ')
-			for msg in self.running_giveaways:
+			for index in self.running_giveaways:
+				msg = index[0]
 				print('\t' + str(msg.id))
 
 			if not self.looping:
