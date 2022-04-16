@@ -106,6 +106,15 @@ class Poll():
 		else:
 			return None
 
+	# Required method for services (content may vary)
+	async def getStatus(self, message):
+		# Return True if there is a giveaway running in the source message's server
+		for index in self.running_guilds:
+			if str(message.guild.name) + str(message.guild.id) == index:
+				return True
+
+		return False
+
 	async def startService(self):
 		if not self.looping:
 			self.looping = True

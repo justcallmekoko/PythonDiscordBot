@@ -89,10 +89,61 @@ class ConfigUtils():
 
 		return {}
 
+	def hasPermsUser(self, message, user, admin_req, configs):
+		for role in user.roles:
+			if (role.permissions.administrator):
+				#print(role.name + ' has administrator permissions')
+				return True
+
+		if admin_req:
+			return False
+		else:
+			user_roles = []
+			for role in user.roles:
+				user_roles.append(role.name)
+
+			
+			config = self.getGuildConfig(message, configs)
+			if 'standard_groups' not in config:
+				return False
+			if 'admin_groups' not in config:
+				return False
+
+			# Check if user is blacklisted
+			for role in user.roles:
+				if 'value' in config['blacklisted']:
+					if role.mention in config['blacklisted']['value']:
+						#print(str(role.mention) + ' found in blacklisted')
+						return False
+
+			# Check role objects
+			for role in user.roles:
+				if 'value' in config['standard_groups']:
+					if role.mention in config['standard_groups']['value']:
+						#print(str(role.mention) + ' found in standard_groups')
+						return True
+				if 'value' in config['admin_groups']:
+					if role.mention in config['admin_groups']['value']:
+						#print(str(role.mention) + ' found in admin_groups')
+						return True
+
+			# Check string roles (old)
+			for user_role in user_roles:
+				if 'value' in config['standard_groups']:
+					if user_role in config['standard_groups']['value']:
+						#print(user_role + ' found in standard_groups')
+						return True
+				if 'value' in config['admin_groups']:
+					if user_role in config['admin_groups']['value']:
+						#print(user_role + ' found in admin_groups')
+						return True
+
+			return False
+
 	def hasPerms(self, message, admin_req, configs):
 		for role in message.author.roles:
 			if (role.permissions.administrator):
-				print(role.name + ' has administrator permissions')
+				#print(role.name + ' has administrator permissions')
 				return True
 
 		if admin_req:
@@ -113,29 +164,29 @@ class ConfigUtils():
 			for role in message.author.roles:
 				if 'value' in config['blacklisted']:
 					if role.mention in config['blacklisted']['value']:
-						print(str(role.mention) + ' found in blacklisted')
+						#print(str(role.mention) + ' found in blacklisted')
 						return False
 
 			# Check role objects
 			for role in message.author.roles:
 				if 'value' in config['standard_groups']:
 					if role.mention in config['standard_groups']['value']:
-						print(str(role.mention) + ' found in standard_groups')
+						#print(str(role.mention) + ' found in standard_groups')
 						return True
 				if 'value' in config['admin_groups']:
 					if role.mention in config['admin_groups']['value']:
-						print(str(role.mention) + ' found in admin_groups')
+						#print(str(role.mention) + ' found in admin_groups')
 						return True
 
 			# Check string roles (old)
 			for user_role in user_roles:
 				if 'value' in config['standard_groups']:
 					if user_role in config['standard_groups']['value']:
-						print(user_role + ' found in standard_groups')
+						#print(user_role + ' found in standard_groups')
 						return True
 				if 'value' in config['admin_groups']:
 					if user_role in config['admin_groups']['value']:
-						print(user_role + ' found in admin_groups')
+						#print(user_role + ' found in admin_groups')
 						return True
 
 			return False
