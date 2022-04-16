@@ -112,7 +112,7 @@ class Services():
 			if obj.is_service:
 				response = response + str(obj.name)
 				try:
-					if obj.getStatus(message):
+					if await obj.getStatus(message):
 						response = response + ': `running`\n'
 					else:
 						response = response + ': `not running`\n'
