@@ -107,9 +107,11 @@ class Sarcasm():
 				return True
 
 		# Do Specific Plugin Stuff
+		the_string = message.content.remove(self.name + ' ')
+
 		response = message.author.mention + '\n'
 		cap = True
-		for char in message.content:
+		for char in the_string:
 			if char.isalpha():
 				if cap:
 					response += char.upper()
