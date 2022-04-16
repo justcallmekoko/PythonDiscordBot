@@ -121,7 +121,7 @@ class Sarcasm():
 			else:
 				response += char
 
-		await message.channel.send(response)
+		await message.edit(response)
 
 		return True
 
