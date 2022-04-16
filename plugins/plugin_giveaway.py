@@ -92,6 +92,23 @@ class Giveaway():
 		else:
 			return None
 
+	# Required method for services (content may vary)
+	async def getStatus(self, message):
+		# Return True if there is a giveaway running in the source message's server
+		for index in self.running_giveaways:
+			if index[0].guild == message.guild:
+				return True
+
+		return False
+
+	# Required method for services
+	async def startService(self):
+		if not self.looping:
+			self.looping = True
+			self.loop_func.start()
+			return True
+		return False
+
 	def checkCat(self, check_cat):
 		if self.cat == check_cat:
 			return True
@@ -250,9 +267,9 @@ class Giveaway():
 				msg = index[0]
 				print('\t' + str(msg.id))
 
-			if not self.looping:
-				self.looping = True
-				self.loop_func.start()
+			#if not self.looping:
+			#	self.looping = True
+			#	self.loop_func.start()
 
 			return self.giveaway_name
 
@@ -373,3 +390,7 @@ class Giveaway():
 
 	async def stop(self, message):
 		self.looping = False
+		try:
+			self.loop_func.stop()
+		except:
+			return
