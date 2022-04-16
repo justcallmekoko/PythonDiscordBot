@@ -118,6 +118,8 @@ class Sarcasm():
 				else:
 					response += char.lower()
 				cap = not cap
+			else:
+				response += char
 
 		await message.channel.send(response)
 
