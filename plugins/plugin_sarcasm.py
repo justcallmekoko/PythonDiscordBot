@@ -107,7 +107,7 @@ class Sarcasm():
 				return True
 
 		# Do Specific Plugin Stuff
-		the_string = message.content.remove(self.name + ' ')
+		the_string = message.content.replace(self.name + ' ', '')
 
 		response = message.author.mention + '\n'
 		cap = True
