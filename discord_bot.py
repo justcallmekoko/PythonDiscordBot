@@ -73,18 +73,6 @@ class CustomClient(discord.Client):
 	async def on_ready(self):
 		print (f'{self.user} has connected to Discord!')
 
-		# This probably needs to be moved so it's AFTER creating guild config files
-		for loader, mod_name, ispkg in modules:
-			if (mod_name not in sys.modules) and (mod_name.startswith('plugin_')):
-			
-				loaded_mod = __import__(path+"."+mod_name, fromlist=[mod_name])
-
-				class_name = self.get_class_name(mod_name)
-				loaded_class = getattr(loaded_mod, class_name)
-
-				instance = loaded_class(client)
-				obj_list.append(instance)
-
 		for guild in client.guilds:
 #			if guild.name == GUILD:
 #				break
@@ -122,6 +110,18 @@ class CustomClient(discord.Client):
 					print('\t' + str(channel.name))
 
 			print ()
+
+		# This needs to be AFTER creating/importing guild config files
+		for loader, mod_name, ispkg in modules:
+			if (mod_name not in sys.modules) and (mod_name.startswith('plugin_')):
+			
+				loaded_mod = __import__(path+"."+mod_name, fromlist=[mod_name])
+
+				class_name = self.get_class_name(mod_name)
+				loaded_class = getattr(loaded_mod, class_name)
+
+				instance = loaded_class(client)
+				obj_list.append(instance)
 
 		# Show all plugins and start all services that can be started
 		print('Plugins loaded:')
