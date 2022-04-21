@@ -3,4 +3,7 @@
 montystats.json
 ozzystats.json
 users.txt
+plugin_add_user.py
+plugin_remove_user.py
+plugin_prune_minecraft.py
 __pycache__/
