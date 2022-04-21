@@ -92,6 +92,10 @@ class Giveaway():
 		else:
 			return None
 
+	def generatePluginConfig(self, file_name):
+		for new_conf in self.configutils.generateConfig(self.conf_path, self.default_config, file_name, __file__):
+			self.guild_confs.append(new_conf)
+
 	# Required method for services (content may vary)
 	async def getStatus(self, message):
 		# Return True if there is a giveaway running in the source message's server

@@ -141,6 +141,10 @@ class CustomClient(discord.Client):
 			with open(os.path.join(self.conf_path, file_name), 'w'):
 				pass
 
+		for obj in obj_list:
+			print('Generating config for ' + str(obj.name))
+			obj.generatePluginConfig(file_name)
+
 	# Member joins the discord server
 	async def on_member_join(self, member):
 		print(f'{member.name}, welcome to the WillStunForFood server. Be sure to check out the "rules" channel so you can pick your roles. If you would like to support me, consider following me on Twitch at https://twitch.tv/willstunforfood')
