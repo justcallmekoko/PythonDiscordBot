@@ -133,6 +133,14 @@ class CustomClient(discord.Client):
 				except:
 					continue
 
+	async def on_guild_join(self, guild):
+		file_name = str(guild.name) + '_' + str(guild.id) + '_conf.json'
+
+		if not os.path.isfile(os.path.join(self.conf_path, file_name)):
+			print('Guild configuration file not found. Creating...')
+			with open(os.path.join(self.conf_path, file_name), 'w'):
+				pass
+
 	# Member joins the discord server
 	async def on_member_join(self, member):
 		print(f'{member.name}, welcome to the WillStunForFood server. Be sure to check out the "rules" channel so you can pick your roles. If you would like to support me, consider following me on Twitch at https://twitch.tv/willstunforfood')
