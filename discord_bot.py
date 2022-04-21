@@ -141,34 +141,14 @@ class CustomClient(discord.Client):
 
 	# Bot received a message on discord server
 	async def on_message(self, message):
-		admin = False
-
-		user_groups = []
-
 		try:
 			output = '[' + str(datetime.now()) + '][' + str(message.channel.name) + ']'
 		except:
 			output = '[' + str(datetime.now()) + ']'
 
-		# Get all guilds
-		for guild in client.guilds:
-			if guild.name == GUILD:
-				break
-
 		# Ignore bot's own messages
 		if message.author == client.user:
 			return
-
-		# Check if this is admin
-		try:
-			for role in message.author.roles:
-
-				user_groups.append(str(role.name))
-
-				if (role.permissions.administrator) and (role.guild.id == guild.id):
-					admin = True
-		except Exception as e:
-			output = output + '[' + str(e) + ']'
 
 		output = output + ' ' + message.author.name + ': ' + message.content
 
@@ -178,43 +158,14 @@ class CustomClient(discord.Client):
 		if message.content == '!muster':
 			await message.channel.send(message.author.mention + ' Here')
 
-		# Check plugins
-		found = False
-
 		# Check if multipart command
 		if ' ' in str(message.content):
 			cmd = str(message.content).split(' ')[0]
 		else:
 			cmd = str(message.content)
 
-		# Start reponse
-		response = message.author.mention + '\n'
-
-		# Check if general help
-#		if str(message.content) == '!help':
-#			found = True
-#			for obj in obj_list:
-#				response = response + str(obj.name) + '\t- ' + str(obj.desc) + '\n'
-
-#			await message.channel.send(response)
-#		elif '!help ' in str(message.content):
-#			found = True
-#			for obj in obj_list:
-#				if str(message.content).split(' ')[1] == str(obj.name):
-#					response = response + str(obj.synt)
-#			await message.channel.send(response)
-
 		for obj in obj_list:
 			if cmd == obj.name:
-				found = True
-				if obj.admin and not admin:
-					await message.channel.send(message.author.mention + ' ' + str(cmd) + ' only admins may run this command')
-					break
-
-				if obj.group not in user_groups:
-					await message.channel.send(message.author.mention + ' ' + str(cmd) + ' You must be a member of ' + obj.group + ' to run this command')
-					break
-
 				await obj.run(message, obj_list)
 				break
 
