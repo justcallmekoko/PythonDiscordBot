@@ -9,6 +9,52 @@ from requests import get
 class ConfigUtils():
 	protected_key = 'protected'
 
+	def generateConfig(self, conf_path, default_config, file_name, plugin_name):
+		guild_name = file_name.replace('_config.json', '').replace('_', '')
+		configs = []
+		full_conf_file = os.path.join(conf_path, file_name)
+
+		# Try to get json stuff
+		f = open(full_conf_file)
+		try:
+			json_data = json.load(f)
+		except:
+			json_data = {}
+		f.close()
+
+		# If plugins json doesn't exist, write the key
+		if 'plugins' not in json_data:
+			print('JSON config does not exist. Creating...')
+			data = {}
+			data['plugins'] = []
+			with open(full_conf_file, 'w') as f:
+				json.dump(data, f)
+
+		# Get plugin configuration
+		with open(full_conf_file) as f:
+			json_data = json.load(f)
+
+		the_config = None
+		for plugin in json_data['plugins']:
+			if plugin[self.protected_key]['name'] == file_name:
+				the_config = plugin
+				break
+
+		if the_config == None:
+			new_conf = None
+			new_conf = copy.copy(default_config)
+			new_conf[self.protected_key]['guild'] = guild_name
+			print('Could not find plugin configuration. Creating...' + str(new_conf[self.protected_key]['guild']))
+			configs.append(copy.deepcopy(new_conf)) # Needs to be deepcopy or all list items are changed
+			json_data['plugins'].append(new_conf)
+			with open(full_conf_file, 'w') as f:
+				json.dump(json_data, f, indent=4)
+		else:
+			configs.append(the_config)
+
+		return configs
+
+
 	def loadConfig(self, conf_path, default_config, file_name):
 		configs = []
 
