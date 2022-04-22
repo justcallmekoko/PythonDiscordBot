@@ -304,6 +304,7 @@ class Poll():
 			await message.channel.send(message.author.mention + '`' + str(message.content) + '` is not the proper syntax')
 			return False
 
+		the_guild = str(message.guild.name) + str(message.guild.id)
 
 		# Do service stuff
 		if len(seg) == 2:
@@ -311,8 +312,6 @@ class Poll():
 			if not self.configutils.hasPerms(message, True, self.guild_confs):
 				await message.channel.send(message.author.mention + ' Permission denied')
 				return False
-
-			the_guild = str(message.guild.name) + str(message.guild.id)
 
 			if str(seg[1]) == 'start':
 				if the_guild not in self.running_guilds:
@@ -442,7 +441,7 @@ class Poll():
 			print('Running polls:')
 			for poll in self.polls:
 				print('\t' + str(poll[2].id))
-				
+
 		else:
 			print('Could not find post channel. Not posting poll')
 
