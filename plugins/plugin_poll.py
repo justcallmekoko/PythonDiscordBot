@@ -387,7 +387,7 @@ class Poll():
 		embed = discord.Embed(title="Poll",
 				color=discord.Color.blue())
 
-		embed.add_field(name='Poll Description', value=str(self.poll_desc), inline=False)
+		embed.add_field(name='Poll Description', value=str(temp_poll_desc), inline=False)
 		embed.add_field(name='Creator', value=str(message.author.mention), inline=False)
 
 		embed.add_field(name='Status', value='```OPEN```', inline = False)
