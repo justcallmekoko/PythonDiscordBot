@@ -26,7 +26,7 @@ class Poll():
 
 	desc = 'Start a poll and start the poll service'
 
-	synt = '!poll [<description>]|[start]|[stop][config|get <config>|set <config> <value>|add/remove <config> <value>]'
+	synt = '!poll [<description>][; <emote> <option>]|[start]|[stop][config|get <config>|set <config> <value>|add/remove <config> <value>]\nOptions can be specified with ";" followed by an emote and the description of the option like so...\n`!poll This is a poll; <emote> Option one; <emote> Option 2; <emote> Option iii`'
 
 	default_config = {}
 	default_config['protected'] = {}
@@ -77,7 +77,7 @@ class Poll():
 
 	poll_desc = None
 
-	poll_win_percent = 0.00
+	poll_win_percent = 0.01
 
 #	poll_time_limit = 604800 #one week seconds
 	poll_time_limit = 345600
