@@ -255,7 +255,7 @@ class Poll():
 						embed.add_field(name='Reason', value='```Results were tied```', inline=False)
 					else:
 						embed.add_field(name='Result', value='```APPROVED```', inline=False)
-						embed.add_field(name='Reason', value='```' + winner[0] + ' ' + winner[1] + '```', inline=False)
+						embed.add_field(name='Winner', value=winner[0] + ' ' + winner[1], inline=False)
 				else:
 					if highest_count < int(required_limit):
 						embed.add_field(name='Result', value='```DENIED```', inline=False)
@@ -265,7 +265,7 @@ class Poll():
 						embed.add_field(name='Reason', value='```Results were tied```', inline=False)
 					else:
 						embed.add_field(name='Result', value='```APPROVED```', inline=False)
-						embed.add_field(name='Reason', value='```' + winner[0] + ' ' + winner[1] + '```', inline=False)
+						embed.add_field(name='Winner', value=winner[0] + ' ' + winner[1], inline=False)
 				
 
 				'''
