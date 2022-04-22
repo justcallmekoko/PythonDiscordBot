@@ -384,6 +384,7 @@ class Poll():
 			test_name = test_name + seg[i] + ' '
 		self.poll_desc = test_name[:-1]
 
+		# Create the poll embed
 		embed = discord.Embed(title="Poll",
 				color=discord.Color.blue())
 
@@ -392,6 +393,7 @@ class Poll():
 
 		embed.add_field(name='Status', value='```OPEN```', inline = False)
 
+		# Construct options text field in embed
 		options_text_field = ''
 		for option in options:
 			options_text_field = options_text_field + str(option[0]) + ' ' + str(option[1]) + '\n'
@@ -402,6 +404,7 @@ class Poll():
 
 		the_role = None
 
+		# Add tag role to poll message
 		for role in message.guild.roles:
 			if role.mention == guild_conf['tag_role']['value']:
 				the_role = role
@@ -421,12 +424,15 @@ class Poll():
 				except:
 					continue
 
+		# Add option emotes
 		if (post_channel != None) and (the_role != None):
 			msg = await post_channel.send(the_role.mention, embed=embed)
 
-			await msg.add_reaction(guild_conf['yes_vote']['value'])
+			for option in options:
+				await msg.add_reaction(option[0])
+#			await msg.add_reaction(guild_conf['yes_vote']['value'])
 
-			await msg.add_reaction(guild_conf['no_vote']['value'])
+#			await msg.add_reaction(guild_conf['no_vote']['value'])
 		else:
 			print('Could not find post channel. Not posting poll')
 
