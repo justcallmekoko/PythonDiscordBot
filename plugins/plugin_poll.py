@@ -341,6 +341,44 @@ class Poll():
 			return True
 
 		# Start the pole here
+
+		guild_conf = self.configutils.getGuildConfig(message, self.guild_confs)
+
+		given_options = False
+
+		# Prepare for given options maybe
+		temp_poll_desc = str(message.content).replace(self.name + ' ', '')
+
+		# Try to get the desc before the options
+		try:
+			temp_poll_desc = str(temp_poll_desc).split('; ')[0]
+			given_options = True
+			print('User provided options')
+		except:
+			temp_poll_desc = temp_poll_desc
+
+		# Try to get the options
+		options = []
+		if given_options:
+			for i in range(1, len(str(message.content).split('; '))):
+				option_emote = str(message.content).split('; ')[i].split(' ')[0]
+				option_text = str(message.content).replace(str(option_emote) + ' ', '')
+				full_option = [option_emote, option_text]
+				options.append(full_option)
+
+		# If options aren't a thing, load defaults
+		if len(options) <= 0:
+			try:
+				option_emote_one = guild_conf['yes_vote']['value']
+				option_emote_two = guild_conf['no_vote']['value']
+			except:
+				option_emote_one = None
+				option_emote_two = None
+			option_text_one = "Yes"
+			option_text_two = "No"
+			options.append([option_emote_one, option_text_one])
+			options.append([option_emote_two, option_text_two])
+
 		test_name = ''
 		for i in range(1, len(seg)):
 			test_name = test_name + seg[i] + ' '
@@ -354,11 +392,15 @@ class Poll():
 
 		embed.add_field(name='Status', value='```OPEN```', inline = False)
 
+		options_text_field = ''
+		for option in options:
+			options_text_field = options_text_field + str(option[0]) + ' ' + str(option[1]) + '\n'
+
+		embed.add_field(name='Options', value=options_text_field, inline=False)
+
 		post_channel = None
 
 		the_role = None
-
-		guild_conf = self.configutils.getGuildConfig(message, self.guild_confs)
 
 		for role in message.guild.roles:
 			if role.mention == guild_conf['tag_role']['value']:
