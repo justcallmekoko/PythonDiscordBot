@@ -183,13 +183,78 @@ class Poll():
 	async def close_poll_embed(self, msg, embed):
 		for i in range(0, len(embed.fields)):
 			if embed.fields[i].name=='Status':
+				# Get the config for this message
+				guild_conf = self.configutils.getGuildConfig(msg, self.guild_confs)
+
+				# Close the poll embed
 				embed.set_field_at(i, name=embed.fields[i].name, value='```CLOSED```', inline=False)
 
-				# Check votes
+				# Get the options from the text field
+				options_text = None
+				for i in range(0, len(embed.fields)):
+					if embed.fields[i].name=='Options':
+						options_text = embed.fields[i].value
+						break
+
+				# Parse options and add to list
+				options = []
+				if options_text != None:
+					for line in options_text.split('\n'):
+						option_emote = line.split(' ')[0]
+						option_text = line.replace(str(option_emote) + ' ', '')
+						full_option = [option_emote, option_text]
+						options.append(full_option)
+
+				# Add vote count to each option in list and show us the list
+				print('Checking options:')
+				for option in options:
+					option.append(0)
+					print('\t' + str(option))
+
+				# Find out how many of the popular vote is required to approve poll
+				total_members = msg.guild.member_count
+				required_limit = round(total_members * self.poll_win_percent)
+
+				# Check all reactions and add counts
+				for reaction in msg.reactions:
+					print(str(reaction) + ': ' + str(reaction.count))
+					# Check if this reaction is an option and set the option's count
+					for option in options:
+						if option[0] == str(reaction):
+							option[2] = reaction.count
+							break
+
+				# Determine outcome
+				winner = None
+				highest_count = 0
+				tied = False
+				for option in options:
+					if option[2] > highest_count:
+						highest_count = option[2]
+						winner = option
+
+				# Check for a tie
+				for option in options:
+					if (option[2] == highest_count) and (option != winner):
+						tied = True
+						break
+
+				if highest_count < int(required_limit):
+					embed.add_field(name='Result', value='```DENIED```', inline=False)
+					embed.add_field(name='Reason', value='```Popular vote did not surpass server minimum```', inline=False)
+				elif tied:
+					embed.add_field(name='Result', value='```DENIED```', inline=False)
+					embed.add_field(name='Reason', value='```Results were tied```', inline=False)
+				else:
+					embed.add_field(name='Result', value='```APPROVED```', inline=False)
+					embed.add_field(name='Reason', value='```' + winner[0] + ' ' + winner[1] + '```', inline=False)
+				
+
+				'''
 				yes_count = 0
 				no_count = 0
 
-				guild_conf = self.configutils.getGuildConfig(msg, self.guild_confs)
+				# Get the emote mention value from the config
 				try:
 					yes_vote = guild_conf['yes_vote']['value']
 				except:
@@ -199,6 +264,7 @@ class Poll():
 				except:
 					no_vote = 0
 
+				# Check all reactions of the poll message
 				for reaction in msg.reactions:
 					print(str(reaction) + ': ' + str(reaction.count))
 					if str(reaction.emoji) == yes_vote:
@@ -207,9 +273,6 @@ class Poll():
 						no_count = reaction.count
 
 				print(str(yes_count) + ' | ' + str(no_count))
-
-				total_members = msg.guild.member_count
-				required_limit = round(total_members * self.poll_win_percent)
 
 				if (yes_count > no_count) and (yes_count > int(required_limit)):
 					embed.add_field(name='Result', value='```APPROVED```', inline=False)
@@ -222,6 +285,8 @@ class Poll():
 					embed.add_field(name='Reason', value='```"Yes" votes did not surpass server minimum```', inline=False)
 				else:
 					embed.add_field(name='Result', value='```TIE```', inline=False)
+
+				'''
 
 		await msg.edit(embed=embed)
 
@@ -435,12 +500,12 @@ class Poll():
 
 #			await msg.add_reaction(guild_conf['no_vote']['value'])
 
-			self.polls.append([the_guild, options, msg])
+			#self.polls.append([the_guild, options, msg])
 
 			# Show us the running polls
-			print('Running polls:')
-			for poll in self.polls:
-				print('\t' + str(poll[2].id))
+			#print('Running polls:')
+			#for poll in self.polls:
+			#	print('\t' + str(poll[2].id))
 
 		else:
 			print('Could not find post channel. Not posting poll')
