@@ -437,7 +437,6 @@ class Poll():
 		try:
 			temp_poll_desc = str(temp_poll_desc).split('; ')[0]
 			given_options = True
-			print('User provided options')
 		except:
 			temp_poll_desc = temp_poll_desc
 
@@ -449,6 +448,11 @@ class Poll():
 				option_text = str(message.content).split('; ')[i].replace(str(option_emote) + ' ', '')
 				full_option = [option_emote, option_text]
 				options.append(full_option)
+
+		if len(options) == 0:
+			given_options = False
+		else:
+			print('User provided options')
 
 		# If options aren't a thing, load defaults
 		if len(options) <= 0:
