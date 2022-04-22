@@ -26,7 +26,7 @@ class Poll():
 
 	desc = 'Start a poll and start the poll service'
 
-	synt = '!poll [<description>]|[start]|[stop][config|get <config>|set <config> <value>|add/remove <config> <value>]'
+	synt = '!poll [<description>][; <emote> <option>]|[start]|[stop][config|get <config>|set <config> <value>|add/remove <config> <value>]\nOptions can be specified with ";" followed by an emote and the description of the option like so...\n!poll This is a poll; <emote> Option one; <emote> Option 2; <emote> Option iii'
 
 	default_config = {}
 	default_config['protected'] = {}
@@ -56,6 +56,8 @@ class Poll():
 	default_config['time_lim'] = {}
 	default_config['time_lim']['value'] = 0
 	default_config['time_lim']['description'] = "Duration of a poll in seconds"
+
+	polls = []
 
 	running_guilds = []
 
@@ -168,11 +170,11 @@ class Poll():
 
 		field_found = False
 		for i in range(0, len(embed.fields)):
-			if embed.fields[i].name=='Minimum required "yes" votes':
+			if embed.fields[i].name=='Minimum required "popular" votes':
 				embed.set_field_at(i, name=embed.fields[i].name, value='```' + str(required_limit) + '```', inline=False)
 				field_found = True
 		if not field_found:
-			embed.add_field(name='Minimum required "yes" votes', value='```' + str(required_limit) + '```', inline=False)
+			embed.add_field(name='Minimum required "popular" votes', value='```' + str(required_limit) + '```', inline=False)
 
 		await msg.edit(embed=embed)
 
@@ -181,13 +183,98 @@ class Poll():
 	async def close_poll_embed(self, msg, embed):
 		for i in range(0, len(embed.fields)):
 			if embed.fields[i].name=='Status':
+				# Get the config for this message
+				guild_conf = self.configutils.getGuildConfig(msg, self.guild_confs)
+
+				# Close the poll embed
 				embed.set_field_at(i, name=embed.fields[i].name, value='```CLOSED```', inline=False)
 
-				# Check votes
+				# Get type of poll
+				poll_type = None
+				for i in range(0, len(embed.fields)):
+					if embed.fields[i].name=='Type':
+						poll_type = embed.fields[i].value
+						break
+
+				# Get the options from the text field
+				options_text = None
+				for i in range(0, len(embed.fields)):
+					if embed.fields[i].name=='Options':
+						options_text = embed.fields[i].value
+						break
+
+				# Parse options and add to list
+				options = []
+				if options_text != None:
+					for line in options_text.split('\n'):
+						option_emote = line.split(' ')[0]
+						option_text = line.replace(str(option_emote) + ' ', '')
+						full_option = [option_emote, option_text]
+						options.append(full_option)
+
+				# Add vote count to each option in list and show us the list
+				print('Checking options:')
+				for option in options:
+					option.append(0)
+					print('\t' + str(option))
+
+				# Find out how many of the popular vote is required to approve poll
+				total_members = msg.guild.member_count
+				required_limit = round(total_members * self.poll_win_percent)
+
+				# Check all reactions and add counts
+				for reaction in msg.reactions:
+					print(str(reaction) + ': ' + str(reaction.count))
+					# Check if this reaction is an option and set the option's count
+					for option in options:
+						if option[0] == str(reaction):
+							option[2] = reaction.count
+							break
+
+				# Determine outcome
+				winner = None
+				highest_count = 0
+				tied = False
+				for option in options:
+					if option[2] > highest_count:
+						highest_count = option[2]
+						winner = option
+
+				# Check for a tie
+				for option in options:
+					if (option[2] == highest_count) and (option != winner):
+						tied = True
+						break
+
+				if poll_type == 'YES/NO':
+					if highest_count < int(required_limit):
+						embed.add_field(name='Result', value='```DENIED```', inline=False)
+						embed.add_field(name='Reason', value='```YES vote did not surpass server minimum```', inline=False)
+					elif tied:
+						embed.add_field(name='Result', value='```DENIED```', inline=False)
+						embed.add_field(name='Reason', value='```Results were tied```', inline=False)
+					else:
+						if winner != None:
+							embed.add_field(name='Result', value='```APPROVED```', inline=False)
+							embed.add_field(name='Winner', value=winner[0] + ' ' + winner[1], inline=False)
+				else:
+					if highest_count < int(required_limit):
+						embed.add_field(name='Result', value='```DENIED```', inline=False)
+						embed.add_field(name='Reason', value='```Popular vote did not surpass server minimum```', inline=False)
+					elif tied:
+						embed.add_field(name='Result', value='```DENIED```', inline=False)
+						embed.add_field(name='Reason', value='```Results were tied```', inline=False)
+					else:
+						if winner != None:
+							embed.add_field(name='Result', value='```APPROVED```', inline=False)
+							embed.add_field(name='Winner', value=winner[0] + ' ' + winner[1], inline=False)
+				
+
+				'''
 				yes_count = 0
 				no_count = 0
 
-				guild_conf = self.configutils.getGuildConfig(msg, self.guild_confs)
+				# Get the emote mention value from the config
 				try:
 					yes_vote = guild_conf['yes_vote']['value']
 				except:
@@ -197,6 +284,7 @@ class Poll():
 				except:
 					no_vote = 0
 
+				# Check all reactions of the poll message
 				for reaction in msg.reactions:
 					print(str(reaction) + ': ' + str(reaction.count))
 					if str(reaction.emoji) == yes_vote:
@@ -205,9 +293,6 @@ class Poll():
 						no_count = reaction.count
 
 				print(str(yes_count) + ' | ' + str(no_count))
-
-				total_members = msg.guild.member_count
-				required_limit = round(total_members * self.poll_win_percent)
 
 				if (yes_count > no_count) and (yes_count > int(required_limit)):
 					embed.add_field(name='Result', value='```APPROVED```', inline=False)
@@ -220,6 +305,8 @@ class Poll():
 					embed.add_field(name='Reason', value='```"Yes" votes did not surpass server minimum```', inline=False)
 				else:
 					embed.add_field(name='Result', value='```TIE```', inline=False)
+
+				'''
 
 		await msg.edit(embed=embed)
 
@@ -302,6 +389,7 @@ class Poll():
 			await message.channel.send(message.author.mention + '`' + str(message.content) + '` is not the proper syntax')
 			return False
 
+		the_guild = str(message.guild.name) + str(message.guild.id)
 
 		# Do service stuff
 		if len(seg) == 2:
@@ -309,8 +397,6 @@ class Poll():
 			if not self.configutils.hasPerms(message, True, self.guild_confs):
 				await message.channel.send(message.author.mention + ' Permission denied')
 				return False
-
-			the_guild = str(message.guild.name) + str(message.guild.id)
 
 			if str(seg[1]) == 'start':
 				if the_guild not in self.running_guilds:
@@ -341,25 +427,79 @@ class Poll():
 			return True
 
 		# Start the pole here
+
+		guild_conf = self.configutils.getGuildConfig(message, self.guild_confs)
+
+		given_options = False
+
+		# Prepare for given options maybe
+		temp_poll_desc = str(message.content).replace(self.name + ' ', '')
+
+		# Try to get the desc before the options
+		try:
+			temp_poll_desc = str(temp_poll_desc).split('; ')[0]
+			given_options = True
+		except:
+			temp_poll_desc = temp_poll_desc
+
+		# Try to get the options
+		options = []
+		if given_options:
+			for i in range(1, len(str(message.content).split('; '))):
+				option_emote = str(message.content).split('; ')[i].split(' ')[0]
+				option_text = str(message.content).split('; ')[i].replace(str(option_emote) + ' ', '')
+				full_option = [option_emote, option_text]
+				options.append(full_option)
+
+		if len(options) == 0:
+			given_options = False
+		else:
+			print('User provided options')
+
+		# If options aren't a thing, load defaults
+		if len(options) <= 0:
+			try:
+				option_emote_one = guild_conf['yes_vote']['value']
+				option_emote_two = guild_conf['no_vote']['value']
+			except:
+				option_emote_one = None
+				option_emote_two = None
+			option_text_one = "Yes"
+			option_text_two = "No"
+			options.append([option_emote_one, option_text_one])
+			options.append([option_emote_two, option_text_two])
+
 		test_name = ''
 		for i in range(1, len(seg)):
 			test_name = test_name + seg[i] + ' '
 		self.poll_desc = test_name[:-1]
 
+		# Create the poll embed
 		embed = discord.Embed(title="Poll",
 				color=discord.Color.blue())
 
-		embed.add_field(name='Poll Description', value=str(self.poll_desc), inline=False)
+		embed.add_field(name='Poll Description', value=str(temp_poll_desc), inline=False)
 		embed.add_field(name='Creator', value=str(message.author.mention), inline=False)
 
 		embed.add_field(name='Status', value='```OPEN```', inline = False)
+
+		if not given_options:
+			embed.add_field(name='Type', value='```YES/NO```', inline = False)
+		else:
+			embed.add_field(name='Type', value='```MULTIPLE CHOICE```', inline = False)
+
+		# Construct options text field in embed
+		options_text_field = ''
+		for option in options:
+			options_text_field = options_text_field + str(option[0]) + ' ' + str(option[1]) + '\n'
+
+		embed.add_field(name='Options', value=options_text_field, inline=False)
 
 		post_channel = None
 
 		the_role = None
 
-		guild_conf = self.configutils.getGuildConfig(message, self.guild_confs)
-
+		# Add tag role to poll message
 		for role in message.guild.roles:
 			if role.mention == guild_conf['tag_role']['value']:
 				the_role = role
@@ -379,12 +519,23 @@ class Poll():
 				except:
 					continue
 
+		# Add option emotes
 		if (post_channel != None) and (the_role != None):
 			msg = await post_channel.send(the_role.mention, embed=embed)
 
-			await msg.add_reaction(guild_conf['yes_vote']['value'])
+			for option in options:
+				await msg.add_reaction(option[0])
+#			await msg.add_reaction(guild_conf['yes_vote']['value'])
 
-			await msg.add_reaction(guild_conf['no_vote']['value'])
+#			await msg.add_reaction(guild_conf['no_vote']['value'])
+
+			#self.polls.append([the_guild, options, msg])
+
+			# Show us the running polls
+			#print('Running polls:')
+			#for poll in self.polls:
+			#	print('\t' + str(poll[2].id))
+
 		else:
 			print('Could not find post channel. Not posting poll')
 
