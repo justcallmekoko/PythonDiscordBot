@@ -183,8 +183,8 @@ Get the number of guess you have left by typing `!searchanddestroy`'''
 			# Let everyone know the bomb has been planted
 			if announcements_channel != None:
 				await announcements_channel.send(message.author.mention + ' has planted the bomb')
-
-			await message.channel.send(message.author.mention + ' has planted the bomb')
+			else:
+				await message.channel.send(message.author.mention + ' has planted the bomb')
 
 			# Show backend what bombs are active
 			print('Planted bombs:')
