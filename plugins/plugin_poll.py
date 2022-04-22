@@ -57,6 +57,8 @@ class Poll():
 	default_config['time_lim']['value'] = 0
 	default_config['time_lim']['description'] = "Duration of a poll in seconds"
 
+	polls = []
+
 	running_guilds = []
 
 	looping = False
@@ -433,6 +435,14 @@ class Poll():
 #			await msg.add_reaction(guild_conf['yes_vote']['value'])
 
 #			await msg.add_reaction(guild_conf['no_vote']['value'])
+
+			self.polls.append([the_guild, options, msg])
+
+			# Show us the running polls
+			print('Running polls:')
+			for poll in self.polls:
+				print('\t' + str(poll[2].id))
+				
 		else:
 			print('Could not find post channel. Not posting poll')
 
