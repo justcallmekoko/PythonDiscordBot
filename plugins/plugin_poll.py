@@ -362,7 +362,7 @@ class Poll():
 		if given_options:
 			for i in range(1, len(str(message.content).split('; '))):
 				option_emote = str(message.content).split('; ')[i].split(' ')[0]
-				option_text = str(message.content).replace(str(option_emote) + ' ', '')
+				option_text = str(message.content).split('; ')[i].replace(str(option_emote) + ' ', '')
 				full_option = [option_emote, option_text]
 				options.append(full_option)
 
