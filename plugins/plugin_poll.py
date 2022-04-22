@@ -77,7 +77,7 @@ class Poll():
 
 	poll_desc = None
 
-	poll_win_percent = 0.01
+	poll_win_percent = 0.00
 
 #	poll_time_limit = 604800 #one week seconds
 	poll_time_limit = 345600
@@ -170,11 +170,11 @@ class Poll():
 
 		field_found = False
 		for i in range(0, len(embed.fields)):
-			if embed.fields[i].name=='Minimum required "yes" votes':
+			if embed.fields[i].name=='Minimum required "popular" votes':
 				embed.set_field_at(i, name=embed.fields[i].name, value='```' + str(required_limit) + '```', inline=False)
 				field_found = True
 		if not field_found:
-			embed.add_field(name='Minimum required "yes" votes', value='```' + str(required_limit) + '```', inline=False)
+			embed.add_field(name='Minimum required "popular" votes', value='```' + str(required_limit) + '```', inline=False)
 
 		await msg.edit(embed=embed)
 
@@ -188,6 +188,13 @@ class Poll():
 
 				# Close the poll embed
 				embed.set_field_at(i, name=embed.fields[i].name, value='```CLOSED```', inline=False)
+
+				# Get type of poll
+				poll_type = None
+				for i in range(0, len(embed.fields)):
+					if embed.fields[i].name=='Type':
+						poll_type = embed.fields[i].value
+						break
 
 				# Get the options from the text field
 				options_text = None
@@ -239,15 +246,26 @@ class Poll():
 						tied = True
 						break
 
-				if highest_count < int(required_limit):
-					embed.add_field(name='Result', value='```DENIED```', inline=False)
-					embed.add_field(name='Reason', value='```Popular vote did not surpass server minimum```', inline=False)
-				elif tied:
-					embed.add_field(name='Result', value='```DENIED```', inline=False)
-					embed.add_field(name='Reason', value='```Results were tied```', inline=False)
+				if poll_type == 'YES/NO':
+					if highest_count < int(required_limit):
+						embed.add_field(name='Result', value='```DENIED```', inline=False)
+						embed.add_field(name='Reason', value='```YES vote did not surpass server minimum```', inline=False)
+					elif tied:
+						embed.add_field(name='Result', value='```DENIED```', inline=False)
+						embed.add_field(name='Reason', value='```Results were tied```', inline=False)
+					else:
+						embed.add_field(name='Result', value='```APPROVED```', inline=False)
+						embed.add_field(name='Reason', value='```' + winner[0] + ' ' + winner[1] + '```', inline=False)
 				else:
-					embed.add_field(name='Result', value='```APPROVED```', inline=False)
-					embed.add_field(name='Reason', value='```' + winner[0] + ' ' + winner[1] + '```', inline=False)
+					if highest_count < int(required_limit):
+						embed.add_field(name='Result', value='```DENIED```', inline=False)
+						embed.add_field(name='Reason', value='```Popular vote did not surpass server minimum```', inline=False)
+					elif tied:
+						embed.add_field(name='Result', value='```DENIED```', inline=False)
+						embed.add_field(name='Reason', value='```Results were tied```', inline=False)
+					else:
+						embed.add_field(name='Result', value='```APPROVED```', inline=False)
+						embed.add_field(name='Reason', value='```' + winner[0] + ' ' + winner[1] + '```', inline=False)
 				
 
 				'''
@@ -458,6 +476,11 @@ class Poll():
 		embed.add_field(name='Creator', value=str(message.author.mention), inline=False)
 
 		embed.add_field(name='Status', value='```OPEN```', inline = False)
+
+		if not given_options:
+			embed.add_field(name='Type', value='```YES/NO```', inline = False)
+		else:
+			embed.add_field(name='Type', value='```MULTIPLE CHOICE```', inline = False)
 
 		# Construct options text field in embed
 		options_text_field = ''
