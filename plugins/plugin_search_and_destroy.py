@@ -219,8 +219,9 @@ Get the number of guess you have left by typing `!searchanddestroy`'''
 			if str(code_guess) == str(check_bomb[1]):
 				if announcements_channel != None:
 					await announcements_channel.send(message.author.mention + ' has defused the bomb!')
-
-				await message.channel.send(message.author.mention + ' has defused the bomb!')
+				else:
+					await message.channel.send(message.author.mention + ' has defused the bomb!')
+					
 				self.bombs.remove(check_bomb)
 
 				# Show backend what bombs are active
