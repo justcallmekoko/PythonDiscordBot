@@ -117,7 +117,7 @@ class ReactRole():
 		for channel in guild.channels:
 			try:
 				target_message = await channel.fetch_message(id)
-				print('Found ' + str(id) + ' in ' + str(channel.name))
+				#print('Found ' + str(id) + ' in ' + str(channel.name))
 				break
 			except:
 				continue
@@ -168,13 +168,13 @@ class ReactRole():
 							if the_role in user.roles:
 								continue
 
-							print(str(user.name) + ' does not have ' + str(the_role.mention))
+							#print(str(user.name) + ' does not have ' + str(the_role.mention))
 
 							try:
-								user.add_roles(the_role)
+								await user.add_roles(the_role)
 								print('Gave \'' + str(the_role.mention) + '\' to ' + user.name)
 							except Exception as e:
-								print('Could not give role: ' + str(e))
+								#print('Could not give role: ' + str(e))
 								continue
 
 		return
