@@ -192,10 +192,11 @@ class ReactRole():
 			return False
 
 		# Try to get the options
+		options_arg = str(message.content).replace(self.name + ' ' + targ_message_id + ' ', '')
 		options = []
-		for i in range(1, len(str(message.content).replace(self.name + ' ' + targ_message_id + ' ', '').split('; '))):
-			option_emote = str(message.content).split('; ')[i].split(' ')[0]
-			option_text = str(message.content).split('; ')[i].replace(str(option_emote) + ' ', '')
+		for i in range(0, len(options_arg.split('; '))):
+			option_emote = options_arg.split('; ')[i].split(' ')[0]
+			option_text = options_arg.split('; ')[i].replace(str(option_emote) + ' ', '')
 			full_option = [option_emote, option_text]
 			options.append(full_option)
 
