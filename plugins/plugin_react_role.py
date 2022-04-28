@@ -168,6 +168,8 @@ class ReactRole():
 							if the_role in user.roles:
 								continue
 
+							print(str(user.name) + ' does not have ' + str(the_role.mention))
+
 							try:
 								user.add_role(the_role)
 								print('Gave \'' + str(the_role.mention) + '\' to ' + user.name)
