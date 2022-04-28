@@ -112,9 +112,9 @@ class ReactRole():
 	def checkBits(self, bits):
 		return False
 
-	async def getMessageById(self, message, id):
+	async def getMessageById(self, guild, id):
 		target_message = None
-		for channel in message.guild.channels:
+		for channel in guild.channels:
 			try:
 				target_message = await channel.fetch_message(id)
 				print('Found ' + str(id) + ' in ' + str(channel.name))
@@ -142,7 +142,7 @@ class ReactRole():
 
 				# Loop though each reaction message in THIS guild
 				for msg in guild_conf['backend']['reaction_messages']['value']:
-					real_message = await self.getMessageById(msg['id'])
+					real_message = await self.getMessageById(guild, msg['id'])
 					if real_message == None: # The message does not exist in this server anymore
 						continue
 
@@ -236,7 +236,7 @@ class ReactRole():
 		print('Target message id: ' + targ_message_id)
 
 		# Get the target message by id
-		real_targ_message = await self.getMessageById(message, targ_message_id)
+		real_targ_message = await self.getMessageById(message.guild, targ_message_id)
 		if real_targ_message == None:
 			await message.channel.send(message.author.mention + ' ' + targ_message_id + ' does not exist on this server')
 			return False
