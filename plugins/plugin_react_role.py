@@ -45,9 +45,9 @@ class ReactRole():
 	default_config['blacklisted'] = {}
 	default_config['blacklisted']['value'] = []
 	default_config['blacklisted']['description'] = "Groups explicitly denied access to this command"
-	default_config['protected']['reaction_messages'] = {}
-	default_config['protected']['reaction_messages']['value'] = []
-	default_config['protected']['reaction_messages']['description'] = "Messages that have been given the \"react to receive role\" capability"
+	default_config['backend']['reaction_messages'] = {}
+	default_config['backend']['reaction_messages']['value'] = []
+	default_config['backend']['reaction_messages']['description'] = "Messages that have been given the \"react to receive role\" capability"
 
 	running_guilds = []
 
@@ -206,7 +206,23 @@ class ReactRole():
 			print('\t' + str(option))
 
 		# Check if the given message has a role react
-		reaction_messages = guild_conf['protected']['reaction_messages']['value']
+		reaction_messages = guild_conf['backend']['reaction_messages']['value']
+		for msg in reaction_messages:
+			if msg['id'] == targ_message_id:
+				await message.channel.send(message.author.mention + ' ' + targ_message_id + ' already has a role reaction capability')
+				return False
+
+		# Create json structure
+		json_obj = {}
+		json_obj['id'] = targ_message_id
+		json_obj['reactions'] = []
+		for option in options:
+			reaction = {}
+			reaction['emote'] = option[0]
+			reaction['role'] = option[1]
+
+		print('JSON React Roles:')
+		print(json.dumps(json_obj, indent=4, sort_keys=True))
 
 		# End of plugin stuff	
 

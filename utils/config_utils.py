@@ -8,6 +8,7 @@ from requests import get
 
 class ConfigUtils():
 	protected_key = 'protected'
+	backend_key = 'backend'
 
 	def generateConfig(self, conf_path, default_config, file_name, plugin_name):
 		guild_name = file_name.replace('_config.json', '').replace('_', '')
@@ -281,7 +282,7 @@ class ConfigUtils():
 			the_config = self.getGuildConfig(message, configs)
 
 			for key in the_config.keys():
-				if key == self.protected_key:
+				if (key == self.protected_key) or (key == self.backend_key):
 					continue
 				if isinstance(the_config[key]['value'], str):
 					embed.add_field(name=str(key), value=str(the_config[key]['description'] + '\nset/get'), inline=False)
