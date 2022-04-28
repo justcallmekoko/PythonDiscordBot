@@ -147,7 +147,7 @@ class ReactRole():
 						continue
 
 					#Loop through each reaction of THIS message
-					for reaction in real_message:
+					for reaction in real_message.reactions:
 						# Get the corresponding emote/role structure
 						targ_given_reaction = None
 						for given_reaction in msg['reactions']:
