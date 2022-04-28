@@ -8,4 +8,4 @@ A modular Python bot that integrates with Discord
 
 Read the [Contribution Guide](https://github.com/justcallmekoko/PythonDiscordBot/wiki/contribution-guide) if you would like to help
 
-If you have any questions, feel free to hop onto the [Discord Server](https://discord.gg/invite/M2YWpfjAvM)
+If you have any questions, feel free to hop onto the [Discord Server](https://discord.gg/invite/w5JmasxvKA)
