@@ -233,6 +233,11 @@ class ReactRole():
 		# Save the configuration to the file (dangerous)
 		self.configutils.saveConfig(str(message.guild.name) + '_' + str(message.guild.id), self.guild_confs, self.conf_path)
 
+		# Show us all of the configurations
+		print('All react messages for this server:')
+		for msg in guild_conf['backend']['reaction_messages']['value']:
+			print('\t' + str(msg['id']))
+
 		# End of plugin stuff	
 
 		return True
