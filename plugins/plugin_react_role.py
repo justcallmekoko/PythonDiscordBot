@@ -155,7 +155,7 @@ class ReactRole():
 								targ_given_reaction = given_reaction
 
 						# Loop through each user in THIS reaction
-						for user in reaction.users():
+						async for user in reaction.users():
 							# Check if user already has THIS role
 							the_role = None
 							for role in guild.roles:
