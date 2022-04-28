@@ -228,7 +228,7 @@ class ReactRole():
 		print(json.dumps(json_obj, indent=4, sort_keys=True))
 
 		# Add the new react role message configuration to the plugin configuration
-		guild_conf['backend']['reaction_messages'].append(json_obj)
+		guild_conf['backend']['reaction_messages']['value'].append(json_obj)
 
 		# Save the configuration to the file (dangerous)
 		self.configutils.saveConfig(str(message.guild.name) + '_' + str(message.guild.id), self.guild_confs, self.conf_path)
