@@ -115,7 +115,7 @@ class ReactRole():
 		target_message = None
 		for channel in message.guild.channels:
 			try:
-				target_message = await message.channel.fetch_message(id)
+				target_message = await channel.fetch_message(id)
 				print('Found ' + str(id) + ' in ' + str(channel.name))
 				break
 			except:
