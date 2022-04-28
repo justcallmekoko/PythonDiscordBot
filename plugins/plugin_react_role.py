@@ -136,9 +136,6 @@ class ReactRole():
 
 		# Parse args
 		arg = self.getArgs(message)
-		seg = str(message.content).split(' ')
-		the_guild = str(message.guild.name) + str(message.guild.id)
-		guild_conf = self.configutils.getGuildConfig(message, self.guild_confs)
 
 		# Config set/get check
 		if arg != None:
@@ -146,6 +143,10 @@ class ReactRole():
 				return True
 
 		# Do Specific Plugin Stuff
+
+		seg = str(message.content).split(' ')
+		the_guild = str(message.guild.name) + str(message.guild.id)
+		guild_conf = self.configutils.getGuildConfig(message, self.guild_confs)
 
 		# Do service stuff
 		if len(seg) == 2:
@@ -225,6 +226,12 @@ class ReactRole():
 
 		print('JSON React Roles:')
 		print(json.dumps(json_obj, indent=4, sort_keys=True))
+
+		# Add the new react role message configuration to the plugin configuration
+		guild_conf['backend']['reaction_messages'].append(json_obj)
+
+		# Save the configuration to the file (dangerous)
+		self.configutils.saveConfig(str(message.guild.name) + '_' + str(message.guild.id), self.guild_confs, self.conf_path)
 
 		# End of plugin stuff	
 
