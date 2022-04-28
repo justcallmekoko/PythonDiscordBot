@@ -128,6 +128,54 @@ class ReactRole():
 	async def runCheer(self, user, amount):
 		return True
 
+	@loop(seconds = 5)
+	async def loop_func(self):
+		if self.looping:
+			# Loop through all guilds
+			for guild in self.client.guilds:
+				# Only run on guilds that have the service enabled
+				if str(guild.name) + str(guild.id) not in self.running_guilds:
+					continue
+
+				# Get the configuration of THIS guild
+				guild_conf = self.configutils.getGuildConfigByGuild(guild, self.guild_confs)
+
+				# Loop though each reaction message in THIS guild
+				for msg in guild_conf['backend']['reaction_messages']['value']:
+					real_message = await self.getMessageById(msg['id'])
+					if real_message == None: # The message does not exist in this server anymore
+						continue
+
+					#Loop through each reaction of THIS message
+					for reaction in real_message:
+						# Get the corresponding emote/role structure
+						targ_given_reaction = None
+						for given_reaction in msg['reactions']:
+							if given_reaction['emote'] == str(reaction):
+								targ_given_reaction = given_reaction
+
+						# Loop through each user in THIS reaction
+						for user in reaction.users():
+							# Check if user already has THIS role
+							the_role = None
+							for role in guild.roles:
+								if str(role.mention) == targ_given_reaction[1]:
+									the_role = role
+
+							if the_role == None:
+								continue
+
+							if the_role in user.roles:
+								continue
+
+							try:
+								user.add_role(the_role)
+								print('Gave \'' + str(the_role.mention) + '\' to ' + user.name)
+							except:
+								continue
+
+		return
+
 	async def run(self, message, obj_list):
 		# Permissions check
 		if not self.configutils.hasPerms(message, False, self.guild_confs):
