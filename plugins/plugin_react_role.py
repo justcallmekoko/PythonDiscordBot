@@ -159,7 +159,7 @@ class ReactRole():
 							# Check if user already has THIS role
 							the_role = None
 							for role in guild.roles:
-								if str(role.mention) == targ_given_reaction[1]:
+								if str(role.mention) == targ_given_reaction['role']:
 									the_role = role
 
 							if the_role == None:
