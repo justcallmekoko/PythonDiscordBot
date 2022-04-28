@@ -238,6 +238,10 @@ class ReactRole():
 		for msg in guild_conf['backend']['reaction_messages']['value']:
 			print('\t' + str(msg['id']))
 
+		# Add the reactions to the target message
+		for option in options:
+			await real_targ_message.add_reaction(option[0])
+
 		# End of plugin stuff	
 
 		return True
