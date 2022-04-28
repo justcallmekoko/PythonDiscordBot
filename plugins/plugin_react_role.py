@@ -171,7 +171,7 @@ class ReactRole():
 							print(str(user.name) + ' does not have ' + str(the_role.mention))
 
 							try:
-								user.add_role(the_role)
+								user.add_roles(the_role)
 								print('Gave \'' + str(the_role.mention) + '\' to ' + user.name)
 							except Exception as e:
 								print('Could not give role: ' + str(e))
