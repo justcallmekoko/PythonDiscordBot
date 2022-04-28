@@ -45,6 +45,7 @@ class ReactRole():
 	default_config['blacklisted'] = {}
 	default_config['blacklisted']['value'] = []
 	default_config['blacklisted']['description'] = "Groups explicitly denied access to this command"
+	default_config['backend'] = {}
 	default_config['backend']['reaction_messages'] = {}
 	default_config['backend']['reaction_messages']['value'] = []
 	default_config['backend']['reaction_messages']['description'] = "Messages that have been given the \"react to receive role\" capability"
