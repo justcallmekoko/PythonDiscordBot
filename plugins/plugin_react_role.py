@@ -221,6 +221,7 @@ class ReactRole():
 			reaction = {}
 			reaction['emote'] = option[0]
 			reaction['role'] = option[1]
+			json_obj['reactions'].append(reaction)
 
 		print('JSON React Roles:')
 		print(json.dumps(json_obj, indent=4, sort_keys=True))
