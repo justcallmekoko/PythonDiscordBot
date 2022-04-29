@@ -22,7 +22,7 @@ class ReactRole():
 
 	desc = 'Assign a "react to receive role" capability to a message'
 
-	synt = '!reactrole [<message_id> <emote> <role>; ...][config|get <config>|set <config> <value>|add/remove <config> <value>]\nOptions can be specified with ";" followed by an emote and the role of the option like so...\n!reactrole <message id> <emote> @role1; <emote> @role2; <emote> @role3'
+	synt = '!reactrole [<message_id> <emote> <role>; ...][remove <message_id>][config|get <config>|set <config> <value>|add/remove <config> <value>]\nOptions can be specified with ";" followed by an emote and the role of the option like so...\n!reactrole <message id> <emote> @role1; <emote> @role2; <emote> @role3'
 
 	is_service = True
 
@@ -181,7 +181,7 @@ class ReactRole():
 
 	async def run(self, message, obj_list):
 		# Permissions check
-		if not self.configutils.hasPerms(message, False, self.guild_confs):
+		if not self.configutils.hasPerms(message, True, self.guild_confs):
 			await message.channel.send(message.author.mention + ' Permission denied')
 			return False
 
@@ -225,6 +225,24 @@ class ReactRole():
 					return True
 
 			return False
+
+		elif len(seg) == 3:
+			if str(seg[1]) == 'remove':
+				targ_message_id = str(seg[2])
+				# Remove this react message from the plugin config
+				for msg in guild_conf['backend']['reaction_messages']['value']:
+					if msg['id'] == targ_message_id:
+						guild_conf['backend']['reaction_messages']['value'].remove(msg)
+						self.configutils.saveConfig(str(message.guild.name) + '_' + str(message.guild.id), self.guild_confs, self.conf_path)
+
+						# Show us all of the configurations
+						print('All react messages for this server:')
+						for msg2 in guild_conf['backend']['reaction_messages']['value']:
+							print('\t' + str(msg2['id']))
+							
+						return True
+			return False
+
 
 		# User wants status of service
 		elif len(seg) == 1:
