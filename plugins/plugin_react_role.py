@@ -22,7 +22,7 @@ class ReactRole():
 
 	desc = 'Assign a "react to receive role" capability to a message'
 
-	synt = '!reactrole [<message_id> <emote> <role>; ...][remove <message_id>][config|get <config>|set <config> <value>|add/remove <config> <value>]\nOptions can be specified with ";" followed by an emote and the role of the option like so...\n!reactrole <message id> <emote> @role1; <emote> @role2; <emote> @role3'
+	synt = '!reactrole [<message_id> <emote> <role>; ...][delete <message_id>][config|get <config>|set <config> <value>|add/remove <config> <value>]\nOptions can be specified with ";" followed by an emote and the role of the option like so...\n!reactrole <message id> <emote> @role1; <emote> @role2; <emote> @role3'
 
 	is_service = True
 
@@ -227,7 +227,7 @@ class ReactRole():
 			return False
 
 		elif len(seg) == 3:
-			if str(seg[1]) == 'remove':
+			if str(seg[1]) == 'delete':
 				targ_message_id = str(seg[2])
 				# Remove this react message from the plugin config
 				for msg in guild_conf['backend']['reaction_messages']['value']:
