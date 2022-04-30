@@ -339,7 +339,7 @@ class Poll():
 					await self.close_poll_embed(msg, embed)
 		return True
 
-	@loop(seconds = 3)
+	@loop(seconds = 30)
 	async def loop_func(self):
 		if self.looping:
 			for guild in self.client.guilds:
