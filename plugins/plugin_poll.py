@@ -176,7 +176,10 @@ class Poll():
 		if not field_found:
 			embed.add_field(name='Minimum required "popular" votes', value='```' + str(required_limit) + '```', inline=False)
 
-		await msg.edit(embed=embed)
+		try:
+			await msg.edit(embed=embed)
+		except Exception as e:
+			print('Could not update the message embed: ' + str(e))
 
 		return True
 
@@ -307,8 +310,11 @@ class Poll():
 					embed.add_field(name='Result', value='```TIE```', inline=False)
 
 				'''
-
-		await msg.edit(embed=embed)
+		try:
+			await msg.edit(embed=embed)
+		except Exception as e:
+			print('Could not update message embed: ' + str(e))
+			
 
 		return True
 
