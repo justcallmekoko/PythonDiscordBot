@@ -155,27 +155,31 @@ class ReactRole():
 								targ_given_reaction = given_reaction
 
 						# Loop through each user in THIS reaction
-						async for user in reaction.users():
-							# Check if user already has THIS role
-							the_role = None
-							for role in guild.roles:
-								if str(role.mention) == targ_given_reaction['role']:
-									the_role = role
+						try:
+							async for user in reaction.users():
+								# Check if user already has THIS role
+								the_role = None
+								for role in guild.roles:
+									if str(role.mention) == targ_given_reaction['role']:
+										the_role = role
 
-							if the_role == None:
-								continue
+								if the_role == None:
+									continue
 
-							if the_role in user.roles:
-								continue
+								if the_role in user.roles:
+									continue
 
-							#print(str(user.name) + ' does not have ' + str(the_role.mention))
+								#print(str(user.name) + ' does not have ' + str(the_role.mention))
 
-							try:
-								await user.add_roles(the_role)
-								print('Gave \'' + str(the_role.mention) + '\' to ' + user.name)
-							except Exception as e:
-								#print('Could not give role: ' + str(e))
-								continue
+								try:
+									await user.add_roles(the_role)
+									print('Gave \'' + str(the_role.mention) + '\' to ' + user.name)
+								except Exception as e:
+									#print('Could not give role: ' + str(e))
+									continue
+						except Exception as e:
+							print('Could not get reaction users. Continuing...' + str(e))
+							continue
 
 		return
 
