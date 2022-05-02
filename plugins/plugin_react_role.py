@@ -178,7 +178,6 @@ class ReactRole():
 									#print('Could not give role: ' + str(e))
 									continue
 						except Exception as e:
-							print('Could not get reaction users. Continuing...' + str(e))
 							continue
 
 		return

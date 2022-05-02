@@ -368,7 +368,6 @@ class Poll():
 					messages = await post_channel.history(limit=self.message_history_limit).flatten()
 				except Exception as e:
 					messages = []
-					print('Could not get messages. Setting messages to empty list: ' + str(e))
 
 				for msg in messages:
 					embeds = msg.embeds
