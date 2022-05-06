@@ -6,3 +6,5 @@ requests
 pytz
 pytest-cov
 codecov
+youtube_dl
+PyNaCl

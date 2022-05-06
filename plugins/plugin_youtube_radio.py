@@ -2,6 +2,12 @@ import os
 import sys
 import json
 import discord
+import youtube_dl
+import itertools
+import traceback
+import asyncio
+from async_timeout import timeout
+from functools import partial
 from dotenv import load_dotenv
 from discord.ext.tasks import loop
 from requests import get
@@ -9,6 +15,71 @@ from requests import get
 sys.path.append(os.path.abspath('utils'))
 
 from utils.config_utils import ConfigUtils
+
+ytdlopts = {
+	'format': 'bestaudio/best',
+	'outtmpl': 'downloads/%(extractor)s-%(id)s-%(title)s.%(ext)s',
+	'restrictfilenames': True,
+	'noplaylist': True,
+	'nocheckcertificate': True,
+	'ignoreerrors': False,
+	'logtostderr': False,
+	'quiet': True,
+	'no_warnings': True,
+	'default_search': 'auto',
+	'source_address': '0.0.0.0'  # ipv6 addresses cause issues sometimes
+}
+
+ffmpegopts = {
+	'before_options': '-nostdin',
+	'options': '-vn'
+}
+
+ytdl = youtube_dl(ytdlopts)
+
+class YTDLSource(discord.PCMVolumeTransformer):
+	
+    def __init__(self, source, *, data, requester):
+        super().__init__(source)
+        self.requester = requester
+
+        self.title = data.get('title')
+        self.web_url = data.get('webpage_url')
+
+    def __getitem__(self, item: str):
+        return self.__getattribute__(item)
+
+    @classmethod
+    async def create_source(cls, message, search: str, *, loop, download=False):
+        loop = loop or asyncio.get_event_loop()
+
+        to_run = partial(ytdl.extract_info, url=search, download=download)
+        data = await loop.run_in_executor(None, to_run)
+
+        if 'entries' in data:
+            # take first item from a playlist
+            data = data['entries'][0]
+
+        await message.channel.send(f'```ini\n[Added {data["title"]} to the Queue.]\n```')
+
+        if download:
+            source = ytdl.prepare_filename(data)
+        else:
+            return {'webpage_url': data['webpage_url'], 'requester': message.author, 'title': data['title']}
+
+        return cls(discord.FFmpegPCMAudio(source), data=data, requester=message.author)
+
+    @classmethod
+    async def regather_stream(cls, data, *, loop):
+        """Used for preparing a stream, instead of downloading.
+        Since Youtube Streaming links expire."""
+        loop = loop or asyncio.get_event_loop()
+        requester = data['requester']
+
+        to_run = partial(ytdl.extract_info, url=data['webpage_url'], download=False)
+        data = await loop.run_in_executor(None, to_run)
+
+        return cls(discord.FFmpegPCMAudio(data['url']), data=data, requester=requester)
 
 class YoutubeRadio():
 	# Required for all plugins
@@ -118,15 +189,14 @@ class YoutubeRadio():
 
 	async def startPlayer(self, message, target_vc, url):
 		the_guild = str(message.guild.name) + str(message.guild.id)
-		vc = await target_vc.connect()
+		voice_channel = await target_vc.connect()
 
 		for player in self.server_players:
 			if player[0] == the_guild:
 				await message.channel.send(message.author.mention + ' There is already a player running. Stop it before running another.')
 				return False
 
-		player = await vc.create_ytdl_player(url)
-		player.start()
+		player = await YTDLSource.create_source(url, loop=self.bot.loop, download=False)
 		self.server_players.append([the_guild, player])
 
 		print('Guilds running a player:')
