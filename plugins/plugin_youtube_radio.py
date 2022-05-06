@@ -2,7 +2,7 @@ import os
 import sys
 import json
 import discord
-import youtube_dl as YouTubeDL
+from youtube_dl import YoutubeDL
 import itertools
 import traceback
 import asyncio
@@ -35,7 +35,7 @@ ffmpegopts = {
 	'options': '-vn'
 }
 
-ytdl = YouTubeDL(ytdlopts)
+ytdl = YoutubeDL(ytdlopts)
 
 class YTDLSource(discord.PCMVolumeTransformer):
 	
