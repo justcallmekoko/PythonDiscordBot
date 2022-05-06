@@ -159,7 +159,7 @@ class YoutubeRadio():
 			# Make sure user is actually in a voice channel
 			voice_state = message.author.voice
 			if voice_state == None:
-				message.channel.send(message.author.mention + ' You need to be in a voice channel to use this plugin')
+				await message.channel.send(message.author.mention + ' You need to be in a voice channel to use this plugin')
 				return False
 			else:
 				target_vc = message.author.voice_channel
