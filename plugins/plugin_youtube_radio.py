@@ -163,7 +163,7 @@ class YoutubeRadio():
 				return False
 			else:
 				target_vc = message.author.voice.channel
-				self.startPlayer(message, target_vc, str(arg[1]))
+				await self.startPlayer(message, target_vc, str(arg[1]))
 				return True
 
 		return True
