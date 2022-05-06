@@ -185,7 +185,7 @@ class ReactRole():
 #									print('Could not give role to user ' + str(member.name) + ': ' + str(e))
 									continue
 						except Exception as e:
-							print('Hit reaction exception: ' + str(e))
+#							print('Hit reaction exception: ' + str(e))
 							continue
 
 		return
