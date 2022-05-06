@@ -118,7 +118,7 @@ class YoutubeRadio():
 
 	async def startPlayer(self, message, target_vc, url):
 		the_guild = str(message.guild.name) + str(message.guild.id)
-		vc = await self.client.join_voice_channel(target_vc)
+		vc = await target_vc.connect()
 
 		for player in self.server_players:
 			if player[0] == the_guild:
