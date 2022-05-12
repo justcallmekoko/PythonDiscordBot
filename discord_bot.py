@@ -145,12 +145,6 @@ class CustomClient(discord.Client):
 			print('Generating config for ' + str(obj.name))
 			obj.generatePluginConfig(file_name)
 
-	# Member joins the discord server
-	async def on_member_join(self, member):
-		print(f'{member.name}, welcome to the WillStunForFood server. Be sure to check out the "rules" channel so you can pick your roles. If you would like to support me, consider following me on Twitch at https://twitch.tv/willstunforfood')
-		await member.create_dm()
-		await member.dm_channel.send(f'{member.name}, welcome to the WillStunForFood server. Be sure to check out the "rules" channel so you can pick your roles. If you would like to support me, consider following me on Twitch at https://twitch.tv/willstunforfood')
-
 	# Bot received a message on discord server
 	async def on_message(self, message):
 		try:
