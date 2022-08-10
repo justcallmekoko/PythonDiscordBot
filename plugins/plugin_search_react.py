@@ -135,7 +135,7 @@ class SearchReact():
 			for reaction in target_message.reactions:
 				async for member in reaction.users():
 					if member.name == real_member.name:
-						await message.channel.send(message.author.mention + ' User ' + str(member.name) + ' Reacted with ' + reaction.emoji)
+						await message.channel.send(message.author.mention + ' User ' + str(member.name) + ' Reacted with ' + str(reaction.emoji.id))
 
 		return True
 
