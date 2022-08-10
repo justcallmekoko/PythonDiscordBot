@@ -126,15 +126,15 @@ class SearchReact():
 			if await self.configutils.runConfig(message, arg, self.guild_confs, self.conf_path):
 				return True
 
+		await message.channel.send("Searching...")
+
 		# Do Specific Plugin Stuff
 		message_id = str(arg[1])
 
 		target_message = await self.getMessageById(message.guild, message_id)
 
-		await message.channel.send("Searching...")
-
 		for real_member in message.mentions:
-			message_content = message.author.mention + ' User ' + str(member.name) + ' Reacted with: '
+			message_content = message.author.mention + ' User ' + str(real_member.name) + ' Reacted with: '
 			found = False
 			for reaction in target_message.reactions:
 				async for member in reaction.users():
