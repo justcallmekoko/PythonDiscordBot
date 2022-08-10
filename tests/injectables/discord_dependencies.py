@@ -62,6 +62,7 @@ class Reaction():
 
 class message():
 	reactions = []
+	mentions = []
 	id = None
 	content = None
 	channel = None
