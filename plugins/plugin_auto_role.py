@@ -49,6 +49,9 @@ class AutoRole():
 	default_config['time_groups'] = {}
 	default_config['time_groups']['value'] = []
 	default_config['time_groups']['description'] = "List of roles and days required to join roles 'days:group'"
+	default_config['required_role'] = {}
+	default_config['required_role']['value'] = "@everyone"
+	default_config['required_role']['description'] = "Role required in order to be given an autorole"
 
 	running_guilds = []
 
@@ -147,9 +150,28 @@ class AutoRole():
 							if the_role in member.roles:
 								continue
 
+							req_role = None
+							for r_role in guild.roles:
+								if r_role.mention == str(the_config['required_role']['value']):
+									req_role = r_role
+									break
+
+							if req_role == None:
+								print("[!] Could not get required role for autorole")
+								continue
+
+							if req_role not in member.roles:
+								#print('[!] ' + member.name + ' does not have required role to be given autorole')
+								continue
+
 	#						role = get(self.global_message.guild.roles, name = str(role_index[1]))
-							await member.add_roles(the_role)
-							print('Gave \'' + str(role_index[1]) + '\' to ' + member.name)
+							# One last check to make sure this member is still on the server
+							if guild.get_member(member.id) is not None:
+								await member.add_roles(the_role)
+								print('Gave \'' + str(role_index[1]) + '\' to ' + member.name)
+							# Get rid of this else. Just for debugging
+							#else:
+							#	print(member.name + ' is no longer on the server')
 
 	def checkCat(self, check_cat):
 		if self.cat == check_cat:
