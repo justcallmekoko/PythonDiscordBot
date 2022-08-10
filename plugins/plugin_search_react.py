@@ -144,7 +144,7 @@ class SearchReact():
 			if found:
 				await message.channel.send(message_content)
 			else:
-				await message.channel.send(message.author.mention + ' User ' + str(member.name) + ' has not reacted')
+				await message.channel.send(message.author.mention + ' User ' + str(real_member.name) + ' has not reacted')
 
 		return True
 
