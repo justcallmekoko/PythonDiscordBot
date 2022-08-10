@@ -131,15 +131,20 @@ class SearchReact():
 
 		target_message = await self.getMessageById(message.guild, message_id)
 
+		await message.channel.send("Searching...")
+
 		for real_member in message.mentions:
-			message_content = ""
+			message_content = message.author.mention + ' User ' + str(member.name) + ' Reacted with: '
+			found = False
 			for reaction in target_message.reactions:
 				async for member in reaction.users():
 					if member.name == real_member.name:
-						message_content = message_content + message.author.mention + ' User ' + str(member.name) + ' Reacted with ' + str(reaction.emoji) + '\n'
-						#await message.channel.send(message.author.mention + ' User ' + str(member.name) + ' Reacted with ' + str(reaction.emoji))
-			if message_content != "":
+						found = True
+						message_content = message_content + str(reaction.emoji)
+			if found:
 				await message.channel.send(message_content)
+			else:
+				await message.channel.send(message.author.mention + ' User ' + str(member.name) + ' has not reacted')
 
 		return True
 
