@@ -12,7 +12,7 @@ sys.path.append(os.path.abspath('utils'))
 
 from utils.config_utils import ConfigUtils
 
-class AutoRole():
+class Founders():
 	# Required for all plugins
 	conf_path = os.path.join(os.path.dirname(__file__), 'configs')
 
