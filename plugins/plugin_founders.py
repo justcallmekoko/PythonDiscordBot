@@ -169,7 +169,7 @@ class Founders():
 
 						# One last check to make sure this member is still on the server
 						if guild.get_member(member.id) is not None:
-							#await member.add_roles(the_role)
+							await member.add_roles(the_role)
 							print('Gave \'' + str(role_index[1]) + '\' to ' + member.name)
 
 
