@@ -168,7 +168,7 @@ class ReactRole():
 
 								# Remove user emotes to keep things quick and clean
 								if member != self.client.user:
-									reaction.remove(member)
+									await reaction.remove(member)
 
 								try:
 									if the_role in member.roles:
