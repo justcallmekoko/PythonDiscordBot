@@ -166,6 +166,10 @@ class ReactRole():
 								if the_role == None:
 									continue
 
+								# Remove user emotes to keep things quick and clean
+								if member != self.client.user:
+									reaction.remove(member)
+
 								try:
 									if the_role in member.roles:
 										continue
@@ -177,10 +181,6 @@ class ReactRole():
 									print('Gave \'' + str(the_role.mention) + '\' to ' + member.name)
 								except Exception as e:
 									continue
-
-								# Remove user emotes to keep things quick and clean
-								if member != self.client.user:
-									reaction.remove(member)
 
 						except Exception as e:
 							continue
