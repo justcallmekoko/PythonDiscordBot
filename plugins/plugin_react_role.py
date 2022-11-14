@@ -148,7 +148,6 @@ class ReactRole():
 
 					#Loop through each reaction of THIS message
 					for reaction in real_message.reactions:
-#						print(str(reaction))
 						# Get the corresponding emote/role structure
 						targ_given_reaction = None
 						for given_reaction in msg['reactions']:
@@ -164,8 +163,6 @@ class ReactRole():
 									if str(role.mention) == targ_given_reaction['role']:
 										the_role = role
 
-#								print('\tChecking ' + str(member.name))
-
 								if the_role == None:
 									continue
 
@@ -173,19 +170,19 @@ class ReactRole():
 									if the_role in member.roles:
 										continue
 								except Exception as e:
-#									print('Could not get roles for ' + str(member.name) + ': ' + str(e))
 									continue
-
-#								print(str(member.name) + ' does not have ' + str(the_role.mention))
 
 								try:
 									await member.add_roles(the_role)
 									print('Gave \'' + str(the_role.mention) + '\' to ' + member.name)
 								except Exception as e:
-#									print('Could not give role to user ' + str(member.name) + ': ' + str(e))
 									continue
+
+								# Remove user emotes to keep things quick and clean
+								if member != self.client.user:
+									reaction.remove(member)
+
 						except Exception as e:
-#							print('Hit reaction exception: ' + str(e))
 							continue
 
 		return
