@@ -6,6 +6,7 @@ import discord
 import time
 import socket
 import threading
+from logger import logger
 from string import printable
 from dotenv import load_dotenv
 from mcrcon import MCRcon
@@ -57,7 +58,7 @@ class CustomClient(discord.Client):
 	def __init__(self, discord_intents: discord.Intents):
 		super().__init__(intents=discord_intents)
 
-		print('Init done')
+		logger.debug('Init done')
 
 	def get_class_name(self, mod_name):
 		output = ""
@@ -71,13 +72,11 @@ class CustomClient(discord.Client):
 
 	# Bot connects to discord server
 	async def on_ready(self):
-		print (f'{self.user} has connected to Discord!')
+		logger.debug (f'{self.user} has connected to Discord!')
 
 		for guild in client.guilds:
-#			if guild.name == GUILD:
-#				break
 
-			print(
+			logger.debug(
 				f'\n{client.user} is connected to the following guild:\n'
 				f'{guild.name}(id: {guild.id})\n'
 			)
@@ -85,29 +84,29 @@ class CustomClient(discord.Client):
 			file_name = str(guild.name) + '_' + str(guild.id) + '_conf.json'
 
 			if not os.path.isfile(os.path.join(self.conf_path, file_name)):
-				print('Guild configuration file not found. Creating...')
+				logger.debug('Guild configuration file not found. Creating...')
 				with open(os.path.join(self.conf_path, file_name), 'w'):
 					pass
 
-			print('Member count: ' + str(guild.member_count))
+			logger.debug('Member count: ' + str(guild.member_count))
 
 			for member in guild.members:
 				members_list.append(member.name)
 
-			print('len(members_list): ' + str(len(members_list)))
+			logger.debug('len(members_list): ' + str(len(members_list)))
 
-			print ('Guild Roles:')
+			logger.debug('Guild Roles:')
 			for role in guild.roles:
-				print('\t' + role.name)
+				logger.debug('\t' + role.name)
 
 
 			print ()
 
-			print('Guild text channels:')
+			logger.debug('Guild text channels:')
 			for channel in guild.channels:
 				if str(channel.type) == 'text':
 					channels_list.append(channel)
-					print('\t' + str(channel.name))
+					logger.debug('\t' + str(channel.name))
 
 			print ()
 
@@ -124,9 +123,9 @@ class CustomClient(discord.Client):
 				obj_list.append(instance)
 
 		# Show all plugins and start all services that can be started
-		print('Plugins loaded:')
+		logger.debug('Plugins loaded:')
 		for obj in obj_list:
-			print('\t' + str(obj.name))
+			logger.debug('\t' + str(obj.name))
 			if obj.is_service:
 				try:
 					await obj.startService()
@@ -137,12 +136,12 @@ class CustomClient(discord.Client):
 		file_name = str(guild.name) + '_' + str(guild.id) + '_conf.json'
 
 		if not os.path.isfile(os.path.join(self.conf_path, file_name)):
-			print('Guild configuration file not found. Creating...')
+			logger.debug('Guild configuration file not found. Creating...')
 			with open(os.path.join(self.conf_path, file_name), 'w'):
 				pass
 
 		for obj in obj_list:
-			print('Generating config for ' + str(obj.name))
+			logger.debug('Generating config for ' + str(obj.name))
 			obj.generatePluginConfig(file_name)
 
 	# Bot received a message on discord server
@@ -158,7 +157,7 @@ class CustomClient(discord.Client):
 
 		output = output + ' ' + message.author.name + ': ' + message.content
 
-		print (output)
+		logger.info(output)
 
 		# Work response
 		if message.content == '!muster':
