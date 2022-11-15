@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import asyncio
+from logger import logger
 from datetime import datetime
 from dotenv import load_dotenv
 from discord.ext.tasks import loop
@@ -73,9 +74,9 @@ class AutoRole():
 		self.guild_confs = self.configutils.loadConfig(self.conf_path, self.default_config, __file__)
 
 
-		print('\n\nConfigs Loaded:')
+		logger.debug('\n\nConfigs Loaded:')
 		for config in self.guild_confs:
-			print('\t' + config['protected']['name'] + ': ' + config['protected']['guild'])
+			logger.debug('\t' + config['protected']['name'] + ': ' + config['protected']['guild'])
 
 #		loop = asyncio.new_event_loop()
 #		asyncio.set_event_loop(loop)
@@ -118,10 +119,10 @@ class AutoRole():
 					continue
 
 				# Loop through all members in the guild
-				print('Running auto role check...')
+				logger.debug('Running auto role check...')
 				for member in guild.members:
 					if not self.looping:
-						print('Exiting from auto role check...')
+						logger.debug('Exiting from auto role check...')
 						self.loop_func.stop()
 						return
 					# Get days since member joined server
@@ -157,7 +158,7 @@ class AutoRole():
 									break
 
 							if req_role == None:
-								print("[!] Could not get required role for autorole")
+								logger.debug("[!] Could not get required role for autorole")
 								continue
 
 							if req_role not in member.roles:
@@ -168,7 +169,7 @@ class AutoRole():
 							# One last check to make sure this member is still on the server
 							if guild.get_member(member.id) is not None:
 								await member.add_roles(the_role)
-								print('Gave \'' + str(role_index[1]) + '\' to ' + member.name)
+								logger.info('Gave \'' + str(role_index[1]) + '\' to ' + member.name)
 							# Get rid of this else. Just for debugging
 							#else:
 							#	print(member.name + ' is no longer on the server')
@@ -237,9 +238,9 @@ class AutoRole():
 			if the_guild not in self.running_guilds:
 				#self.looping = True
 				self.running_guilds.append(the_guild)
-				print('Guilds running ' + str(self.name) + ':')
+				logger.debug('Guilds running ' + str(self.name) + ':')
 				for gu in self.running_guilds:
-					print('\t' + gu)
+					logger.debug('\t' + gu)
 				await message.channel.send(message.author.mention + ' Starting ' + str(self.name))
 				#self.loop_func.start()
 				return True
@@ -250,7 +251,7 @@ class AutoRole():
 				self.running_guilds.remove(the_guild)
 				await message.channel.send(message.author.mention + ' Stopping ' + str(self.name))
 				for gu in self.running_guilds:
-					print('\t' + gu)
+					logger.debug('\t' + gu)
 				#self.loop_func.stop()
 				return True
 		return
