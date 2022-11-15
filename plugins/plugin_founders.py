@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import asyncio
+from logger import logger
 from datetime import datetime
 from dotenv import load_dotenv
 from discord.ext.tasks import loop
@@ -73,9 +74,9 @@ class Founders():
 		self.guild_confs = self.configutils.loadConfig(self.conf_path, self.default_config, __file__)
 
 
-		print('\n\nConfigs Loaded:')
+		logger.debug('\n\nConfigs Loaded:')
 		for config in self.guild_confs:
-			print('\t' + config['protected']['name'] + ': ' + config['protected']['guild'])
+			logger.debug('\t' + config['protected']['name'] + ': ' + config['protected']['guild'])
 
 
 	def getArgs(self, message):
@@ -112,10 +113,10 @@ class Founders():
 					continue
 
 				# Loop through all members in the guild
-				print('Running founder role check...')
+				logger.debug('Running founder role check...')
 				for member in guild.members:
 					if not self.looping:
-						print('Exiting from founder role check...')
+						logger.debug('Exiting from founder role check...')
 						self.loop_func.stop()
 						return
 
@@ -160,7 +161,7 @@ class Founders():
 
 						# Couldn't find required role
 						if req_role == None:
-							print("[!] Could not get required role for autorole")
+							logger.debug("[!] Could not get required role for autorole")
 							continue
 
 						# Member doesn't have required role
@@ -170,7 +171,7 @@ class Founders():
 						# One last check to make sure this member is still on the server
 						if guild.get_member(member.id) is not None:
 							await member.add_roles(the_role)
-							print('Gave \'' + str(role_index[1]) + '\' to ' + member.name)
+							logger.info('Gave \'' + str(role_index[1]) + '\' to ' + member.name)
 
 
 	def checkCat(self, check_cat):
@@ -237,9 +238,9 @@ class Founders():
 			if the_guild not in self.running_guilds:
 				#self.looping = True
 				self.running_guilds.append(the_guild)
-				print('Guilds running ' + str(self.name) + ':')
+				logger.debug('Guilds running ' + str(self.name) + ':')
 				for gu in self.running_guilds:
-					print('\t' + gu)
+					logger.debug('\t' + gu)
 				await message.channel.send(message.author.mention + ' Starting ' + str(self.name))
 				#self.loop_func.start()
 				return True
@@ -250,7 +251,7 @@ class Founders():
 				self.running_guilds.remove(the_guild)
 				await message.channel.send(message.author.mention + ' Stopping ' + str(self.name))
 				for gu in self.running_guilds:
-					print('\t' + gu)
+					logger.debug('\t' + gu)
 				#self.loop_func.stop()
 				return True
 		return

@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import random
+from logger import logger
 from dotenv import load_dotenv
 from discord.ext.tasks import loop
 from requests import get
@@ -80,9 +81,9 @@ Get the number of guess you have left by typing `!searchanddestroy`'''
 		self.guild_confs = self.configutils.loadConfig(self.conf_path, self.default_config, __file__)
 
 
-		print('\n\nConfigs Loaded:')
+		logger.debug('\n\nConfigs Loaded:')
 		for config in self.guild_confs:
-			print('\t' + config['protected']['name'] + ': ' + config['protected']['guild'])
+			logger.debug('\t' + config['protected']['name'] + ': ' + config['protected']['guild'])
 
 	def getArgs(self, message):
 		cmd = str(message.content)
@@ -187,9 +188,9 @@ Get the number of guess you have left by typing `!searchanddestroy`'''
 				await message.channel.send(message.author.mention + ' has planted the bomb')
 
 			# Show backend what bombs are active
-			print('Planted bombs:')
+			logger.info('Planted bombs:')
 			for bomb in self.bombs:
-				print('\t' + str(bomb))
+				logger.info('\t' + str(bomb))
 
 		# Defuse the bomb
 		if command == 'bombdefuse':
@@ -225,9 +226,9 @@ Get the number of guess you have left by typing `!searchanddestroy`'''
 				self.bombs.remove(check_bomb)
 
 				# Show backend what bombs are active
-				print('Planted bombs:')
+				logger.info('Planted bombs:')
 				for bomb in self.bombs:
-					print('\t' + str(bomb))
+					logger.info('\t' + str(bomb))
 					
 				return True
 
@@ -250,7 +251,7 @@ Get the number of guess you have left by typing `!searchanddestroy`'''
 			except ValueError:
 				pass
 
-			print('Comparing: ' + str(code_guess_list) + ' | ' + str(defuse_code_list))
+			logger.debug('Comparing: ' + str(code_guess_list) + ' | ' + str(defuse_code_list))
 
 			for i in range(0, len(defuse_code_list)):
 				# Correct integer, incorrect index
@@ -273,9 +274,9 @@ Get the number of guess you have left by typing `!searchanddestroy`'''
 				self.bombs.remove(check_bomb)
 
 				# Show backend what bombs are active
-				print('Planted bombs:')
+				logger.info('Planted bombs:')
 				for bomb in self.bombs:
-					print('\t' + str(bomb))
+					logger.info('\t' + str(bomb))
 
 				return False
 

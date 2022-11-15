@@ -3,6 +3,7 @@ import sys
 import json
 import random
 import discord
+from logger import logger
 from datetime import datetime
 from dotenv import load_dotenv
 from discord.ext.tasks import loop
@@ -79,9 +80,9 @@ class Giveaway():
 		self.guild_confs = self.configutils.loadConfig(self.conf_path, self.default_config, __file__)
 
 
-		print('\n\nConfigs Loaded:')
+		logger.debug('\n\nConfigs Loaded:')
 		for config in self.guild_confs:
-			print('\t' + config['protected']['name'] + ': ' + config['protected']['guild'])
+			logger.debug('\t' + config['protected']['name'] + ': ' + config['protected']['guild'])
 
 	def getArgs(self, message):
 		cmd = str(message.content)
@@ -139,11 +140,11 @@ class Giveaway():
 						# Get the configuration of this specific message
 						the_config = self.configutils.getGuildConfig(msg, self.guild_confs)
 						if not self.configutils.hasPermsUser(cache_message, real_member, False, self.guild_confs):
-							print('does not have permission to join the giveaway')
+							logger.debug('does not have permission to join the giveaway')
 							continue
 
 						if (real_member not in index[1]) and (self.looping):
-							print('Adding ' + str(real_member) + ' to giveaway: ' + str(msg.id))
+							logger.info('Adding ' + str(real_member) + ' to giveaway: ' + str(msg.id))
 							index[1].append(real_member)
 							await self.update_giveaway_embed(index)
 
@@ -152,13 +153,11 @@ class Giveaway():
 		the_embed = None
 		for embed in msg.embeds:
 			if embed.title == 'Giveaway':
-#				print('Found the giveaway')
 				the_embed = embed
 				break
 
 		for i in range(0, len(the_embed.fields)):
 			if the_embed.fields[i].name=='Participants':
-#				print('Setting the user amount')
 				the_embed.set_field_at(i, name=embed.fields[i].name, value='```' + str(len(index[1])) + '```', inline=True)
 
 		await msg.edit(embed=the_embed)
@@ -168,7 +167,7 @@ class Giveaway():
 		for channel in message.guild.channels:
 			try:
 				if str(channel.mention) == str(the_config['post_channel']['value']):
-					print('Found post_channel: ' + str(channel.mention))
+					logger.debug('Found post_channel: ' + str(channel.mention))
 					return channel
 			except:
 				return None
@@ -204,11 +203,6 @@ class Giveaway():
 		# User just wants status of giveaway
 		if message.content == '!giveaway':
 			return True
-		#	if self.running:
-		#		await message.channel.send(message.author.mention + ' `' + self.giveaway_name + '` is currently running: ' + str(self.giveaway_message.jump_url))
-		#	else:
-		#		await message.channel.send(message.author.mention + ' There are no giveaways running')
-		#	return True
 
 		# Get commands args...again
 		command = seg[1]
@@ -266,21 +260,17 @@ class Giveaway():
 			self.running_giveaways.append([giveaway_message, [], [], test_name[:-1]])
 
 			# Show us the list of running giveaway messages
-			print('Giveaway messages: ')
+			logger.debug('Giveaway messages: ')
 			for index in self.running_giveaways:
 				msg = index[0]
-				print('\t' + str(msg.id))
-
-			#if not self.looping:
-			#	self.looping = True
-			#	self.loop_func.start()
+				logger.debug('\t' + str(msg.id))
 
 			return self.giveaway_name
 
 		# Stoping giveaway
 		if command == 'stop':
 			check_msg_id = str(arg[2])
-			print('Checking ' + check_msg_id)
+			logger.debug('Checking ' + check_msg_id)
 
 			# Check if this message is even part of the user's server
 			# This will prevent someone with admin privs on another server from picking
@@ -294,7 +284,7 @@ class Giveaway():
 
 			# User tried to pick a winner for a giveaway that wasn't running in their server
 			if the_index == None:
-				print('Source msg guild and target giveaway guild did not match')
+				logger.debug('Source msg guild and target giveaway guild did not match')
 				await message.channel.send(message.author.mention + ' That giveaway is not running on this server')
 				return False
 
@@ -314,16 +304,16 @@ class Giveaway():
 			await the_index[0].edit(embed=the_embed)
 
 			# Show us the list of running giveaway messages
-			print('Giveaway messages: ')
+			logger.debug('Giveaway messages: ')
 			for index in self.running_giveaways:
 				msg = index[0]
-				print('\t' + str(msg.id))
+				logger.debug('\t' + str(msg.id))
 
 		# Pick winner
 		if command == 'pick':
 
 			check_msg_id = str(arg[2])
-			print('Checking ' + check_msg_id)
+			logger.debug('Checking ' + check_msg_id)
 
 			# Check if this message is even part of the user's server
 			# This will prevent someone with admin privs on another server from picking
@@ -337,7 +327,7 @@ class Giveaway():
 
 			# User tried to pick a winner for a giveaway that wasn't running in their server
 			if the_index == None:
-				print('Source msg guild and target giveaway guild did not match')
+				logger.debug('Source msg guild and target giveaway guild did not match')
 				await message.channel.send(message.author.mention + ' That giveaway is not running on this server')
 				return False
 

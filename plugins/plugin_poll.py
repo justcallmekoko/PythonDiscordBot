@@ -3,6 +3,7 @@ import sys
 import json
 import discord
 import pytz
+from logger import logger
 from pytz import utc
 from pytz import timezone
 from datetime import datetime
@@ -95,9 +96,9 @@ class Poll():
 		self.guild_confs = self.configutils.loadConfig(self.conf_path, self.default_config, __file__)
 
 
-		print('\n\nConfigs Loaded:')
+		logger.debug('\n\nConfigs Loaded:')
 		for config in self.guild_confs:
-			print('\t' + config['protected']['name'] + ': ' + config['protected']['guild'])
+			logger.debug('\t' + config['protected']['name'] + ': ' + config['protected']['guild'])
 
 	def getArgs(self, message):
 		cmd = str(message.content)
@@ -179,7 +180,7 @@ class Poll():
 		try:
 			await msg.edit(embed=embed)
 		except Exception as e:
-			print('Could not update the message embed: ' + str(e))
+			logger.exception('Could not update the message embed: ' + str(e))
 
 		return True
 
@@ -216,10 +217,10 @@ class Poll():
 						options.append(full_option)
 
 				# Add vote count to each option in list and show us the list
-				print('Checking options:')
+				logger.debug('Checking options:')
 				for option in options:
 					option.append(0)
-					print('\t' + str(option))
+					logger.debug('\t' + str(option))
 
 				# Find out how many of the popular vote is required to approve poll
 				total_members = msg.guild.member_count
@@ -227,7 +228,7 @@ class Poll():
 
 				# Check all reactions and add counts
 				for reaction in msg.reactions:
-					print(str(reaction) + ': ' + str(reaction.count))
+					logger.debug(str(reaction) + ': ' + str(reaction.count))
 					# Check if this reaction is an option and set the option's count
 					for option in options:
 						if option[0] == str(reaction):
@@ -313,7 +314,7 @@ class Poll():
 		try:
 			await msg.edit(embed=embed)
 		except Exception as e:
-			print('Could not update message embed: ' + str(e))
+			logger.exception('Could not update message embed: ' + str(e))
 			
 
 		return True
@@ -340,8 +341,8 @@ class Poll():
 				await self.update_poll_embed(msg, embed, poll_time_limit - message_hist_sec)
 
 				if message_hist_sec > poll_time_limit:
-					print(str(now) + ' - ' + str(msg_time))
-					print('Found open Poll that needs to be closed: ' + str(message_hist_sec))
+					logger.debug(str(now) + ' - ' + str(msg_time))
+					logger.debug('Found open Poll that needs to be closed: ' + str(message_hist_sec))
 					await self.close_poll_embed(msg, embed)
 		return True
 
@@ -411,9 +412,9 @@ class Poll():
 			if str(seg[1]) == 'start':
 				if the_guild not in self.running_guilds:
 					self.running_guilds.append(the_guild)
-					print('Guilds running ' + str(self.name) + ':')
+					logger.debug('Guilds running ' + str(self.name) + ':')
 					for gu in self.running_guilds:
-						print('\t' + gu)
+						logger.debug('\t' + gu)
 					await message.channel.send(message.author.mention + ' Starting ' + str(self.name))
 					return True
 
@@ -421,9 +422,9 @@ class Poll():
 				if the_guild in self.running_guilds:
 					self.running_guilds.remove(the_guild)
 					await message.channel.send(message.author.mention + ' Stopping ' + str(self.name))
-					print('Guilds running ' + str(self.name) + ':')
+					logger.debug('Guilds running ' + str(self.name) + ':')
 					for gu in self.running_guilds:
-						print('\t' + gu)
+						logger.debug('\t' + gu)
 					return True
 
 			return False
@@ -464,7 +465,7 @@ class Poll():
 		if len(options) == 0:
 			given_options = False
 		else:
-			print('User provided options')
+			logger.debug('User provided options')
 
 		# If options aren't a thing, load defaults
 		if len(options) <= 0:
@@ -547,7 +548,7 @@ class Poll():
 			#	print('\t' + str(poll[2].id))
 
 		else:
-			print('Could not find post channel. Not posting poll')
+			logger.debug('Could not find post channel. Not posting poll')
 
 		return True
 

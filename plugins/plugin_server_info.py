@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import discord
+from logger import logger
 from datetime import datetime
 from dotenv import load_dotenv
 from discord.ext.tasks import loop
@@ -64,9 +65,9 @@ class ServerInfo():
 		self.guild_confs = self.configutils.loadConfig(self.conf_path, self.default_config, __file__)
 
 
-		print('\n\nConfigs Loaded:')
+		logger.debug('\n\nConfigs Loaded:')
 		for config in self.guild_confs:
-			print('\t' + config['protected']['name'] + ': ' + config['protected']['guild'])
+			logger.debug('\t' + config['protected']['name'] + ': ' + config['protected']['guild'])
 
 	def getArgs(self, message):
 		cmd = str(message.content)

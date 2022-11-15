@@ -2,6 +2,7 @@ import os
 import copy
 import json
 import discord
+from logger import logger
 from dotenv import load_dotenv
 from discord.ext.tasks import loop
 from requests import get
@@ -25,7 +26,7 @@ class ConfigUtils():
 
 		# If plugins json doesn't exist, write the key
 		if 'plugins' not in json_data:
-			print('JSON config does not exist. Creating...')
+			logger.debug('JSON config does not exist. Creating...')
 			data = {}
 			data['plugins'] = []
 			with open(full_conf_file, 'w') as f:
@@ -45,7 +46,7 @@ class ConfigUtils():
 			new_conf = None
 			new_conf = copy.copy(default_config)
 			new_conf[self.protected_key]['guild'] = guild_name
-			print('Could not find plugin configuration. Creating...' + str(new_conf[self.protected_key]['guild']))
+			logger.debug('Could not find plugin configuration. Creating...' + str(new_conf[self.protected_key]['guild']))
 			configs.append(copy.deepcopy(new_conf)) # Needs to be deepcopy or all list items are changed
 			json_data['plugins'].append(new_conf)
 			with open(full_conf_file, 'w') as f:
@@ -65,7 +66,7 @@ class ConfigUtils():
 				guild_name = entity.split('_')[0] + entity.split('_')[1]
 
 				full_conf_file = os.path.join(conf_path, entity)
-				print(file_name + ': Loading conf...' + str(entity))
+				logger.debug(file_name + ': Loading conf...' + str(entity))
 
 				guild_name = entity.split('_')[0] + entity.split('_')[1]
 
@@ -79,7 +80,7 @@ class ConfigUtils():
 
 				# If plugins json doesn't exist, write the key
 				if 'plugins' not in json_data:
-					print('JSON config does not exist. Creating...')
+					logger.debug('JSON config does not exist. Creating...')
 					data = {}
 					data['plugins'] = []
 					with open(full_conf_file, 'w') as f:
@@ -99,7 +100,7 @@ class ConfigUtils():
 					new_conf = None
 					new_conf = copy.copy(default_config)
 					new_conf[self.protected_key]['guild'] = guild_name
-					print('Could not find plugin configuration. Creating...' + str(new_conf[self.protected_key]['guild']))
+					logger.debug('Could not find plugin configuration. Creating...' + str(new_conf[self.protected_key]['guild']))
 					configs.append(copy.deepcopy(new_conf)) # Needs to be deepcopy or all list items are changed
 					json_data['plugins'].append(new_conf)
 					with open(full_conf_file, 'w') as f:
@@ -242,7 +243,7 @@ class ConfigUtils():
 		for entity in os.listdir(conf_path):
 			if (os.path.isfile(os.path.join(conf_path, entity))) and (entity == str(targ_guild) + '_conf.json'):
 
-				print('Found target conf file to save')
+				logger.debug('Found target conf file to save')
 
 				full_conf_file = os.path.join(conf_path, entity)
 
@@ -259,13 +260,13 @@ class ConfigUtils():
 					for this_config in configs:
 						# This if statement is really fucking disgusting
 						if (that_config[self.protected_key]['name'] == this_config[self.protected_key]['name']) and (that_config[self.protected_key]['guild'] == this_config[self.protected_key]['guild']):
-							print('Found target config to save: ' + str(that_config[self.protected_key]['name']))
+							logger.debug('Found target config to save: ' + str(that_config[self.protected_key]['name']))
 							new_json['plugins'].append(this_config)
 							found = True
 					if not found:
 						new_json['plugins'].append(that_config)
 
-				print('Writing to configuration file: ' + str(full_conf_file))
+				logger.debug('Writing to configuration file: ' + str(full_conf_file))
 				with open(full_conf_file, 'w') as f:
 					json.dump(new_json, f, indent=4)
 
@@ -311,7 +312,7 @@ class ConfigUtils():
 				else:
 					embed.add_field(name=str(arg[2]), value='Not Found', inline=False)
 			else:
-				print('Did not find configuration')
+				logger.debug('Did not find configuration')
 
 			await message.channel.send(embed=embed)
 			return True

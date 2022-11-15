@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import discord
+from logger import logger
 from dotenv import load_dotenv
 from discord.ext.tasks import loop
 from requests import get
@@ -70,9 +71,9 @@ class ReactRole():
 		self.guild_confs = self.configutils.loadConfig(self.conf_path, self.default_config, __file__)
 
 
-		print('\n\nConfigs Loaded:')
+		logger.debug('\n\nConfigs Loaded:')
 		for config in self.guild_confs:
-			print('\t' + config['protected']['name'] + ': ' + config['protected']['guild'])
+			logger.debug('\t' + config['protected']['name'] + ': ' + config['protected']['guild'])
 
 	def getArgs(self, message):
 		cmd = str(message.content)
@@ -178,7 +179,7 @@ class ReactRole():
 
 								try:
 									await member.add_roles(the_role)
-									print('Gave \'' + str(the_role.mention) + '\' to ' + member.name)
+									logger.debug('Gave \'' + str(the_role.mention) + '\' to ' + member.name)
 								except Exception as e:
 									continue
 
@@ -217,9 +218,9 @@ class ReactRole():
 			if str(seg[1]) == 'start':
 				if the_guild not in self.running_guilds:
 					self.running_guilds.append(the_guild)
-					print('Guilds running ' + str(self.name) + ':')
+					logger.debug('Guilds running ' + str(self.name) + ':')
 					for gu in self.running_guilds:
-						print('\t' + gu)
+						logger.debug('\t' + gu)
 					await message.channel.send(message.author.mention + ' Starting ' + str(self.name))
 					return True
 
@@ -227,9 +228,9 @@ class ReactRole():
 				if the_guild in self.running_guilds:
 					self.running_guilds.remove(the_guild)
 					await message.channel.send(message.author.mention + ' Stopping ' + str(self.name))
-					print('Guilds running ' + str(self.name) + ':')
+					logger.debug('Guilds running ' + str(self.name) + ':')
 					for gu in self.running_guilds:
-						print('\t' + gu)
+						logger.debug('\t' + gu)
 					return True
 
 			return False
@@ -244,9 +245,9 @@ class ReactRole():
 						self.configutils.saveConfig(str(message.guild.name) + '_' + str(message.guild.id), self.guild_confs, self.conf_path)
 
 						# Show us all of the configurations
-						print('All react messages for this server:')
+						logger.debug('All react messages for this server:')
 						for msg2 in guild_conf['backend']['reaction_messages']['value']:
-							print('\t' + str(msg2['id']))
+							logger.debug('\t' + str(msg2['id']))
 							
 						return True
 			return False
@@ -262,7 +263,7 @@ class ReactRole():
 
 		# Get the message id the user wants
 		targ_message_id = str(seg[1])
-		print('Target message id: ' + targ_message_id)
+		logger.debug('Target message id: ' + targ_message_id)
 
 		# Get the target message by id
 		real_targ_message = await self.getMessageById(message.guild, targ_message_id)
@@ -280,9 +281,9 @@ class ReactRole():
 			options.append(full_option)
 
 		# Show us options we received from user
-		print('Received options:')
+		logger.debug('Received options:')
 		for option in options:
-			print('\t' + str(option))
+			logger.debug('\t' + str(option))
 
 		# Check if the given message has a role react
 		reaction_messages = guild_conf['backend']['reaction_messages']['value']
@@ -301,8 +302,8 @@ class ReactRole():
 			reaction['role'] = option[1]
 			json_obj['reactions'].append(reaction)
 
-		print('JSON React Roles:')
-		print(json.dumps(json_obj, indent=4, sort_keys=True))
+		logger.debug('JSON React Roles:')
+		logger.debug(json.dumps(json_obj, indent=4, sort_keys=True))
 
 		# Add the new react role message configuration to the plugin configuration
 		guild_conf['backend']['reaction_messages']['value'].append(json_obj)
@@ -311,9 +312,9 @@ class ReactRole():
 		self.configutils.saveConfig(str(message.guild.name) + '_' + str(message.guild.id), self.guild_confs, self.conf_path)
 
 		# Show us all of the configurations
-		print('All react messages for this server:')
+		logger.debug('All react messages for this server:')
 		for msg in guild_conf['backend']['reaction_messages']['value']:
-			print('\t' + str(msg['id']))
+			logger.debug('\t' + str(msg['id']))
 
 		# Add the reactions to the target message
 		for option in options:
