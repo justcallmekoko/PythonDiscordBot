@@ -1,4 +1,4 @@
-from logger import logging
+import logging
 from logging.handlers import RotatingFileHandler
 
 logger = logging.getLogger("discord_bot")
