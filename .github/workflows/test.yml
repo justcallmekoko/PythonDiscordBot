@@ -40,7 +40,8 @@ jobs:
 
       - name: Create log folder
         run: |
-          mkdir -p /var/log/discord_bot
+          sudo mkdir -p /var/log/discord_bot
+          sudo chmod 755 /var/log/discord_bot
         
       - name: Run Unit Tests
         run: coverage run --source=plugins -m unittest discover tests -v
