@@ -1,14 +1,19 @@
+import os
 import logging
 from logging.handlers import RotatingFileHandler
 
 logger = logging.getLogger("discord_bot")
 logger.setLevel(logging.DEBUG)
 
-# Add an ECS formatter to the Handler
+# Check/Create log dir
+if not os.path.exists('log'):
+	os.makedirs('log')
+
+# Add a file rotating handler to logger
 try:
-	handler = RotatingFileHandler('/var/log/discord_bot/discord_bot.log', maxBytes=20000, backupCount=10)
+	handler = RotatingFileHandler('log/discord_bot.log', maxBytes=1000000, backupCount=10)
 except:
-	handler = RotatingFileHandler('discord_bot.log', maxBytes=20000, backupCount=10)
+	handler = RotatingFileHandler('discord_bot.log', maxBytes=1000000, backupCount=10)
 	
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(filename)s:%(lineno)d: %(message)s')
 handler.setFormatter(formatter)
