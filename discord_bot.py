@@ -1,6 +1,7 @@
 import os
 import re
 import sys
+import openai
 import asyncio
 import discord
 import time
@@ -34,6 +35,7 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 RCONIP = os.getenv('RCON_IP')
 PASSW = os.getenv('RCON_PASSWORD')
+OPENAI_KEY = os.getenv('OPENAI_KEY')
 
 global obj_list
 global channels_list
@@ -54,6 +56,13 @@ class CustomClient(discord.Client):
 	#conf_path = os.path.dirname(os.path.abspath(__file__))
 
 	members_list = []
+	start_chat_log = '''Human: Hello, who are you?
+AI: I am doing great. How can I help you today?
+'''
+	chat_log = None
+
+	openai.api_key = os.environ.get('OPENAI_KEY')
+	completion = openai.Completion()
 
 	def __init__(self, discord_intents: discord.Intents):
 		super().__init__(intents=discord_intents)
@@ -144,6 +153,22 @@ class CustomClient(discord.Client):
 			logger.debug('Generating config for ' + str(obj.name))
 			obj.generatePluginConfig(file_name)
 
+	async def ask_openai(self, question, chat_log = None):
+		if self.chat_log is None:
+			self.chat_log = self.start_chat_log
+		prompt = f'{chat_log}Human: {question}\nAI:'
+		response = self.completion.create(
+			prompt=prompt, engine='davinci', stop=['\nHuman'], temperature=0.9,
+			top_p=1, frequency_penalty=0, presence_penalty=0.6, best_of=1,
+			max_tokens=150)
+		answer = response.choices[0].text.strip()
+		return answer
+
+	async def append_interaction_to_chat_log(self, question, answer, chat_log=None):
+		if self.chat_log is None:
+			self.chat_log = self.start_chat_log
+		return f'{chat_log}Human: {question}\nAI: {answer}\n'
+
 	# Bot received a message on discord server
 	async def on_message(self, message):
 		try:
@@ -158,6 +183,26 @@ class CustomClient(discord.Client):
 		output = output + ' ' + message.author.name + ': ' + message.content
 
 		logger.info(output)
+
+		# Check if having conversation
+		if client.user.mentioned_in(message):
+			new_question = message.content.replace(client.user.mention + ' ', '')
+			logger.debug('Getting openAI response to: ' + str(new_question))
+
+			try:
+				answer = await self.ask_openai(new_question, self.chat_log)
+			except Exception as e:
+				logger.error('Could not prompt OpenAI: ' + str(e))
+
+			logger.info(answer)
+
+			try:
+				self.chat_log = await self.append_interaction_to_chat_log(message.content, answer, self.chat_log)
+			except Exception as e:
+				logger.error('Could not add to chat log')
+
+#			await message.channel.send(message.author.mention + str(answer))
+			await message.channel.send(str(answer), reference=message)
 
 		# Work response
 		if message.content == '!muster':
