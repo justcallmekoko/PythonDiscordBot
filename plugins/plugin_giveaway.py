@@ -140,7 +140,6 @@ class Giveaway():
 						# Get the configuration of this specific message
 						the_config = self.configutils.getGuildConfig(msg, self.guild_confs)
 						if not self.configutils.hasPermsUser(cache_message, real_member, False, self.guild_confs):
-							logger.debug(str(real_member) + 'does not have permission to join the giveaway')
 							continue
 
 						if (real_member not in index[1]) and (self.looping):
