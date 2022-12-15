@@ -203,10 +203,19 @@ class CodeGenerator():
 			
 		output = self.gpt.submit_request(message.content.replace(self.name + ' ', ''))
 
+		new_output = ''
 		if output.choices[0].text.startswith('output: '):
-			output = output.choices[0].text[9:]
+			new_output = output.choices[0].text[9:]
 
-		await message.channel.send('```Python\n' + str(output) + '```', reference=message)
+		embed = discord.Embed(title="Code Reponse",
+				color=discord.Color.green())
+		
+		embed.add_field(name='Completion Tokens', value='```' + str(output.usage.completion_tokens) + '```', inline=True)
+		embed.add_field(name='Prompt Tokens', value='```' + str(output.usage.prompt_tokens) + '```', inline=True)
+		embed.add_field(name='Total Tokens', value='```' + str(output.usage.total_tokens) + '```', inline=True)
+		embed.add_field(name='Code Body', value='```Python\n' + new_output + '```', inline=False)
+
+		await message.channel.send("Here is your code", reference=message, embed=embed)
 
 		return True
 
