@@ -203,7 +203,7 @@ class CodeGenerator():
 			
 		output = self.gpt.submit_request(message.content.replace(self.name + ' ', ''))
 
-		await message.channel.send('```' + str(output.choices[0].text) + '```', reference=message)
+		await message.channel.send('```Python\n' + str(output.choices[0].text.split('output: ')[1]) + '```', reference=message)
 
 		return True
 
