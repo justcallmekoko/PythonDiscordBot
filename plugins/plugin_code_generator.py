@@ -212,7 +212,9 @@ class CodeGenerator():
 
 		# Do Specific Plugin Stuff
 			
-		output = self.gpt.submit_request(message.content.replace(self.name + ' ', ''))
+		prompt = message.content.replace(self.name + ' ', '')
+			
+		output = self.gpt.submit_request(prompt)
 
 		new_output = ''
 		if output.choices[0].text.startswith('output: '):
@@ -221,6 +223,7 @@ class CodeGenerator():
 		embed = discord.Embed(title="Code Reponse",
 				color=discord.Color.green())
 		
+		embed.add_field(name='Prompt', value = '```' + str(prompt) + '```', inline=False)
 		embed.add_field(name='Completion Tokens', value='```' + str(output.usage.completion_tokens) + '```', inline=True)
 		embed.add_field(name='Prompt Tokens', value='```' + str(output.usage.prompt_tokens) + '```', inline=True)
 		embed.add_field(name='Total Tokens', value='```' + str(output.usage.total_tokens) + '```', inline=True)
