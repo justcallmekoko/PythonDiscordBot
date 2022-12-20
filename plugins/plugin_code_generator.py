@@ -184,6 +184,17 @@ class CodeGenerator():
 	
 	async def runCheer(self, user, amount):
 		return True
+	
+	async def get_post_channel(self, message, the_config):
+		# Find where the bot will be posting its announcements
+		for channel in message.guild.channels:
+			try:
+				if str(channel.mention) == str(the_config['post_channel']['value']):
+					logger.debug('Found post_channel: ' + str(channel.mention))
+					return channel
+			except:
+				return None
+		return None
 
 	async def run(self, message, obj_list):
 		# Permissions check
@@ -215,7 +226,14 @@ class CodeGenerator():
 		embed.add_field(name='Total Tokens', value='```' + str(output.usage.total_tokens) + '```', inline=True)
 		embed.add_field(name='Code Body', value='```Python\n' + new_output + '```', inline=False)
 
-		await message.channel.send("Here is your code", reference=message, embed=embed)
+		the_config = self.configutils.getGuildConfig(message, self.guild_confs)
+
+		local_post_channel = await self.get_post_channel(message, the_config)
+
+		if not local_post_channel:
+			await message.channel.send("Here is your code", reference=message, embed=embed)
+		else:
+			await local_post_channel.send("Here is your code", reference=message, embed=embed)
 
 		return True
 
