@@ -233,7 +233,7 @@ class CodeGenerator():
 		if not local_post_channel:
 			await message.channel.send("Here is your code", reference=message, embed=embed)
 		else:
-			await local_post_channel.send("Here is your code", reference=message, embed=embed)
+			await local_post_channel.send("Here is your code, " + message.author.mention, embed=embed)
 
 		return True
 
