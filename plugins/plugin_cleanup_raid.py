@@ -223,6 +223,8 @@ class CleanupRaid():
 					logger.debug('Executor confirmed cleanup: ' + str(msg.id))
 				elif targ_reaction == guild_conf['no_vote']['value']:
 					logger.debug('Executor canceled cleanup: ' + str(msg.id))
+				else:
+					logger.debug('Executor did not properly react: ' + str(msg.id))
 
 				
 
@@ -313,7 +315,7 @@ class CleanupRaid():
 		embed.add_field(name='Users To Kick', value = '```' + str(str_users) + '```', inline=False)
 		embed.add_field(name='Confirmation', value = 'Select ' + str(yes_emote) + ' to confirm or ' + str(no_emote) + ' to cancel', inline=False)
 
-		msg = await message.channel.send("Here is your code", reference=message, embed=embed)
+		msg = await message.channel.send("Here is your cleanup draft", reference=message, embed=embed)
 
 		await msg.add_reaction(yes_emote)
 		await msg.add_reaction(no_emote)
