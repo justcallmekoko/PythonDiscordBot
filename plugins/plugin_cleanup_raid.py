@@ -132,9 +132,9 @@ class CleanupRaid():
 			if member_join_time.strftime("%Y%m%d;%H:%M") == join_time.strftime("%Y%m%d;%H:%M"): #and role not in member.roles:
 				# Add the member to the filtered list
 				filtered_members.append(member)
-				
+
 			# Print the name and join time of the member
-			print(str(member.name) + ': ' + str(member_join_time.strftime("%Y%m%d;%H:%M")))
+			logger.debug(str(member.name) + ': ' + str(member_join_time.strftime("%Y%m%d;%H:%M")))
 			
 		return filtered_members
 	
