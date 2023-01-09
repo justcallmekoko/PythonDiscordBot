@@ -218,7 +218,11 @@ class CleanupRaid():
 							targ_reaction = reaction
 							break
 
+				if not targ_reaction:
+					continue
+
 				# Execute based on reaction
+				logger.debug('Executor\'s reaction: ' + str(targ_reaction))
 				if targ_reaction == guild_conf['yes_vote']['value']:
 					logger.debug('Executor confirmed cleanup: ' + str(msg.id))
 				elif targ_reaction == guild_conf['no_vote']['value']:
