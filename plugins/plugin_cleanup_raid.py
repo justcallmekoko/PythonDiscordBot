@@ -128,7 +128,7 @@ class CleanupRaid():
 		for member in members:
 			logger.debug(str(member.name) + ': ' + str(member.joined_at.strftime("%Y%m%d;%H:%M")))
 			# Check if the member joined at the specified time and does not have the specified role
-			if member.joined_at.strftime("%Y%m%d;%H:%M") == join_time.strftime("%Y%m%d;%H:%M") and role not in member.roles:
+			if member.joined_at.strftime("%Y%m%d;%H:%M") == join_time.strftime("%Y%m%d;%H:%M"): #and role not in member.roles:
 				# Add the member to the filtered list
 				filtered_members.append(member)
 				# Print the name and join time of the member
