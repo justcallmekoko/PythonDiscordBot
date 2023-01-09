@@ -191,7 +191,7 @@ class CleanupRaid():
 		yes_emote = guild_conf['yes_vote']['value']
 		no_emote = guild_conf['no_vote']['value']
 
-		if (yes_emote == None) or (no_emote == None):
+		if (yes_emote == '') or (no_emote == ''):
 			await message.channel.send(message.author.mention + ', The yes and no emotes have not been set')
 			return
 
@@ -210,7 +210,7 @@ class CleanupRaid():
 		embed.add_field(name='Datetime', value = '```' + str(datetime_str) + '```', inline=True)
 		embed.add_field(name='Exempt Role', value = '```' + str(exempt_role.name) + '```', inline=True)
 		embed.add_field(name='Users To Kick', value = '```' + str(str_users) + '```', inline=False)
-		embed.add_field(name='Confirmation', value = '```Select ```' + str(yes_emote) + '``` or ```' + str(no_emote) + '``` to cancel```', inline=False)
+		embed.add_field(name='Confirmation', value = '```Select ```' + str(yes_emote) + '``` to confirm or ```' + str(no_emote) + '``` to cancel```', inline=False)
 
 		msg = await message.channel.send("Here is your code", reference=message, embed=embed)
 
