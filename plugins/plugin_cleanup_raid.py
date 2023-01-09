@@ -35,6 +35,8 @@ class CleanupRaid():
 
 	full_conf_file = None
 
+	time_zone = 'US/Eastern'
+
 	default_config = {}
 	default_config['protected'] = {}
 	default_config['protected']['name'] = __file__
@@ -112,8 +114,10 @@ class CleanupRaid():
 		return datetime(year, month, day, hour, minute)
 	
 	async def get_users_by_join_time(self, message, str_time, role):
+		usest = pytz.timezone(self.time_zone)
+		
 		# Convert the join time string to a datetime object in the UTC timezone
-		join_time = pytz.utc.localize(await self.convert_to_datetime(str_time))
+		join_time = usest.localize(await self.convert_to_datetime(str_time))
 
 		# Get the guild associated with the message
 		guild = message.guild
@@ -127,7 +131,7 @@ class CleanupRaid():
 		# Iterate through the members in the guild
 		for member in members:
 			# Convert the member's join time to the UTC timezone
-			member_join_time = member.joined_at.astimezone(pytz.utc)
+			member_join_time = usest.localize(member.joined_at)
 			# Check if the member joined at the specified time and does not have the specified role
 			if member_join_time.strftime("%Y%m%d;%H:%M") == join_time.strftime("%Y%m%d;%H:%M"): #and role not in member.roles:
 				# Add the member to the filtered list
