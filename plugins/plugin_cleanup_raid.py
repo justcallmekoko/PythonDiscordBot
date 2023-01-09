@@ -25,9 +25,9 @@ class CleanupRaid():
 
 	desc = 'Remove all users who joined at a specific datetime except for those with <@exempt role>'
 
-	synt = '!cleanupraid <YYYYMMDD;HH:mm> <@exempt role> / [config|get <config>|set <config> <value>|add/remove <config> <value>]'
+	synt = '!cleanupraid <YYYYMMDD;HH:mm> <@exempt role> / [start/stop] / [config|get <config>|set <config> <value>|add/remove <config> <value>]'
 
-	is_service = False
+	is_service = True
 
 	client = None
 
@@ -71,6 +71,8 @@ class CleanupRaid():
 	cat = 'admin'
 
 	current_draft = None
+
+	running_guilds = []
 	
 	def __init__(self, client = None):
 		self.client = client
@@ -163,6 +165,18 @@ class CleanupRaid():
 		logger.debug('Got role: ' + str(role.name))
 
 		return role
+	
+	@loop(seconds = 5)
+	async def loop_func(self):
+		if self.looping:
+			for guild in self.client.guilds:
+				# Only run on guilds that have the service enabled
+				if str(guild.name) + str(guild.id) not in self.running_guilds:
+					continue
+
+				guild_conf = self.configutils.getGuildConfigByGuild(guild, self.guild_confs)
+
+
 
 	async def run(self, message, obj_list):
 		# Permissions check
@@ -179,6 +193,43 @@ class CleanupRaid():
 				return True
 
 		# Do Specific Plugin Stuff
+			
+		the_guild = str(message.guild.name) + str(message.guild.id)
+
+		# Do service stuff
+		if len(arg) == 2:
+			# Check if user has admin permissions to run the service
+			if not self.configutils.hasPerms(message, True, self.guild_confs):
+				await message.channel.send(message.author.mention + ' Permission denied')
+				return False
+
+			if str(arg[1]) == 'start':
+				if the_guild not in self.running_guilds:
+					self.running_guilds.append(the_guild)
+					logger.debug('Guilds running ' + str(self.name) + ':')
+					for gu in self.running_guilds:
+						logger.debug('\t' + gu)
+					await message.channel.send(message.author.mention + ' Starting ' + str(self.name))
+					return True
+
+			if str(arg[1]) == 'stop':
+				if the_guild in self.running_guilds:
+					self.running_guilds.remove(the_guild)
+					await message.channel.send(message.author.mention + ' Stopping ' + str(self.name))
+					logger.debug('Guilds running ' + str(self.name) + ':')
+					for gu in self.running_guilds:
+						logger.debug('\t' + gu)
+					return True
+
+			return False
+
+		# User wants status of service
+		elif len(arg) == 1:
+			if self.looping:
+				await message.channel.send(message.author.mention + ' ' + str(self.name) + ' is running')
+			else:
+				await message.channel.send(message.author.mention + ' ' + str(self.name) + ' is not running')
+			return True
 		
 		# Only take the first mention in the message
 		exempt_role = message.role_mentions[0]
@@ -207,6 +258,7 @@ class CleanupRaid():
 		embed = discord.Embed(title="Raid Cleanup Draft",
 				color=discord.Color.red())
 		
+		embed.add_field(name='Executor', value = '```' + str(message.author.name) + '```', inline=False)
 		embed.add_field(name='Datetime', value = '```' + str(datetime_str) + '```', inline=True)
 		embed.add_field(name='Exempt Role', value = '```' + str(exempt_role.name) + '```', inline=True)
 		embed.add_field(name='Users To Kick', value = '```' + str(str_users) + '```', inline=False)
