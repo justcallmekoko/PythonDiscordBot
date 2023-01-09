@@ -70,7 +70,7 @@ class CleanupRaid():
 	
 	cat = 'admin'
 
-	current_draft = None
+	current_draft = []
 
 	running_guilds = []
 	
@@ -190,8 +190,41 @@ class CleanupRaid():
 				if str(guild.name) + str(guild.id) not in self.running_guilds:
 					continue
 
+				# Get the current guild conf
 				guild_conf = self.configutils.getGuildConfigByGuild(guild, self.guild_confs)
 
+				# Get the current guild drafts
+				this_guild_draft = None
+
+				for draft in self.current_draft:
+					if draft[0].guild.id == guild.id:
+						this_guild_draft = draft
+						break
+
+				if this_guild_draft == None:
+					continue
+
+				msg = this_guild_draft[0]
+				executor = this_guild_draft[1]
+
+				# Check reactions of this draft's message
+				targ_reaction = None
+				cache_message = await msg.channel.fetch_message(msg.id)
+
+				# Check if the reaction if from the executor
+				for reaction in cache_message.reactions:
+					async for user in reaction.users():
+						if user.id == executor.id:
+							targ_reaction = reaction
+							break
+
+				# Execute based on reaction
+				if targ_reaction == guild_conf['yes_vote']['value']:
+					logger.debug('Executor confirmed cleanup: ' + str(msg.id))
+				elif targ_reaction == guild_conf['no_vote']['value']:
+					logger.debug('Executor canceled cleanup: ' + str(msg.id))
+
+				
 
 
 	async def run(self, message, obj_list):
@@ -285,9 +318,9 @@ class CleanupRaid():
 		await msg.add_reaction(yes_emote)
 		await msg.add_reaction(no_emote)
 
-		self.current_draft = [msg, message.author]
+		self.current_draft.append([msg, message.author])
 
-		logger.debug('Message ID: ' + str(self.current_draft[0].id) + ' -> User: ' + str(self.current_draft[1].name))
+		#logger.debug('Message ID: ' + str(self.current_draft[0].id) + ' -> User: ' + str(self.current_draft[1].name))
 
 		return True
 
