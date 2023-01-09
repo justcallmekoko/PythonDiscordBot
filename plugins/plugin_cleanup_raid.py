@@ -111,7 +111,7 @@ class CleanupRaid():
 		return datetime(year, month, day, hour, minute)
 	
 	async def get_users_by_join_time(self, message, str_time, role):
-		join_time = self.convert_to_datetime(join_time)
+		join_time = await self.convert_to_datetime(str_time)
 
 		logger.debug('Given datetime: ' + str(join_time))
 
