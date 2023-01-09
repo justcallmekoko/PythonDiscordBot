@@ -112,7 +112,7 @@ class CleanupRaid():
 	
 	async def get_users_by_join_time(self, message, str_time, role):
 		# Convert the join time string to a datetime object
-		join_time = self.convert_to_datetime(str_time)
+		join_time = await self.convert_to_datetime(str_time)
 
 		# Get the guild associated with the message
 		guild = message.guild
@@ -152,7 +152,10 @@ class CleanupRaid():
 		# Do Specific Plugin Stuff
 		
 		# Only take the first mention in the message
-		cleanup_list = self.get_users_by_join_time(message, arg[1], message.mentions[0])
+		exempt_role = message.mentions[0]
+		datetime_str = arg[1]
+
+		cleanup_list = await self.get_users_by_join_time(message, datetime_str, exempt_role)
 
 		logger.debug('Cleanup List:')
 		for item in cleanup_list:
