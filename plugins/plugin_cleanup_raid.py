@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import discord
+import pytz
 from datetime import datetime
 from logger import logger
 from dotenv import load_dotenv
@@ -111,9 +112,8 @@ class CleanupRaid():
 		return datetime(year, month, day, hour, minute)
 	
 	async def get_users_by_join_time(self, message, str_time, role):
-		join_time = await self.convert_to_datetime(str_time)
-
-		logger.debug('Given datetime: ' + str(join_time))
+		# Convert the join time string to a datetime object in the UTC timezone
+		join_time = pytz.utc.localize(await self.convert_to_datetime(str_time))
 
 		# Get the guild associated with the message
 		guild = message.guild
@@ -126,12 +126,14 @@ class CleanupRaid():
 
 		# Iterate through the members in the guild
 		for member in members:
-			logger.debug(str(member.name) + ': ' + str(member.joined_at.strftime("%Y%m%d;%H:%M")))
+			# Convert the member's join time to the UTC timezone
+			member_join_time = member.joined_at.astimezone(pytz.utc)
 			# Check if the member joined at the specified time and does not have the specified role
-			if member.joined_at.strftime("%Y%m%d;%H:%M") == join_time.strftime("%Y%m%d;%H:%M"): #and role not in member.roles:
+			if member_join_time == join_time and role not in member.roles:
 				# Add the member to the filtered list
 				filtered_members.append(member)
-				# Print the name and join time of the member
+			# Print the name and join time of the member
+			print(f"{member.name}: {member_join_time}")
 			
 		return filtered_members
 	
