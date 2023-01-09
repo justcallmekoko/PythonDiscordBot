@@ -182,6 +182,15 @@ class CleanupRaid():
 			return True
 		return False
 	
+	async def executeEmoji(self, message, cleanup_list = None, do_kick = False):
+		if not do_kick:
+			await message.channel.send('Canceling cleanup')
+		else:
+			await message.channel.send('The referenced users have been kicked from the server')
+			
+		return
+
+	
 	@loop(seconds = 5)
 	async def loop_func(self):
 		if self.looping:
@@ -225,10 +234,14 @@ class CleanupRaid():
 				logger.debug('Executor\'s reaction: ' + str(targ_reaction.emoji))
 				if targ_reaction.emoji == guild_conf['yes_vote']['value']:
 					logger.debug('Executor confirmed cleanup: ' + str(msg.id))
+					await self.executeEmoji(msg, this_guild_draft[2], True)
 				elif targ_reaction.emoji == guild_conf['no_vote']['value']:
 					logger.debug('Executor canceled cleanup: ' + str(msg.id))
+					await self.executeEmoji(msg)
 				else:
 					logger.debug('Executor did not properly react: ' + str(msg.id))
+				
+				self.current_draft.remove(this_guild_draft)
 
 				
 
@@ -324,7 +337,7 @@ class CleanupRaid():
 		await msg.add_reaction(yes_emote)
 		await msg.add_reaction(no_emote)
 
-		self.current_draft.append([msg, message.author])
+		self.current_draft.append([msg, message.author, cleanup_list])
 
 		#logger.debug('Message ID: ' + str(self.current_draft[0].id) + ' -> User: ' + str(self.current_draft[1].name))
 
