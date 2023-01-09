@@ -138,7 +138,7 @@ class CleanupRaid():
 				filtered_members.append(member)
 
 			# Print the name and join time of the member
-			logger.debug(str(member.name) + ': ' + str(member_join_time.strftime("%Y%m%d;%H:%M")))
+			#logger.debug(str(member.name) + ': ' + str(member_join_time.strftime("%Y%m%d;%H:%M")))
 			
 		return filtered_members
 	
@@ -151,6 +151,8 @@ class CleanupRaid():
 
 		# Get the role object from the guild
 		role = discord.utils.get(guild.roles, id=role_id)
+
+		logger.debug('Got role: ' + str(role.name))
 
 		return role
 
@@ -171,7 +173,7 @@ class CleanupRaid():
 		# Do Specific Plugin Stuff
 		
 		# Only take the first mention in the message
-		exempt_role = self.get_role_from_mention(message, message.role_mentions[0])
+		exempt_role = await self.get_role_from_mention(message, message.role_mentions[0])
 		datetime_str = arg[1]
 
 		cleanup_list = await self.get_users_by_join_time(message, datetime_str, exempt_role)
