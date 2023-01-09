@@ -111,8 +111,9 @@ class CleanupRaid():
 		return datetime(year, month, day, hour, minute)
 	
 	async def get_users_by_join_time(self, message, str_time, role):
-		# Convert the join time string to a datetime object
-		join_time = await self.convert_to_datetime(str_time)
+		join_time = self.convert_to_datetime(join_time)
+
+		logger.debug('Given datetime: ' + str(join_time))
 
 		# Get the guild associated with the message
 		guild = message.guild
@@ -120,8 +121,19 @@ class CleanupRaid():
 		# Get a list of members in the guild
 		members = guild.members
 
-		# Filter the list of members to only include those that joined at the specified time and do not have the specified role
-		return [member for member in members if member.joined_at.strftime("%Y%m%d;%H:%M") == join_time.strftime("%Y%m%d;%H:%M") and role not in member.roles]
+		# Initialize an empty list to store the filtered members
+		filtered_members = []
+
+		# Iterate through the members in the guild
+		for member in members:
+			# Check if the member joined at the specified time and does not have the specified role
+			if member.joined_at.strftime("%Y%m%d;%H:%M") == join_time.strftime("%Y%m%d;%H:%M") and role not in member.roles:
+				# Add the member to the filtered list
+				filtered_members.append(member)
+				# Print the name and join time of the member
+				print(f"{member.name}: {member.joined_at}")
+			
+		return filtered_members
 	
 	async def get_role_from_mention(self, message, role_mention):
 		# Get the guild associated with the message
@@ -160,6 +172,7 @@ class CleanupRaid():
 		logger.debug('Cleanup List:')
 		for item in cleanup_list:
 			logger.debug('\t' + str(item.name))
+		logger.debug('Done with cleanup list')
 
 
 		return True
