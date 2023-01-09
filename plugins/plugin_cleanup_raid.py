@@ -186,8 +186,11 @@ class CleanupRaid():
 		if not do_kick:
 			await message.channel.send('Canceling cleanup')
 		else:
+			for user in cleanup_list:
+				logger.debug('Kicking: ' + str(user.name))
+				await user.kick()
 			await message.channel.send('The referenced users have been kicked from the server')
-			
+
 		return
 
 	
