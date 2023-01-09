@@ -152,7 +152,7 @@ class CleanupRaid():
 		# Do Specific Plugin Stuff
 		
 		# Only take the first mention in the message
-		exempt_role = message.mentions[0]
+		exempt_role = message.role_mentions[0]
 		datetime_str = arg[1]
 
 		cleanup_list = await self.get_users_by_join_time(message, datetime_str, exempt_role)
