@@ -70,7 +70,7 @@ class CleanupRaid():
 	
 	cat = 'admin'
 
-	current_draft = {}
+	current_draft = None
 	
 	def __init__(self, client = None):
 		self.client = client
@@ -210,19 +210,16 @@ class CleanupRaid():
 		embed.add_field(name='Datetime', value = '```' + str(datetime_str) + '```', inline=True)
 		embed.add_field(name='Exempt Role', value = '```' + str(exempt_role.name) + '```', inline=True)
 		embed.add_field(name='Users To Kick', value = '```' + str(str_users) + '```', inline=False)
-		embed.add_field(name='Confirmation', value = '```Select ```' + str(yes_emote) + '``` to confirm or ```' + str(no_emote) + '``` to cancel```', inline=False)
+		embed.add_field(name='Confirmation', value = 'Select ' + str(yes_emote) + ' to confirm or ' + str(no_emote) + ' to cancel', inline=False)
 
 		msg = await message.channel.send("Here is your code", reference=message, embed=embed)
 
-		msg.add_reaction(yes_emote)
-		msg.add_reaction(no_emote)
+		await msg.add_reaction(yes_emote)
+		await msg.add_reaction(no_emote)
 
-		self.current_draft['message'] = msg
-		self.current_draft['user'] = message.author.mention
+		self.current_draft = [msg, message.author]
 
-		json_str = json.dumps(self.current_draft, indent=2)
-		logger.debug(json_str)
-
+		logger.debug('Message ID: ' + str(self.current_draft[0].id) + ' -> User: ' + str(self.current_draft[1].name))
 
 		return True
 
