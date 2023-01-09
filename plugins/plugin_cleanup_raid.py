@@ -53,6 +53,12 @@ class CleanupRaid():
 	default_config['post_channel'] = {}
 	default_config['post_channel']['value'] = ""
 	default_config['post_channel']['description'] = "Desitination channel to post messages from this plugin"
+	default_config['yes_vote'] = {}
+	default_config['yes_vote']['value'] = ""
+	default_config['yes_vote']['description'] = "The emote to signify 'yes'"
+	default_config['no_vote'] = {}
+	default_config['no_vote']['value'] = ""
+	default_config['no_vote']['description'] = "The emote to signify 'no'"
 
 	# Server configurable
 
@@ -63,6 +69,8 @@ class CleanupRaid():
 	cheer = -1
 	
 	cat = 'admin'
+
+	current_draft = {}
 	
 	def __init__(self, client = None):
 		self.client = client
@@ -178,10 +186,42 @@ class CleanupRaid():
 
 		cleanup_list = await self.get_users_by_join_time(message, datetime_str, exempt_role)
 
+		guild_conf = self.configutils.getGuildConfig(message, self.guild_confs)
+
+		yes_emote = guild_conf['yes_vote']['value']
+		no_emote = guild_conf['no_vote']['value']
+
+		if (yes_emote == None) or (no_emote == None):
+			await message.channel.send(message.author.mention + ', The yes and no emotes have not been set')
+			return
+
+		str_users = ''
+
 		logger.debug('Cleanup List:')
 		for item in cleanup_list:
 			logger.debug('\t' + str(item.name))
+			str_users = str_users + str(item.name) + '\n'
 		logger.debug('Done with cleanup list')
+
+		# Build message with embed to confirm
+		embed = discord.Embed(title="Raid Cleanup Draft",
+				color=discord.Color.red())
+		
+		embed.add_field(name='Datetime', value = '```' + str(datetime_str) + '```', inline=True)
+		embed.add_field(name='Exempt Role', value = '```' + str(exempt_role.name) + '```', inline=True)
+		embed.add_field(name='Users To Kick', value = '```' + str(str_users) + '```', inline=False)
+		embed.add_field(name='Confirmation', value = '```Select ```' + str(yes_emote) + '``` or ```' + str(no_emote) + '``` to cancel```', inline=False)
+
+		msg = await message.channel.send("Here is your code", reference=message, embed=embed)
+
+		msg.add_reaction(yes_emote)
+		msg.add_reaction(no_emote)
+
+		self.current_draft['message'] = msg
+		self.current_draft['user'] = message.author.mention
+
+		json_str = json.dumps(self.current_draft, indent=2)
+		logger.debug(json_str)
 
 
 		return True
